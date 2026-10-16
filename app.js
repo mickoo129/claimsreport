@@ -98,9 +98,9 @@
 
   /* ---------- hero ---------- */
   /* ---------- small visuals ---------- */
-  function spark(values, color) {
+  function spark(values, color, range) {
     const w = 120, h = 32, pad = 3;
-    const min = Math.min(...values), max = Math.max(...values), span = max - min || 1;
+    const min = range ? range[0] : Math.min(...values), max = range ? range[1] : Math.max(...values), span = max - min || 1;
     const pts = values.map((v, i) => [pad + (i * (w - pad * 2)) / (values.length - 1), h - pad - ((v - min) / span) * (h - pad * 2)]);
     const last = pts[pts.length - 1];
     return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map((p) => p.map((n) => n.toFixed(1)).join(",")).join(" ")}"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5" fill="${color}"/></svg>`;
@@ -166,9 +166,9 @@
     $("heroStats").innerHTML = [
       ["總賠償", `${s.total}億+`, `${YEARS[0]} 年 ${s0.total} 億 → 升 ${Math.round(pct(s.total - s0.total, s0.total))}%`, series.total],
       ["住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} → 升 ${Math.round(pct(s.hospital.cases - s0.hospital.cases, s0.hospital.cases))}%`, series.hosp],
-      ["危疾女性佔比", fmt.p(femaleShare(ci), 0), `七年都企喺 63–68%`, series.female],
+      ["危疾女性佔比", fmt.p(femaleShare(ci), 0), `七年都企喺 63–68%`, series.female, [0, 100]],
       ["最高一宗危疾", fmt.wan(ci.max), `${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；平均只係 ${fmt.wan(ci.avg)}`, series.ciMax]
-    ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#f0b28f")}<div class="s">${x[2]}</div></div>`).join("");
+    ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#f0b28f", x[4])}<div class="s">${x[2]}</div></div>`).join("");
 
     $("takeaways").innerHTML = [
       ["每 5 宗理賠，4 宗係住院", `住院佔全部成功個案約 ${fmt.p(hospShareCases, 0)}。醫療保障係最常用到嘅一張單。`, "#mix"],
@@ -185,8 +185,9 @@
     keyFact("kf-trend", `+${Math.round(pct(s.total - s0.total, s0.total))}%`,
       `<b>七年總賠款由 ${s0.total} 億升到 ${s.total} 億。</b>升得最快係危疾（+${g("critical")}%）同住院（+${g("hospital")}%），即係「病」嘅開支升得最急。`);
     const hospAvg = (s.hospital.amt * 1e8) / s.hospital.cases;
-    keyFact("kf-mix", `1 : ${Math.round(ci.avg / hospAvg)}`,
-      `<b>一宗危疾 ≈ ${Math.round(ci.avg / hospAvg)} 宗住院。</b>住院平均每宗約 ${fmt.wan(hospAvg)}，危疾平均 ${fmt.wan(ci.avg)}。住院係「經常用」，危疾係「一用就要大筆錢」。`, "", CATS[2].color);
+    const hg = Math.round(pct(s.hospital.cases - s0.hospital.cases, s0.hospital.cases));
+    keyFact("kf-mix", fmt.num(s.hospital.cases) + " 宗",
+      `<b>住院係 claim 得最多嘅保障：每 5 宗理賠有 4 宗係住院，七年宗數升 ${hg}%。</b>不過每宗平均只係 ${fmt.wan(hospAvg)}；一宗危疾平均 ${fmt.wan(ci.avg)}，等於 ${Math.round(ci.avg / hospAvg)} 宗住院。`, "", CATS[0].color);
     const fs = femaleShare(ci);
     keyFact("kf-gender", "3 宗有 2 宗",
       `<b>危疾賠償 ${fmt.p(fs, 0)} 係女性。</b>七年都一樣，主因係乳癌。身故就倒轉，男性多過女性。`,
@@ -199,7 +200,7 @@
       `<b>危疾 ${fmt.p(cancerShare, 0)} 係癌症</b>，身故都有 ${fmt.p(causePct(de, "癌症"), 0)}。癌症入面最多係乳癌，其次係肺癌同甲狀腺癌。`,
       picto(4, 3, C.ci, "#d9d4f5", BLOCK) + `<span class="picto-cap"><i style="background:${C.ci}"></i>癌症</span>`, C.ci);
     keyFact("kf-amount", `${Math.round(ci.max / ci.avg)} 倍`,
-      `<b>最高一宗危疾 ${fmt.wan(ci.max)}，係平均 ${fmt.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。</b>平均數七年冇乜變，但大額個案越嚟越大。保額要對準出事時真正要用嘅錢。`, "", CATS[2].color);
+      `<b>最高一宗危疾 ${fmt.wan(ci.max)}，係平均 ${fmt.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。</b>分別唔係病重唔重，而係<b>當初買咗幾多保額</b>：危疾一筆過賠，買幾多就賠幾多。`, "", CATS[2].color);
     const drug = D.inflation.drugs[0][2];
     keyFact("kf-inflation", fmt.wan(drug),
       `<b>一年肝癌標靶藥嘅藥費</b>，等於 ${(drug / ci.avg).toFixed(1)} 個平均危疾賠償。私家外科醫生收費 7 年升 20–50%，私家醫院病房費亦普遍升一至五成。`);
@@ -223,16 +224,17 @@
     } else {
       datasets = CATS.map((c) => ({
         label: c.name, type: "line",
-        data: YEARS.map((y) => +(pct(D.summary[y][c.key].amt, D.summary[base][c.key].amt)).toFixed(0)),
+        data: YEARS.map((y) => +(pct(D.summary[y][c.key].amt - D.summary[base][c.key].amt, D.summary[base][c.key].amt)).toFixed(0)),
         borderColor: c.color, backgroundColor: c.color, borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, tension: 0.25
       }));
-      yTitle = "2019 年 = 100";
+      yTitle = "對比 2019 年";
     }
     const opts = baseOpts();
     opts.scales.y.title = { display: true, text: yTitle, color: C.muted };
+    if (mode !== "amount") opts.scales.y.ticks.callback = (v) => (v > 0 ? "+" : "") + v + "%";
     if (mode === "amount") { opts.scales.x.stacked = true; opts.scales.y.stacked = true; opts.scales.y.beginAtZero = true; }
     opts.plugins.tooltip.callbacks = {
-      label: (ctx) => mode === "amount" ? ` ${ctx.dataset.label}：${fmt.yi(ctx.parsed.y)} 億` : ` ${ctx.dataset.label}：${ctx.parsed.y}`,
+      label: (ctx) => mode === "amount" ? ` ${ctx.dataset.label}：${fmt.yi(ctx.parsed.y)} 億` : ` ${ctx.dataset.label}：${ctx.parsed.y > 0 ? "+" : ""}${ctx.parsed.y}%`,
       footer: (items) => mode === "amount" ? `四類合計：${fmt.yi(sum(items.map((i) => i.parsed.y)))} 億（公布總額${D.summary[YEARS[items[0].dataIndex]].totalWord} ${D.summary[YEARS[items[0].dataIndex]].total} 億）` : ""
     };
     draw("trendChart", { type: mode === "amount" ? "bar" : "line", data: { labels: YEARS, datasets }, options: opts });
@@ -286,6 +288,45 @@
     });
   }
 
+
+  function renderCounts() {
+    const box = $("countMultiples");
+    box.innerHTML = CATS.map((c) => {
+      const first = D.summary[YEARS[0]][c.key].cases, last = D.summary[LATEST][c.key].cases;
+      return `<div class="mult"><div class="mult-h"><span><i style="background:${c.color}"></i>${c.name}</span><b class="chg up" style="color:${c.color}">+${Math.round(pct(last - first, first))}%</b></div>
+        <div class="mult-v num">${fmt.num(first)} → <b>${fmt.num(last)}</b> 宗</div>
+        <div class="chart-box mini"><canvas id="cnt-${c.key}" aria-label="${c.name}每年成功獲賠宗數"></canvas></div></div>`;
+    }).join("");
+    CATS.forEach((c) => {
+      const opts = baseOpts();
+      opts.plugins.legend.display = false;
+      opts.scales.y.beginAtZero = true;
+      opts.scales.y.ticks.maxTicksLimit = 4;
+      opts.scales.y.ticks.callback = (v) => v >= 1000 ? v / 1000 + "k" : v;
+      opts.scales.x.ticks.callback = function (v) { return String(this.getLabelForValue(v)).slice(2); };
+      opts.plugins.tooltip.callbacks = { title: (it) => it[0].label + " 年", label: (ctx) => ` ${c.name}：${fmt.num(ctx.parsed.y)} 宗` };
+      draw("cnt-" + c.key, { type: "bar", data: { labels: YEARS, datasets: [{ label: c.name, data: YEARS.map((y) => D.summary[y][c.key].cases), backgroundColor: c.color, borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: "bottom", maxBarThickness: 26 }] }, options: opts });
+    });
+  }
+
+  function renderRateBars() {
+    const ys = YEARS.filter((y) => D.summary[y].hospital.rate != null);
+    const ly = ys[ys.length - 1];
+    $("rateBars").innerHTML = CATS.map((c) => {
+      const v = D.summary[ly][c.key].rate;
+      const all = ys.map((y) => D.summary[y][c.key].rate);
+      return `<div class="rate-row"><span class="rate-n"><i style="background:${c.color}"></i>${c.name}</span>
+        <span class="rate-track"><i style="width:${v}%;background:${c.color}"></i></span>
+        <span class="rate-v"><b>${Math.round(v)}</b> / 100</span>
+        <span class="rate-r">七年 ${Math.min(...all).toFixed(1)}–${Math.max(...all).toFixed(1)}%</span></div>`;
+    }).join("");
+  }
+
+  function bindRateToggle() {
+    const det = $("rateChart").closest("details");
+    det.addEventListener("toggle", () => { if (det.open) renderRates(); });
+  }
+
   /* ---------- 03 gender ---------- */
   function renderGenderShare() {
     const opts = baseOpts();
@@ -298,7 +339,8 @@
         labels: YEARS,
         datasets: [
           { label: "危疾賠償 女性佔比", data: YEARS.map((y) => femaleShare(D.critical[y])), borderColor: C.female, backgroundColor: C.female, borderWidth: 2, pointRadius: 4, tension: 0.2 },
-          { label: "身故賠償 女性佔比", data: YEARS.map((y) => femaleShare(D.death[y])), borderColor: C.male, backgroundColor: C.male, borderWidth: 2, pointRadius: 4, tension: 0.2, borderDash: [5, 4] }
+          { label: "身故賠償 女性佔比", data: YEARS.map((y) => femaleShare(D.death[y])), borderColor: C.male, backgroundColor: C.male, borderWidth: 2, pointRadius: 4, tension: 0.2, borderDash: [5, 4] },
+          { label: "一半（50%）", data: YEARS.map(() => 50), borderColor: "#b9b4a9", backgroundColor: "#b9b4a9", borderWidth: 1, pointRadius: 0, borderDash: [2, 3] }
         ]
       },
       options: opts
@@ -380,7 +422,7 @@
       ? `<p class="sub-h">癌症個案入面首 5 位（${y} 年）</p>` + bars(ci.cancers, (x, i) => i === 0 ? C.female : C.ci, { total: ci.causes[0][1] })
       : `<p class="chart-note">報告由 2023 年起先公布危疾癌症首 5 位（2025 年：乳癌 29%、肺癌 11%、甲狀腺癌 9%）。</p>`;
     $("deathCauses").innerHTML = bars(de.causes, (x, i) => i < 3 ? C.death : "#f5b799", { total: de.n, highlight: 3 }) +
-      `<p class="chart-note">身故入面「肺部疾病」包括肺炎等，多數係長者；自殺同意外合共約 5%，年輕人身故主要原因之一。</p>`;
+      `<p class="chart-note">癌症、肺部疾病、心臟疾病年年都係身故首三位，合共約七成。</p>`;
   }
 
   function renderCauseTrend() {
@@ -568,7 +610,7 @@
       ["我嘅危疾保單賠幾多次？", "癌症、心臟病、中風都有機會復發。如果只賠一次，第二次出事就要靠自己。"],
       ["醫療保險有冇全數賠償，或者夠高嘅每年限額？", "一次複雜手術可以去到 $86 萬，一年標靶藥可以超過 $180 萬。睇清楚門診癌症治療包唔包。"],
       ["人壽保額夠唔夠還按揭同養家？", "身故平均賠償只係 30 幾萬，對大部分家庭嚟講遠遠唔夠。"],
-      ["投保時有冇如實申報健康狀況？", "危疾成功索償率約 85–89%，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
+      ["投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
       ["上一次檢視保障係幾時？", "手術費、病房費年年升，保額買咗幾年可能已經追唔上。建議每 1–2 年檢視一次。"]
     ];
     $("questions").innerHTML = q.map((x) => `<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join("");
@@ -641,7 +683,7 @@
     countUp();
     renderYearPicks();
     if (window.Chart) {
-      renderTrend(); renderRates(); renderGenderShare(); renderCauseTrend();
+      renderTrend(); renderCounts(); renderRateBars(); bindRateToggle(); renderGenderShare(); renderCauseTrend();
     }
     renderMix();
     renderHkCancer();

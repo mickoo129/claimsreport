@@ -10,7 +10,7 @@
     { key: "accident", name: "意外", color: "#1baf7a" }
   ];
   const C = { male: "#2a78d6", female: "#e34948", ci: "#6250d6", ciL: "#b3a9ee", death: "#eb6834", deathL: "#f5b799", grid: "#ebe7de", muted: "#7a8193", ink2: "#4a5468", old: "#c4c0b6", accent: "#b5502a" };
-  const TOTAL_PAGES = 7;
+  const TOTAL_PAGES = 8;
   const YEAR_NOW = new Date().getFullYear();
 
   const sum = (a) => a.reduce((s, x) => s + x, 0);
@@ -86,26 +86,39 @@
   const per = CATS.map((c) => c.key === "death" ? de.avg : c.key === "critical" ? ci.avg : (s[c.key].amt * 1e8) / s[c.key].cases);
   const tc = catSum(Y, "cases"), ta = catSum(Y, "amt");
   const p2 = `
-    ${head("02", "咩 claim 得多？咩 claim 得少？", "「最多人 claim」同「賠最多錢」唔係同一樣嘢。")}
+    ${head("02", "咩 claim 得最多？", "住院宗數最多，而且年年上升；身故同危疾宗數少，但每宗金額最大。")}
+    <div class="box">
+      <h3>每類每年成功獲賠宗數（${YEARS[0]}–${Y}）</h3>
+      <div class="g4">${CATS.map((c) => { const a = D.summary[YEARS[0]][c.key].cases, b = s[c.key].cases; return `<div><div class="mh"><span><i style="background:${c.color}"></i>${c.name}</span><b style="color:${c.color}">+${Math.round(pct(b - a, a))}%</b></div><div class="mv">${f.num(a)} → <b>${f.num(b)}</b></div>${chart("cCnt-" + c.key, 50)}</div>`; }).join("")}</div>
+      <p class="note">各圖刻度唔同；2019–2021 年身故及危疾以「保單」計。</p>
+    </div>
     <div class="box">
       <h3>${Y} 年四大類比較</h3>
       <table>
         <thead><tr><th></th><th>成功宗數</th><th>佔宗數</th><th>金額（億）</th><th>佔金額</th><th>平均每宗</th></tr></thead>
         <tbody>${CATS.map((c, i) => `<tr><td><span class="dot" style="background:${c.color}"></span>${c.name}</td><td>${f.num(s[c.key].cases)}</td><td>${f.p(pct(s[c.key].cases, tc))}</td><td>${f.yi(s[c.key].amt)}</td><td>${f.p(pct(s[c.key].amt, ta))}</td><td><b>${f.money(per[i])}</b></td></tr>`).join("")}</tbody>
       </table>
-      <p class="note">住院、意外平均每宗 = 總額 ÷ 成功宗數；身故、危疾用報告公布嘅平均賠償額。一宗危疾平均賠償約等於 ${Math.round(per[2] / per[0])} 宗住院。</p>
+      <p class="note">一宗危疾平均賠償約等於 ${Math.round(per[2] / per[0])} 宗住院。住院、意外平均 = 總額 ÷ 成功宗數。</p>
     </div>
     <div class="box">
-      <h3>成功索償率（${YEARS[0]}–2024）</h3>
-      ${chart("cRate", 52)}
-      <p class="note">危疾一直係四類之中最低（約 85–89%）。投保時如實申報、清楚保障定義，對危疾特別重要。</p>
-    </div>
-    ${head("03", "男女分別：危疾三分二係女性")}
-    <div class="g2">
-      <div class="box"><h3>女性佔比</h3>${chart("cFemale", 56)}<p class="note">危疾女性七年都企喺 63–68%，主因乳癌。</p></div>
-      <div class="box"><h3>${Y} 年危疾：年齡 × 性別</h3>${chart("cCiGender", 56)}<p class="note">21–40 歲女性危疾個案係男性嘅 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p></div>
+      <h3>每 100 宗申請，有幾多宗獲賠？（2024 年）</h3>
+      ${CATS.map((c) => { const v = D.summary[2024][c.key].rate; return `<div class="br"><span>${c.name}</span><span class="bt"><i style="width:${v}%;background:${c.color}"></i></span><span class="bv"><b>${Math.round(v)}</b> / 100</span></div>`; }).join("")}
+      <p class="note">危疾要符合指定疾病定義，所以相對低；投保時要如實申報。</p>
     </div>
 `;
+
+  const pG = `
+    ${head("03", "男女分別：危疾三分二係女性，身故男性較多")}
+    <div class="box"><h3>女性佔幾多？（${YEARS[0]}–${Y}）</h3>${chart("cFemale", 50)}<p class="note">危疾女性七年都企喺 63–68%，主因乳癌；身故女性約 45%。</p></div>
+    <div class="g2">
+      <div class="box"><h3>${Y} 年危疾：年齡 × 性別</h3>${chart("cCiGender", 58)}<p class="note">21–40 歲女性危疾個案係男性嘅 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p></div>
+      <div class="box"><h3>${Y} 年身故：年齡 × 性別</h3>${chart("cDeGender", 58)}<p class="note">61–80 歲男性明顯較多；80 歲以上女性較多。</p></div>
+    </div>
+    <div class="g2">
+      <div class="box"><h3>香港男性最常見癌症（2023）</h3>${bars(D.hk.cancerByGender2023.male, C.male, { val: (x) => f.num(x[1]) + " 宗" })}</div>
+      <div class="box"><h3>香港女性最常見癌症（2023）</h3>${bars(D.hk.cancerByGender2023.female, C.female, { val: (x) => f.num(x[1]) + " 宗" })}</div>
+    </div>
+    <p class="note">香港癌症資料統計中心：75 歲前，${D.hk.cancerRisk.men}、${D.hk.cancerRisk.women}可能患癌。</p>`;
 
   const bandList = (o) => D.bandLabels.map((l, i) => [l, o.bands[i]]);
   const p3 = `
@@ -200,17 +213,13 @@
         <table><tbody>${D.hk.recurrence.map((r) => `<tr><td>${r[0]}</td><td><b style="color:${C.accent}">${r[1]}</b></td></tr>`).join("")}</tbody></table>
         <p class="note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>
         <p class="note">75 歲前：${D.hk.cancerRisk.men}、${D.hk.cancerRisk.women}可能患癌。</p></div>
-    </div>
-    <div class="g2">
-      <div class="box"><h3>香港男性最常見癌症（2023）</h3>${bars(D.hk.cancerByGender2023.male, C.male, { val: (x) => f.num(x[1]) + " 宗" })}</div>
-      <div class="box"><h3>香港女性最常見癌症（2023）</h3>${bars(D.hk.cancerByGender2023.female, C.female, { val: (x) => f.num(x[1]) + " 宗" })}</div>
     </div>`;
 
   const qs = [
     ["我嘅危疾保單賠幾多次？", "癌症、心臟病、中風都有機會復發。如果只賠一次，第二次出事就要靠自己。"],
     ["醫療保險有冇全數賠償，或者夠高嘅每年限額？", "一次複雜手術可以去到 $86 萬，一年標靶藥可以超過 $180 萬。睇清楚門診癌症治療包唔包。"],
     ["人壽保額夠唔夠還按揭同養家？", `身故平均賠償只係 ${f.wan(de.avg)}，對大部分家庭嚟講遠遠唔夠。`],
-    ["投保時有冇如實申報健康狀況？", "危疾成功索償率約 85–89%，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
+    ["投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
     ["上一次檢視保障係幾時？", "手術費、病房費年年升，保額買咗幾年可能已經追唔上。建議每 1–2 年檢視一次。"]
   ];
   const p6 = `
@@ -238,8 +247,8 @@
     <p class="disc">本資料由 MKPA 整理，用作講解理賠數據，唔構成任何產品要約、建議或游說；所有數字只供參考。建議保額參考為簡化估算，實際需要請同顧問詳細分析。最後更新：${D.meta.updated}。</p>`;
 
   document.getElementById("pages").innerHTML = [
-    page(1, "", p1), page(2, "claim 咩最多 · 男女分別", p2), page(3, "年齡 · 病因 · 賠償額", p3),
-    page(4, "賠償額 · 醫療通脹", p4), page(5, "手術費 · 病房費", p5b), page(6, "醫療開支 · 癌症", p5), page(7, "檢視保障", p6)
+    page(1, "", p1), page(2, "claim 咩最多", p2), page(3, "男女分別", pG), page(4, "年齡 · 病因", p3),
+    page(5, "賠償額 · 醫療通脹", p4), page(6, "手術費 · 病房費", p5b), page(7, "醫療開支 · 癌症", p5), page(8, "檢視保障", p6)
   ].join("");
 
   /* ---------- charts ---------- */
@@ -264,13 +273,20 @@
 
   const ry = YEARS.filter((y) => D.summary[y].hospital.rate != null);
   o = opts(); o.scales.y.min = 80; o.scales.y.max = 100; o.scales.y.ticks.callback = (v) => v + "%";
-  mk("cRate", { type: "line", data: { labels: ry, datasets: CATS.map((c) => lineDs(c.name, ry.map((y) => D.summary[y][c.key].rate), c.color)) }, options: o });
+  CATS.forEach((c) => {
+    const oc = opts(); oc.plugins.legend.display = false; oc.scales.y.beginAtZero = true; oc.scales.y.ticks.maxTicksLimit = 3;
+    oc.scales.y.ticks.callback = (v) => v >= 1000 ? v / 1000 + "k" : v; oc.scales.x.ticks = { callback: function (v) { return String(this.getLabelForValue(v)).slice(2); }, font: { size: 8 } };
+    mk("cCnt-" + c.key, { type: "bar", data: { labels: YEARS, datasets: [{ data: YEARS.map((y) => D.summary[y][c.key].cases), backgroundColor: c.color, borderRadius: { topLeft: 2, topRight: 2 }, borderSkipped: "bottom", maxBarThickness: 14 }] }, options: oc });
+  });
 
   o = opts(); o.scales.y.min = 30; o.scales.y.max = 75; o.scales.y.ticks.callback = (v) => v + "%";
   mk("cFemale", { type: "line", data: { labels: YEARS, datasets: [lineDs("危疾 女性佔比", YEARS.map((y) => femaleShare(D.critical[y])), C.female), lineDs("身故 女性佔比", YEARS.map((y) => femaleShare(D.death[y])), C.male, [4, 3])] }, options: o });
 
   o = opts(); o.scales.y.title = { display: true, text: "宗數", color: C.muted };
   mk("cCiGender", { type: "bar", data: { labels: D.ageGroups.slice(0, 4), datasets: [barDs("男", ci.male.slice(0, 4), C.male), barDs("女", ci.female.slice(0, 4), C.female)] }, options: o });
+
+  o = opts(); o.scales.y.title = { display: true, text: "宗數", color: C.muted };
+  mk("cDeGender", { type: "bar", data: { labels: D.ageGroups, datasets: [barDs("男", de.male, C.male), barDs("女", de.female, C.female)] }, options: o });
 
   o = opts(); o.scales.y.ticks.callback = (v) => v + "%";
   mk("cAge", { type: "bar", data: { labels: D.ageGroups, datasets: [barDs("危疾", ciAge, C.ci), barDs("身故", deAge, C.death)] }, options: o });

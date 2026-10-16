@@ -19,7 +19,7 @@
     <a class="brand" href="#top"><span class="brand-mark">MK</span><span>理賠數據解讀</span></a>
     <div class="nav-links" id="navLinks">
       <a href="#trend">七年走勢</a>
-      <a href="#mix">claim 咩最多</a>
+      <a href="#mix">claim 最多</a>
       <a href="#gender">男女分別</a>
       <a href="#age">幾歲最多</a>
       <a href="#causes">咩病</a>
@@ -59,7 +59,7 @@
       <div class="card">
         <div class="seg" role="tablist" aria-label="走勢圖顯示方式">
           <button class="on" data-trend="amount" type="button">每年金額</button>
-          <button data-trend="index" type="button">增長幅度（2019 = 100）</button>
+          <button data-trend="index" type="button">升咗幾多（對比 2019）</button>
         </div>
         <div class="chart-box tall"><canvas id="trendChart" aria-label="2019 至 2025 年四大類賠償金額"></canvas></div>
         <p class="chart-note" id="trendNote"></p>
@@ -77,12 +77,17 @@
       <div class="sec-head">
         <span class="sec-no">02</span>
         <div>
-          <h2>咩 claim 得多？咩 claim 得少？</h2>
-          <p class="sec-desc">「最多人 claim」同「賠最多錢」唔係同一樣嘢。</p>
+          <h2>咩 claim 得最多？</h2>
+          <p class="sec-desc">住院宗數最多，而且年年上升；身故同危疾宗數少，但每宗金額最大。</p>
         </div>
       </div>
       <div class="kf" id="kf-mix"></div>
-      <div class="year-pick" data-scope="summary"></div>
+      <div class="card">
+        <h3>每類每年成功獲賠宗數（2019–2025）</h3>
+        <div class="multiples" id="countMultiples"></div>
+        <p class="chart-note">四個圖各自有刻度，方便睇每類嘅升勢；住院宗數比身故、危疾多幾十倍。2019–2021 年身故及危疾以「保單」計，2022 年起以「個案」計。數字為報告「超過／接近」數。</p>
+      </div>
+      <div class="year-pick mt" data-scope="summary"></div>
       <div class="grid-2">
         <div class="card">
           <h3>宗數佔比 vs 金額佔比</h3>
@@ -96,9 +101,13 @@
         </div>
       </div>
       <div class="card mt">
-        <h3>成功索償率（每 100 宗申請有幾多宗獲賠）</h3>
-        <div class="chart-box"><canvas id="rateChart" aria-label="各類成功索償率"></canvas></div>
-        <p class="chart-note">危疾一直係四類之中最低（約 85–89%）。投保時如實申報、清楚保障定義，對危疾特別重要。2025 年報告只公布整體成功率約 93%，未有分類數字。</p>
+        <h3>每 100 宗申請，有幾多宗獲賠？</h3>
+        <div id="rateBars"></div>
+        <p class="chart-note">2024 年數字（2025 年報告只公布整體約 93%）。大部分申請都獲賠；危疾相對低，因為要符合指定嘅疾病定義。一般唔獲賠嘅情況包括：病況未達保障定義、仲喺等候期內、投保前已有病況而冇申報（報告本身冇列出原因）。所以投保時如實申報、清楚保障定義好重要。</p>
+        <details class="table-toggle">
+          <summary>睇七年走勢</summary>
+          <div class="chart-box"><canvas id="rateChart" aria-label="各類成功索償率"></canvas></div>
+        </details>
       </div>
     </div>
   </section>
@@ -117,7 +126,7 @@
       <div class="year-pick" data-scope="detail"></div>
       <div class="grid-2">
         <div class="card">
-          <h3>危疾賠償：女性佔幾多？</h3>
+          <h3>女性佔幾多？（危疾 vs 身故）</h3>
           <div class="chart-box"><canvas id="genderShareChart" aria-label="危疾及身故賠償女性佔比"></canvas></div>
           <p class="chart-note">七年嚟危疾女性都企喺 63–68%，主因係乳癌：2025 年乳癌佔危疾癌症個案 29%。</p>
         </div>
