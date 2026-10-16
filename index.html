@@ -9,9 +9,6 @@
   <meta property="og:description" content="七年賠償由 33 億升到 59 億：住院佔近六成、危疾三分二係女性、手術費同病房費持續上升。" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#14213d" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -39,6 +36,8 @@
     <p class="eyebrow">個人保險賠償報告 · 2019–2025 · 香港及澳門保單</p>
     <h1>七年理賠數據，<br class="br-sm" />睇清楚錢賠咗去邊</h1>
     <p class="lead">我哋將七份年度理賠報告逐個數字整理好，用一頁講晒：邊類保險最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+    <div class="punch" id="punch"></div>
+    <div class="perday" id="perDay"></div>
     <div class="hero-stats" id="heroStats"></div>
     <div class="takeaways" id="takeaways"></div>
   </div>
@@ -56,6 +55,7 @@
           <p class="sec-desc">每年賠出嘅金額（億港元），按四大類分開。</p>
         </div>
       </div>
+      <div class="kf" id="kf-trend"></div>
       <div class="card">
         <div class="seg" role="tablist" aria-label="走勢圖顯示方式">
           <button class="on" data-trend="amount" type="button">每年金額</button>
@@ -81,6 +81,7 @@
           <p class="sec-desc">「最多人 claim」同「賠最多錢」唔係同一樣嘢。</p>
         </div>
       </div>
+      <div class="kf" id="kf-mix"></div>
       <div class="year-pick" data-scope="summary"></div>
       <div class="grid-2">
         <div class="card">
@@ -112,6 +113,7 @@
           <p class="sec-desc">以下係身故同危疾賠償，按性別同年齡分。</p>
         </div>
       </div>
+      <div class="kf" id="kf-gender"></div>
       <div class="year-pick" data-scope="detail"></div>
       <div class="grid-2">
         <div class="card">
@@ -149,6 +151,7 @@
           <p class="sec-desc">危疾集中喺 41–60 歲，正正係供樓、養家、供書最重嘅時候。</p>
         </div>
       </div>
+      <div class="kf" id="kf-age"></div>
       <div class="year-pick" data-scope="detail"></div>
       <div class="grid-2">
         <div class="card">
@@ -175,6 +178,7 @@
           <p class="sec-desc">癌症年年都係第一位：危疾約四分三、身故約四成。</p>
         </div>
       </div>
+      <div class="kf" id="kf-causes"></div>
       <div class="year-pick" data-scope="detail"></div>
       <div class="grid-2">
         <div class="card">
@@ -205,6 +209,7 @@
           <p class="sec-desc">平均每宗危疾約 40 萬，但最高一宗由 2019 年 470 萬升到 2025 年 800 萬。</p>
         </div>
       </div>
+      <div class="kf" id="kf-amount"></div>
       <div class="year-pick" data-scope="detail"></div>
       <div class="grid-2">
         <div class="card">
@@ -233,6 +238,7 @@
           <p class="sec-desc">住院賠款七年升咗九成幾，背後係醫療費本身越來越貴。</p>
         </div>
       </div>
+      <div class="kf" id="kf-inflation"></div>
 
       <div class="grid-2">
         <div class="card">
@@ -294,6 +300,7 @@
           <p class="sec-desc">癌症唔再一定係絕症，但治療時間長、亦有機會再發。</p>
         </div>
       </div>
+      <div class="kf" id="kf-cancer"></div>
       <div class="grid-2">
         <div class="card">
           <h3>五年相對存活率（按期數）</h3>

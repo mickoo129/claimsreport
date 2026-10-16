@@ -97,24 +97,115 @@
   }
 
   /* ---------- hero ---------- */
+  /* ---------- small visuals ---------- */
+  function spark(values, color) {
+    const w = 120, h = 32, pad = 3;
+    const min = Math.min(...values), max = Math.max(...values), span = max - min || 1;
+    const pts = values.map((v, i) => [pad + (i * (w - pad * 2)) / (values.length - 1), h - pad - ((v - min) / span) * (h - pad * 2)]);
+    const last = pts[pts.length - 1];
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map((p) => p.map((n) => n.toFixed(1)).join(",")).join(" ")}"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5" fill="${color}"/></svg>`;
+  }
+  const PERSON = '<path d="M12 2.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 19c0-4.6 3.1-8 7-8s7 3.4 7 8c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1Z"/>';
+  const BLOCK = '<rect x="3" y="3" width="18" height="18" rx="4"/>';
+  function picto(n, filled, on, off, shape) {
+    return `<span class="picto" aria-hidden="true">${Array.from({ length: n }, (_, i) =>
+      `<svg viewBox="0 0 24 24" fill="${i < filled ? on : off}">${shape}</svg>`).join("")}</span>`;
+  }
+  function keyFact(id, big, text, extra = "", color = C.accent) {
+    const el = $(id);
+    if (el) el.innerHTML = `<div class="kf-big" style="color:${color}">${big}</div><div class="kf-text">${text}</div>${extra ? `<div class="kf-extra">${extra}</div>` : ""}`;
+  }
+
+  function countUp() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.querySelectorAll("[data-count]").forEach((el) => {
+      const target = Number(el.dataset.count), dec = Number(el.dataset.dec || 0);
+      const pre = el.dataset.pre || "", post = el.dataset.post || "";
+      const t0 = performance.now(), dur = 700;
+      const step = (t) => {
+        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        const v = target * e;
+        el.textContent = pre + (dec ? v.toFixed(dec) : Math.round(v).toLocaleString("en-US")) + post;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  const cnt = (v, { pre = "", post = "", dec = 0 } = {}) =>
+    `<span data-count="${v}" data-dec="${dec}" data-pre="${pre}" data-post="${post}">${pre}${dec ? Number(v).toFixed(dec) : Math.round(v).toLocaleString("en-US")}${post}</span>`;
+
+  /* ---------- hero ---------- */
   function renderHero() {
     const s = D.summary[LATEST], s0 = D.summary[YEARS[0]];
-    const hospShareAmt = pct(s.hospital.amt, catSum(LATEST, "amt"));
-    const hospShareCases = pct(s.hospital.cases, s.cases);
-    const ci = D.critical[LATEST];
+    const ci = D.critical[LATEST], de = D.death[LATEST];
+    const days = 365;
+    const minutes = (days * 24 * 60) / s.cases;
     const ci4160 = pct(ci.male[2] + ci.female[2], ci.n);
+    const hospShareCases = pct(s.hospital.cases, s.cases);
+
+    $("punch").innerHTML = `
+      <div class="punch-big">每 ${cnt(minutes, { dec: 1 })} 分鐘</div>
+      <div class="punch-text">就有一宗理賠成功賠出。${LATEST} 年全年 <b>${fmt.num(s.cases)}</b> 宗，合共賠出超過 <b>${s.total} 億</b>。</div>`;
+
+    const perDay = [
+      ["每日賠出", cnt((s.total * 1e8) / days / 1e4, { pre: "$", post: "萬" }), C.accent, "全年 " + s.total + " 億 ÷ 365 日"],
+      ["住院", cnt(s.hospital.cases / days, { post: " 宗" }), CATS[0].color, "每日"],
+      ["意外", cnt(s.accident.cases / days, { post: " 宗" }), CATS[3].color, "每日"],
+      ["身故", cnt(de.n / days, { post: " 宗", dec: 1 }), CATS[1].color, "每日 · 約 " + Math.round(de.n / days) + " 個家庭"],
+      ["危疾", cnt(ci.n / days, { post: " 宗", dec: 1 }), CATS[2].color, "每日 · 約 " + Math.round(ci.n / days) + " 個人確診獲賠"]
+    ];
+    $("perDay").innerHTML = `<div class="pd-title">${LATEST} 年，平均一日入面：</div><div class="pd-grid">${perDay.map((x) =>
+      `<div class="pd"><span class="pd-k"><i style="background:${x[2]}"></i>${x[0]}</span><b>${x[1]}</b><span class="pd-s">${x[3]}</span></div>`).join("")}</div>`;
+
+    const series = {
+      total: YEARS.map((y) => D.summary[y].total),
+      hosp: YEARS.map((y) => D.summary[y].hospital.cases),
+      female: YEARS.map((y) => femaleShare(D.critical[y])),
+      ciMax: YEARS.map((y) => D.critical[y].max)
+    };
     $("heroStats").innerHTML = [
-      ["2025 年總賠償", `${s.total}億+`, `2019 年係 ${s0.total} 億，七年升 ${Math.round(pct(s.total - s0.total, s0.total))}%`],
-      ["成功索償個案", fmt.num(s.cases) + "+", `比 2024 年多 8.39%`],
-      ["住院佔賠款", fmt.p(hospShareAmt, 0), `${s.hospital.amt} 億，四類之中最多`],
-      ["危疾平均索賠年齡", `${ci.avgAge} 歲`, `41–60 歲佔 ${fmt.p(ci4160, 0)}`]
-    ].map((x) => `<div class="hstat"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="s">${x[2]}</div></div>`).join("");
+      ["總賠償", `${s.total}億+`, `${YEARS[0]} 年 ${s0.total} 億 → 升 ${Math.round(pct(s.total - s0.total, s0.total))}%`, series.total],
+      ["住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} → 升 ${Math.round(pct(s.hospital.cases - s0.hospital.cases, s0.hospital.cases))}%`, series.hosp],
+      ["危疾女性佔比", fmt.p(femaleShare(ci), 0), `七年都企喺 63–68%`, series.female],
+      ["最高一宗危疾", fmt.wan(ci.max), `${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；平均只係 ${fmt.wan(ci.avg)}`, series.ciMax]
+    ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#f0b28f")}<div class="s">${x[2]}</div></div>`).join("");
 
     $("takeaways").innerHTML = [
-      ["每 5 宗理賠，4 宗係住院", `2025 年 ${fmt.num(s.hospital.cases)} 宗住院賠償，佔全部成功個案約 ${fmt.p(hospShareCases, 0)}。醫療保障係最常用到嘅一張單。`, "#mix"],
-      ["危疾：女性多、四五十歲多", `七年嚟危疾賠償有六成幾係女性；高峰喺 41–60 歲，平均 ${ci.avgAge} 歲。`, "#gender"],
-      ["醫療費一路升", "私家外科醫生收費 7 年升 20–50%；半私家房平均手術費 3 年升 22%。", "#inflation"]
-    ].map((x) => `<div class="tk"><b>${x[0]}</b><span>${x[1]}</span><br><a href="${x[2]}">睇詳情</a></div>`).join("");
+      ["每 5 宗理賠，4 宗係住院", `住院佔全部成功個案約 ${fmt.p(hospShareCases, 0)}。醫療保障係最常用到嘅一張單。`, "#mix"],
+      ["危疾：女性多、四五十歲多", `每 3 宗危疾有 2 宗係女性；${fmt.p(ci4160, 0)} 喺 41–60 歲，平均 ${ci.avgAge} 歲。`, "#gender"],
+      ["醫療費一路升", "私家外科醫生收費 7 年升 20–50%；一年標靶藥可以超過 $180 萬。", "#inflation"]
+    ].map((x) => `<a class="tk" href="${x[2]}"><b>${x[0]}</b><span>${x[1]}</span><em>睇詳情 →</em></a>`).join("");
+  }
+
+  /* ---------- key facts per section ---------- */
+  function renderKeyFacts() {
+    const s = D.summary[LATEST], s0 = D.summary[YEARS[0]];
+    const ci = D.critical[LATEST], de = D.death[LATEST];
+    const g = (k) => Math.round(pct(s[k].amt - s0[k].amt, s0[k].amt));
+    keyFact("kf-trend", `+${Math.round(pct(s.total - s0.total, s0.total))}%`,
+      `<b>七年總賠款由 ${s0.total} 億升到 ${s.total} 億。</b>升得最快係危疾（+${g("critical")}%）同住院（+${g("hospital")}%），即係「病」嘅開支升得最急。`);
+    const hospAvg = (s.hospital.amt * 1e8) / s.hospital.cases;
+    keyFact("kf-mix", `1 : ${Math.round(ci.avg / hospAvg)}`,
+      `<b>一宗危疾 ≈ ${Math.round(ci.avg / hospAvg)} 宗住院。</b>住院平均每宗約 ${fmt.wan(hospAvg)}，危疾平均 ${fmt.wan(ci.avg)}。住院係「經常用」，危疾係「一用就要大筆錢」。`, "", CATS[2].color);
+    const fs = femaleShare(ci);
+    keyFact("kf-gender", "3 宗有 2 宗",
+      `<b>危疾賠償 ${fmt.p(fs, 0)} 係女性。</b>七年都一樣，主因係乳癌。身故就倒轉，男性多過女性。`,
+      picto(3, 2, C.female, C.male, PERSON) + `<span class="picto-cap"><i style="background:${C.female}"></i>女 <i style="background:${C.male}"></i>男</span>`, C.female);
+    const ci4160 = pct(ci.male[2] + ci.female[2], ci.n);
+    keyFact("kf-age", "41–60 歲",
+      `<b>${fmt.p(ci4160, 0)} 危疾喺呢個年齡出事，平均 ${ci.avgAge} 歲。</b>正正係供樓、養家、供書最重嘅時候。21–40 歲都已經佔 ${fmt.p(pct(ci.male[1] + ci.female[1], ci.n), 0)}。`, "", CATS[2].color);
+    const cancerShare = causePct(ci, "癌症");
+    keyFact("kf-causes", "4 宗有 3 宗",
+      `<b>危疾 ${fmt.p(cancerShare, 0)} 係癌症</b>，身故都有 ${fmt.p(causePct(de, "癌症"), 0)}。癌症入面最多係乳癌，其次係肺癌同甲狀腺癌。`,
+      picto(4, 3, C.ci, "#d9d4f5", BLOCK) + `<span class="picto-cap"><i style="background:${C.ci}"></i>癌症</span>`, C.ci);
+    keyFact("kf-amount", `${Math.round(ci.max / ci.avg)} 倍`,
+      `<b>最高一宗危疾 ${fmt.wan(ci.max)}，係平均 ${fmt.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。</b>平均數七年冇乜變，但大額個案越嚟越大。保額要對準出事時真正要用嘅錢。`, "", CATS[2].color);
+    const drug = D.inflation.drugs[0][2];
+    keyFact("kf-inflation", fmt.wan(drug),
+      `<b>一年肝癌標靶藥嘅藥費</b>，等於 ${(drug / ci.avg).toFixed(1)} 個平均危疾賠償。私家外科醫生收費 7 年升 20–50%，私家醫院病房費亦普遍升一至五成。`);
+    const br = D.hk.survival.find((r) => r[0] === "女性乳腺")[1];
+    keyFact("kf-cancer", `${Math.round(br[0])}% → ${Math.round(br[3])}%`,
+      `<b>女性乳癌：第一期五年存活率 ${br[0]}%，第四期得 ${br[3]}%。</b>早發現、早治療，結果差好遠；治療期亦長，要預足醫療同收入保障。`, "", C.female);
   }
 
   /* ---------- 01 trend ---------- */
@@ -503,7 +594,11 @@
           if (e.isIntersecting) {
             links.forEach((l) => l.classList.remove("active"));
             const a = map.get(e.target.id);
-            if (a) { a.classList.add("active"); a.scrollIntoView({ block: "nearest", inline: "center" }); }
+            if (a) {
+              a.classList.add("active");
+              const nav = a.parentElement;
+              if (nav.scrollWidth > nav.clientWidth) nav.scrollLeft = a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2;
+            }
           }
         });
       }, { rootMargin: "-40% 0px -55% 0px" });
@@ -536,11 +631,14 @@
 
   function init() {
     if (window.Chart) {
-      Chart.defaults.font.family = "'Noto Sans TC', 'PingFang HK', sans-serif";
+      Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "sans-serif";
       Chart.defaults.font.size = 13;
+      Chart.defaults.animation.duration = 500;
       Chart.defaults.color = C.ink2;
     }
     renderHero();
+    renderKeyFacts();
+    countUp();
     renderYearPicks();
     if (window.Chart) {
       renderTrend(); renderRates(); renderGenderShare(); renderCauseTrend();

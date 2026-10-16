@@ -59,6 +59,7 @@
       <p class="eb">個人保險賠償報告 · ${YEARS[0]}–${Y} · 香港及澳門保單</p>
       <h1>七年理賠數據，<br>睇清楚錢賠咗去邊</h1>
       <p>將七份年度理賠報告逐個數字整理：邊類保險最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+      <div class="pnch"><b>每 ${((365 * 24 * 60) / s.cases).toFixed(1)} 分鐘</b><span>就有一宗理賠成功賠出 · 平均每日賠出 $${f.num((s.total * 1e8) / 365 / 1e4)}萬 · 每日約 ${Math.round(s.hospital.cases / 365)} 宗住院、${Math.round(ci.n / 365)} 宗危疾、${Math.round(de.n / 365)} 宗身故</span></div>
       <div class="kstats">
         <div><span>${Y} 年總賠償</span><b>${s.total}億+</b><i>${YEARS[0]} 年 ${s0.total} 億，升 ${Math.round(pct(s.total - s0.total, s0.total))}%</i></div>
         <div><span>成功索償個案</span><b>${f.num(s.cases)}+</b><i>比上年多 8.39%</i></div>
@@ -72,7 +73,7 @@
       <div><b>醫療費一路升</b>私家外科醫生收費 7 年升 20–50%；半私家房平均手術費 3 年升 22%。</div>
     </div>
     ${head("01", "七年走勢：賠款差唔多翻倍", `${YEARS[0]} → ${Y}：住院 +${growth("hospital")}%、危疾 +${growth("critical")}%、身故 +${growth("death")}%、意外 +${growth("accident")}%。`)}
-    <div class="box">${chart("cTrend", 60)}</div>
+    <div class="box">${chart("cTrend", 46)}</div>
     <table>
       <thead><tr><th>億港元</th>${YEARS.map((y) => `<th>${y}</th>`).join("")}</tr></thead>
       <tbody>
@@ -243,7 +244,7 @@
 
   /* ---------- charts ---------- */
   if (window.Chart) {
-    Chart.defaults.font.family = "'Noto Sans TC', 'PingFang HK', sans-serif";
+    Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "sans-serif";
     Chart.defaults.font.size = 10;
     Chart.defaults.color = C.ink2;
     Chart.defaults.animation = false;
