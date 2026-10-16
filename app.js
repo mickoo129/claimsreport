@@ -482,10 +482,13 @@
     ];
     $("questions").innerHTML = q.map((x) => `<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join("");
     $("sourceList").innerHTML = D.sources.map((s) => `<li>${s}</li>`).join("");
-    $("footMeta").textContent = `最後更新：${D.meta.updated} · 數據年份 ${YEARS[0]}–${LATEST} · © ${new Date().getFullYear()} ${D.meta.brandFull}`;
+    $("footMeta").textContent = `最後更新：${D.meta.updated} · 數據年份 ${YEARS[0]}–${LATEST}`;
+    $("copyright").textContent = `© ${new Date().getFullYear()} Michael Koo Protection Alliance (MKPA). 版權所有。`;
     const ct = D.meta.contact || {};
     let html = `<strong>想詳細睇吓自己嘅保障？</strong><p>同 ${ct.name || "你嘅顧問"} 約個時間，一齊對照呢份數據檢視保單。</p>`;
+    if (ct.phone) html += `<p>${ct.name}　電話／WhatsApp：<b style="color:#fff">${ct.phone}</b></p>`;
     if (ct.whatsapp) html += `<div class="contact"><a href="https://wa.me/${ct.whatsapp}?text=${encodeURIComponent("你好，我睇咗理賠數據報告，想檢視吓自己嘅保障。")}" target="_blank" rel="noopener">WhatsApp 預約</a></div>`;
+    html += `<p style="margin-top:10px"><a href="print.html" style="color:#fff">下載／列印 A4 版報告 →</a></p>`;
     if (ct.email) html += `<p><a href="mailto:${ct.email}">${ct.email}</a></p>`;
     $("contactBox").innerHTML = html;
   }
@@ -528,7 +531,6 @@
       $(id).addEventListener("input", renderCheck);
       $(id).addEventListener("change", renderCheck);
     });
-    $("printBtn").addEventListener("click", () => window.print());
     window.addEventListener("beforeprint", () => Object.values(charts).forEach((c) => c.resize()));
   }
 

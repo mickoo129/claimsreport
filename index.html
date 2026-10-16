@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>七年理賠數據解讀 2019–2025 | MKPA</title>
-  <meta name="description" content="用宏利 2019–2025 年個人保險賠償報告，睇清楚錢賠咗去邊、男女分別、咩病最多人 claim，同醫療費用升咗幾多。" />
+  <meta name="description" content="用 2019–2025 年個人保險賠償報告，睇清楚錢賠咗去邊、男女分別、咩病最多人 claim，同醫療費用升咗幾多。" />
   <meta property="og:title" content="七年理賠數據解讀 2019–2025 | MKPA" />
   <meta property="og:description" content="七年賠償由 33 億升到 59 億：住院佔近六成、危疾三分二係女性、手術費同病房費持續上升。" />
   <meta property="og:type" content="website" />
@@ -30,15 +30,15 @@
       <a href="#inflation">醫療通脹</a>
       <a href="#check">保障檢查</a>
     </div>
-    <button class="print-btn" id="printBtn" type="button" aria-label="列印報告">列印</button>
+    <a class="print-btn" href="print.html">A4 列印版</a>
   </div>
 </nav>
 
 <header class="hero" id="top">
   <div class="wrap">
-    <p class="eyebrow">宏利個人保險賠償報告 · 2019–2025 · 香港及澳門保單</p>
+    <p class="eyebrow">個人保險賠償報告 · 2019–2025 · 香港及澳門保單</p>
     <h1>七年理賠數據，<br class="br-sm" />睇清楚錢賠咗去邊</h1>
-    <p class="lead">我哋將宏利七份年度理賠報告逐個數字整理好，用一頁講晒：邊類保險最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+    <p class="lead">我哋將七份年度理賠報告逐個數字整理好，用一頁講晒：邊類保險最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
     <div class="hero-stats" id="heroStats"></div>
     <div class="takeaways" id="takeaways"></div>
   </div>
@@ -109,7 +109,7 @@
         <span class="sec-no">03</span>
         <div>
           <h2>男女分別：危疾三分二係女性，身故男性較多</h2>
-          <p class="sec-desc">以下係宏利身故同危疾賠償，按性別同年齡分。</p>
+          <p class="sec-desc">以下係身故同危疾賠償，按性別同年齡分。</p>
         </div>
       </div>
       <div class="year-pick" data-scope="detail"></div>
@@ -303,7 +303,7 @@
         <div class="card">
           <h3>危疾復發率參考</h3>
           <div id="recurrence"></div>
-          <p class="chart-note">出處見宏利 2025 年報告第 14 頁。復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>
+          <p class="chart-note">出處見 2025 年報告第 14 頁。復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>
         </div>
       </div>
     </div>
@@ -338,7 +338,7 @@
           <label class="field" id="medLimitField"><span>醫療每年限額</span><input id="inMed" type="number" inputmode="numeric" min="0" step="50000" value="300000" /></label>
         </div>
         <div class="check-grid" id="checkResults"></div>
-        <p class="disclaimer">以上只係 MKPA 用作講解嘅簡化估算（人壽：家庭開支 × 年數 ＋ 債務 − 儲蓄；危疾：年收入 3–5 倍作為停工及治療緩衝），並非宏利官方建議，亦唔構成任何產品要約。實際需要請同顧問詳細分析。</p>
+        <p class="disclaimer">以上只係 MKPA 用作講解嘅簡化估算（人壽：家庭開支 × 年數 ＋ 債務 − 儲蓄；危疾：年收入 3–5 倍作為停工及治療緩衝），並非保險公司官方建議，亦唔構成任何產品要約。實際需要請同顧問詳細分析。</p>
       </div>
     </div>
   </section>
@@ -373,13 +373,14 @@
     <div class="foot-top">
       <div>
         <strong>Michael Koo Protection Alliance（MKPA）</strong>
-        <p>本頁由 MKPA 整理，用作同客戶講解理賠數據，並非宏利官方網頁，亦唔構成任何產品要約、建議或游說。宏利並不保證報告資料嘅準確性，所有數字只供參考。</p>
+        <p>本頁由 MKPA 整理，用作同客戶講解理賠數據，唔構成任何產品要約、建議或游說。所有數字只供參考。</p>
       </div>
       <div id="contactBox"></div>
     </div>
     <h4>資料來源</h4>
     <ol class="sources" id="sourceList"></ol>
     <p class="foot-meta" id="footMeta"></p>
+    <p class="copyright" id="copyright">© 2026 Michael Koo Protection Alliance (MKPA). 版權所有。</p>
   </div>
 </footer>
 
