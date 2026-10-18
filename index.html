@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>七年理賠數據解讀 2019–2025 | MKPA</title>
-  <meta name="description" content="用 2019–2025 年個人保險賠償報告，睇清楚錢賠咗去邊、男女分別、咩病最多人 claim，同醫療費用升咗幾多。" />
+  <meta name="description" content="用 2019–2025 年個人保險賠償報告，按醫療、危疾、人壽、意外四類，睇清楚錢賠咗去邊、男女分別、咩病最多人 claim，同醫療費用升咗幾多。" />
   <meta property="og:title" content="七年理賠數據解讀 2019–2025 | MKPA" />
   <meta property="og:description" content="七年賠償由 33 億升到 59 億：住院佔近六成、危疾三分二係女性、手術費同病房費持續上升。" />
   <meta property="og:type" content="website" />
@@ -18,90 +18,78 @@
   <div class="wrap nav-in">
     <a class="brand" href="#top"><span class="brand-mark">MK</span><span>理賠數據解讀</span></a>
     <div class="nav-links" id="navLinks">
-      <a href="#trend">七年走勢</a>
-      <a href="#mix">claim 最多</a>
-      <a href="#gender">男女分別</a>
-      <a href="#age">幾歲最多</a>
-      <a href="#causes">咩病</a>
-      <a href="#amount">賠幾多</a>
-      <a href="#inflation">醫療通脹</a>
-      <a href="#check">保障檢查</a>
+      <a href="#overview" data-cat="all"><i></i>總覽</a>
+      <a href="#medical" data-cat="hospital"><i></i>醫療</a>
+      <a href="#critical" data-cat="critical"><i></i>危疾</a>
+      <a href="#life" data-cat="death"><i></i>人壽</a>
+      <a href="#accident" data-cat="accident"><i></i>意外</a>
+      <a href="#check" data-cat="check"><i></i>保障檢查</a>
     </div>
     <a class="print-btn" href="print.html">A4 列印版</a>
   </div>
+  <div class="now-bar" id="nowBar"><div class="wrap"><span id="nowText"></span></div></div>
 </nav>
 
 <header class="hero" id="top">
   <div class="wrap">
     <p class="eyebrow">個人保險賠償報告 · 2019–2025 · 香港及澳門保單</p>
     <h1>七年理賠數據，<br class="br-sm" />睇清楚錢賠咗去邊</h1>
-    <p class="lead">我哋將七份年度理賠報告逐個數字整理好，用一頁講晒：邊類保險最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+    <p class="lead">七份年度理賠報告逐個數字整理好，按<b>醫療、危疾、人壽、意外</b>四類分開講：邊類最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
     <div class="punch" id="punch"></div>
     <div class="perday" id="perDay"></div>
     <div class="hero-stats" id="heroStats"></div>
-    <div class="takeaways" id="takeaways"></div>
   </div>
 </header>
 
 <main>
 
-  <!-- 1 走勢 -->
-  <section id="trend" class="sec">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">01</span>
-        <div>
-          <h2>七年走勢：賠款差唔多翻倍</h2>
-          <p class="sec-desc">每年賠出嘅金額（億港元），按四大類分開。</p>
-        </div>
+  <!-- Part 1: Overview -->
+  <section class="chapter" id="overview" data-cat="all">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 1 部分 · 四類一齊睇</span>
+        <h2>總覽：四類保險邊類 claim 得最多？</h2>
+        <p class="ch-desc">先比較醫療、危疾、人壽、意外四類嘅賠款同宗數，之後每一類再分開詳細講。</p>
+        <div class="ch-pick" id="chPick"></div>
       </div>
+    </div>
+    <div class="wrap ch-body">
+      <h3 class="sub-title"><span>1.1</span>七年走勢：賠款差唔多翻倍</h3>
       <div class="kf" id="kf-trend"></div>
       <div class="card">
         <div class="seg" role="tablist" aria-label="走勢圖顯示方式">
-          <button class="on" data-trend="amount" type="button">每年金額</button>
+          <button class="on" data-trend="amount" type="button">每年金額（億）</button>
           <button data-trend="index" type="button">升咗幾多（對比 2019）</button>
         </div>
-        <div class="chart-box tall"><canvas id="trendChart" aria-label="2019 至 2025 年四大類賠償金額"></canvas></div>
+        <div class="chart-box tall"><canvas id="trendChart" aria-label="2019 至 2025 年四類賠償金額"></canvas></div>
         <p class="chart-note" id="trendNote"></p>
         <details class="table-toggle">
           <summary>睇數字表</summary>
           <div class="table-scroll" id="trendTable"></div>
         </details>
       </div>
-    </div>
-  </section>
 
-  <!-- 2 Mix -->
-  <section id="mix" class="sec alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">02</span>
-        <div>
-          <h2>咩 claim 得最多？</h2>
-          <p class="sec-desc">住院宗數最多，而且年年上升；身故同危疾宗數少，但每宗金額最大。</p>
-        </div>
-      </div>
+      <h3 class="sub-title"><span>1.2</span>咩 claim 得最多？</h3>
       <div class="kf" id="kf-mix"></div>
       <div class="card">
-        <h3>每類每年成功獲賠宗數（2019–2025）</h3>
+        <h4 class="card-h">每類每年成功獲賠宗數（2019–2025）</h4>
         <div class="multiples" id="countMultiples"></div>
         <p class="chart-note">四個圖各自有刻度，方便睇每類嘅升勢；住院宗數比身故、危疾多幾十倍。2019–2021 年身故及危疾以「保單」計，2022 年起以「個案」計。數字為報告「超過／接近」數。</p>
       </div>
       <div class="year-pick mt" data-scope="summary"></div>
       <div class="grid-2">
         <div class="card">
-          <h3>宗數佔比 vs 金額佔比</h3>
+          <h4 class="card-h">宗數佔比 vs 金額佔比</h4>
           <div class="share-rows" id="shareRows"></div>
-          <p class="chart-note">住院宗數最多但每宗金額細；身故同危疾宗數少，但每宗動輒幾十萬。</p>
         </div>
         <div class="card">
-          <h3>每類平均每宗賠幾多</h3>
+          <h4 class="card-h">每類平均每宗賠幾多</h4>
           <div id="perCase"></div>
           <p class="chart-note">住院、意外係「總額 ÷ 成功宗數」推算；身故、危疾用報告公布嘅平均賠償額。</p>
         </div>
       </div>
       <div class="card mt">
-        <h3>每 100 宗申請，有幾多宗獲賠？</h3>
+        <h4 class="card-h">每 100 宗申請，有幾多宗獲賠？</h4>
         <div id="rateBars"></div>
         <p class="chart-note">2024 年數字（2025 年報告只公布整體約 93%）。大部分申請都獲賠；危疾相對低，因為要符合指定嘅疾病定義。一般唔獲賠嘅情況包括：病況未達保障定義、仲喺等候期內、投保前已有病況而冇申報（報告本身冇列出原因）。所以投保時如實申報、清楚保障定義好重要。</p>
         <details class="table-toggle">
@@ -112,229 +100,68 @@
     </div>
   </section>
 
-  <!-- 3 Gender -->
-  <section id="gender" class="sec">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">03</span>
-        <div>
-          <h2>男女分別：危疾三分二係女性，身故男性較多</h2>
-          <p class="sec-desc">以下係身故同危疾賠償，按性別同年齡分。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-gender"></div>
-      <div class="year-pick" data-scope="detail"></div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>女性佔幾多？（危疾 vs 身故）</h3>
-          <div class="chart-box"><canvas id="genderShareChart" aria-label="危疾及身故賠償女性佔比"></canvas></div>
-          <p class="chart-note">七年嚟危疾女性都企喺 63–68%，主因係乳癌：2025 年乳癌佔危疾癌症個案 29%。</p>
-        </div>
-        <div class="card">
-          <div class="card-top">
-            <h3>年齡 × 性別</h3>
-            <div class="seg small">
-              <button class="on" data-gtype="critical" type="button">危疾</button>
-              <button data-gtype="death" type="button">身故</button>
-            </div>
-          </div>
-          <div class="chart-box"><canvas id="genderAgeChart" aria-label="按年齡及性別嘅賠償宗數"></canvas></div>
-          <p class="chart-note" id="genderNote"></p>
-        </div>
-      </div>
-      <div class="card mt">
-        <h3>香港整體：男女最常見癌症（2023 年新症）</h3>
-        <div class="split" id="hkCancerGender"></div>
-        <p class="chart-note">香港癌症資料統計中心：75 歲前，大約每 4 名男性、每 5 名女性就有 1 位患癌。確診年齡中位數男 69 歲、女 64 歲。</p>
+  <!-- Part 2: Medical -->
+  <section class="chapter" id="medical" data-cat="hospital">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 2 部分 · 醫療／住院保險</span>
+        <h2>醫療：claim 得最多、用得最密</h2>
+        <p class="ch-desc">住院、手術、醫生費嘅賠償。以下所有數字都係講<b>醫療／住院</b>。</p>
+        <div class="ch-stats" id="chStats-hospital"></div>
       </div>
     </div>
+    <div class="wrap ch-body" id="body-hospital"></div>
   </section>
 
-  <!-- 4 Age -->
-  <section id="age" class="sec alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">04</span>
-        <div>
-          <h2>幾多歲最多人 claim？</h2>
-          <p class="sec-desc">危疾集中喺 41–60 歲，正正係供樓、養家、供書最重嘅時候。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-age"></div>
-      <div class="year-pick" data-scope="detail"></div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>各年齡組佔比</h3>
-          <div class="chart-box"><canvas id="ageChart" aria-label="危疾及身故按年齡分佈"></canvas></div>
-          <div class="mini-stats" id="ageStats"></div>
-        </div>
-        <div class="card">
-          <h3>三大危疾嘅年齡分佈</h3>
-          <div class="chart-box"><canvas id="ageDiseaseChart" aria-label="癌症、心臟病、中風按年齡分佈"></canvas></div>
-          <p class="chart-note" id="ageDiseaseNote">癌症、心臟病、腦血管病都係 41–60 歲最多，大約佔六成。</p>
-        </div>
+  <!-- Part 3: Critical illness -->
+  <section class="chapter" id="critical" data-cat="critical">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 3 部分 · 危疾保險</span>
+        <h2>危疾：一確診就一筆過賠</h2>
+        <p class="ch-desc">癌症、心臟病、中風等指定疾病嘅賠償。以下所有數字都係講<b>危疾</b>。</p>
+        <div class="ch-stats" id="chStats-critical"></div>
       </div>
     </div>
+    <div class="wrap ch-body" id="body-critical"></div>
   </section>
 
-  <!-- 5 Causes -->
-  <section id="causes" class="sec">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">05</span>
-        <div>
-          <h2>咩病最多人 claim？</h2>
-          <p class="sec-desc">癌症年年都係第一位：危疾約四分三、身故約四成。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-causes"></div>
-      <div class="year-pick" data-scope="detail"></div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>危疾賠償原因</h3>
-          <div id="ciCauses"></div>
-          <div id="ciCancers"></div>
-        </div>
-        <div class="card">
-          <h3>身故賠償原因</h3>
-          <div id="deathCauses"></div>
-        </div>
-      </div>
-      <div class="card mt">
-        <h3>癌症佔比，七年變化</h3>
-        <div class="chart-box"><canvas id="causeTrendChart" aria-label="癌症佔危疾及身故比例走勢"></canvas></div>
-        <p class="chart-note">癌症、心臟病、中風呢「三大危疾」七年合計都佔危疾賠償九成以上。</p>
+  <!-- Part 4: Life -->
+  <section class="chapter" id="life" data-cat="death">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 4 部分 · 人壽保險（身故賠償）</span>
+        <h2>人壽：留俾屋企人嘅一筆錢</h2>
+        <p class="ch-desc">受保人身故後賠俾家人嘅錢。以下所有數字都係講<b>人壽／身故</b>。</p>
+        <div class="ch-stats" id="chStats-death"></div>
       </div>
     </div>
+    <div class="wrap ch-body" id="body-death"></div>
   </section>
 
-  <!-- 6 Amount -->
-  <section id="amount" class="sec alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">06</span>
-        <div>
-          <h2>一宗賠幾多？平均數會呃人</h2>
-          <p class="sec-desc">平均每宗危疾約 40 萬，但最高一宗由 2019 年 470 萬升到 2025 年 800 萬。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-amount"></div>
-      <div class="year-pick" data-scope="detail"></div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>危疾：每宗賠償額分佈</h3>
-          <div id="ciBands"></div>
-          <h3 class="mt-s">身故：每宗賠償額分佈</h3>
-          <div id="deathBands"></div>
-        </div>
-        <div class="card">
-          <h3>平均 vs 最高一宗（危疾）</h3>
-          <div class="chart-box"><canvas id="ciMaxChart" aria-label="危疾平均及最高賠償額"></canvas></div>
-          <p class="chart-note">平均數七年幾乎冇變（約 38–40 萬），但大額個案越嚟越大。保額要對準「出事時真正要用嘅錢」，唔係平均數。</p>
-          <div class="mini-stats" id="amountStats"></div>
-        </div>
+  <!-- Part 5: Accident -->
+  <section class="chapter" id="accident" data-cat="accident">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 5 部分 · 意外保險</span>
+        <h2>意外：宗數多、每宗細</h2>
+        <p class="ch-desc">意外受傷嘅醫療同賠償。以下所有數字都係講<b>意外</b>。</p>
+        <div class="ch-stats" id="chStats-accident"></div>
       </div>
     </div>
+    <div class="wrap ch-body" id="body-accident"></div>
   </section>
 
-  <!-- 7 Inflation -->
-  <section id="inflation" class="sec">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">07</span>
-        <div>
-          <h2>醫療通脹：手術費、病房費年年升</h2>
-          <p class="sec-desc">住院賠款七年升咗九成幾，背後係醫療費本身越來越貴。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-inflation"></div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3>住院手術費平均數（個人保單）</h3>
-          <div class="chart-box"><canvas id="surgeonChart" aria-label="住院手術費平均數走勢"></canvas></div>
-          <p class="chart-note">香港保險業聯會醫療索償數據調查。2019→2022 年，半私家房平均手術費升 22%，標準房升 25%。</p>
-        </div>
-        <div class="card">
-          <h3>私家外科醫生收費：2018 → 2025</h3>
-          <div id="doctorFees"></div>
-          <p class="chart-note">香港醫學會私家醫生收費調查：7 年間升 20%–50%。</p>
-        </div>
-      </div>
-
-      <div class="card mt">
-        <h3>常見手術收費中位數：2018 → 2022</h3>
-        <div class="seg small" id="roomSeg">
-          <button data-room="0" type="button">私家房</button>
-          <button class="on" data-room="1" type="button">半私家房</button>
-          <button data-room="2" type="button">標準房</button>
-        </div>
-        <div class="table-scroll" id="surgeryTable"></div>
-        <p class="chart-note">個別手術（例如甲狀腺切除嘅私家房收費）會有升有跌，但大部分手術都向上。</p>
-      </div>
-
-      <div class="card mt">
-        <h3>私家醫院每日病房收費：2019 → 2026</h3>
-        <div class="table-scroll" id="roomTable"></div>
-        <p class="chart-note">各醫院網站公布價（2019 年 4 月及 2026 年 6 月）。升幅按收費範圍中間值計算，只計房租，未計醫生同手術費。</p>
-      </div>
-
-      <div class="grid-2 mt">
-        <div class="card">
-          <h3>大型手術一次要幾多錢？</h3>
-          <div id="complexList"></div>
-          <p class="chart-note">中大醫院定價收費（4 人房，2025 年 12 月）。Level 1 = 冇其他重大病；Level 3 = 有嚴重併發症。</p>
-        </div>
-        <div class="card">
-          <h3>癌症標靶藥：一年藥費</h3>
-          <div id="drugList"></div>
-          <p class="chart-note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>
-        </div>
-      </div>
-
-      <div class="callout mt">
-        <strong>約 49% 香港人（約 349 萬人）</strong>冇僱主醫療福利，亦冇自己買醫療保險。
-        <span>政府統計處 2026 年 3 月報告。另外，65 歲或以上係住院人數最多嘅年齡組（約 27 萬人）。</span>
+  <!-- Part 6: Check -->
+  <section class="chapter" id="check" data-cat="check">
+    <div class="ch-banner">
+      <div class="wrap">
+        <span class="ch-no">第 6 部分 · 檢視自己</span>
+        <h2>你嘅保障夠唔夠？</h2>
+        <p class="ch-desc">輸入你嘅情況，即刻對照上面嘅理賠數字。所有計算只喺你部機做，唔會傳送。</p>
       </div>
     </div>
-  </section>
-
-  <!-- 8 Cancer -->
-  <section id="cancer" class="sec alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">08</span>
-        <div>
-          <h2>癌症：早發現存活率高，但會復發</h2>
-          <p class="sec-desc">癌症唔再一定係絕症，但治療時間長、亦有機會再發。</p>
-        </div>
-      </div>
-      <div class="kf" id="kf-cancer"></div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>五年相對存活率（按期數）</h3>
-          <div class="table-scroll" id="survivalTable"></div>
-          <p class="chart-note">香港癌症資料統計中心《2022 年香港癌症統計概覽》（2024 年 10 月）。</p>
-        </div>
-        <div class="card">
-          <h3>危疾復發率參考</h3>
-          <div id="recurrence"></div>
-          <p class="chart-note">出處見 2025 年報告第 14 頁。復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9 Check -->
-  <section id="check" class="sec">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">09</span>
-        <div>
-          <h2>你嘅保障夠唔夠？簡單自我檢查</h2>
-          <p class="sec-desc">輸入你嘅情況，即刻對照上面嘅理賠數字。所有計算只喺你部機做，唔會傳送。</p>
-        </div>
-      </div>
+    <div class="wrap ch-body">
       <div class="card">
         <div class="form-grid">
           <label class="field"><span>每月家庭開支</span><input id="inExpense" type="number" inputmode="numeric" min="0" step="1000" value="30000" /></label>
@@ -356,22 +183,11 @@
         <div class="check-grid" id="checkResults"></div>
         <p class="disclaimer">以上只係 MKPA 用作講解嘅簡化估算（人壽：家庭開支 × 年數 ＋ 債務 − 儲蓄；危疾：年收入 3–5 倍作為停工及治療緩衝），並非保險公司官方建議，亦唔構成任何產品要約。實際需要請同顧問詳細分析。</p>
       </div>
-    </div>
-  </section>
 
-  <!-- 10 Next -->
-  <section id="next" class="sec alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-no">10</span>
-        <div>
-          <h2>同顧問傾之前，問自己 5 條問題</h2>
-          <p class="sec-desc">由理賠數字反推，最常見嘅保障漏洞。</p>
-        </div>
-      </div>
+      <h3 class="sub-title"><span>6.2</span>同顧問傾之前，問自己 5 條問題</h3>
       <ol class="questions" id="questions"></ol>
       <div class="glossary card">
-        <h3>名詞解釋</h3>
+        <h4 class="card-h">名詞解釋</h4>
         <dl>
           <dt>成功索償率</dt><dd>已處理嘅申請之中，有幾多成獲批賠償。</dd>
           <dt>保單／個案</dt><dd>2019–2021 年報告以「保單」計，2022 年起改以「個案」計，所以前後宗數唔完全同一口徑。</dd>

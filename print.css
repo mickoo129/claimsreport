@@ -48,10 +48,10 @@ h3 { font-size: 10pt; font-weight: 700; margin-bottom: 2mm; }
 .cover .eb { font-size: 8.5pt; color: #aeb6c8; letter-spacing: .06em; }
 .cover h1 { font-family: var(--font); font-weight: 900; font-size: 26pt; line-height: 1.25; margin: 3mm 0; }
 .cover p { color: #dfe3ec; font-size: 10pt; max-width: 150mm; }
-.kstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,.18); margin-top: 6mm; border-radius: 3mm; overflow: hidden; }
+.kstats { display: grid; grid-template-columns: 1.2fr repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,.18); margin-top: 6mm; border-radius: 3mm; overflow: hidden; }
 .kstats div { background: var(--navy); padding: 3mm 4mm; }
 .kstats span { display: block; font-size: 7.5pt; color: #aeb6c8; }
-.kstats b { display: block; font-size: 17pt; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.kstats b { display: block; font-size: 13pt; white-space: nowrap; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .kstats i { font-style: normal; font-size: 7.5pt; color: #c9cfdc; }
 .tks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
 .tks div { background: var(--alt); border-radius: 3mm; padding: 3mm 3.5mm; font-size: 8.5pt; color: var(--ink-2); }
@@ -115,3 +115,28 @@ th { color: var(--muted); font-weight: 500; font-size: 7.5pt; }
 .mh { display: flex; justify-content: space-between; font-weight: 700; font-size: 9pt; }
 .mh i { width: 2.4mm; height: 2.4mm; border-radius: .6mm; display: inline-block; margin-right: 1mm; vertical-align: -.2mm; }
 .mv { font-size: 8pt; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* chapter-coded pages */
+.page { border-top: 2.2mm solid var(--c); }
+.page:first-child { border-top: 0; }
+.ph .tag { background: var(--c); color: #fff; font-weight: 700; border-radius: 99px; padding: .4mm 3mm; font-size: 8pt; }
+.title .no { color: #fff; background: var(--c); border-color: var(--c); }
+.box { border-top: 1mm solid var(--c); }
+.chb { background: var(--bg); margin: -5mm -13mm 0; padding: 5mm 13mm 5mm; border-bottom: 1px solid var(--line); }
+.chn { display: inline-block; background: var(--c); color: #fff; font-weight: 700; font-size: 8pt; border-radius: 99px; padding: .4mm 3mm; }
+.chb h2 { font-size: 17pt; margin: 2mm 0 1mm; }
+.chb p { font-size: 9pt; color: var(--ink-2); }
+.chs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 3mm; }
+.chs div { background: #fff; border-radius: 2mm; padding: 2mm 3mm; border: 1px solid var(--line); }
+.chs span { display: block; font-size: 7.5pt; color: var(--muted); }
+.chs b { display: block; font-size: 15pt; color: var(--c); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.chs em { font-style: normal; font-size: 7.5pt; color: var(--ink-2); }
+.kfp { display: flex; gap: 4mm; align-items: center; border-left: 1.4mm solid var(--c); background: var(--bg); border-radius: 2mm; padding: 2.5mm 4mm; }
+.kfp b { font-size: 19pt; color: var(--c); white-space: nowrap; line-height: 1.1; }
+.kfp span { font-size: 9pt; color: var(--ink); }
+.toc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2mm 3mm; }
+.toc div { background: var(--alt); border-radius: 1.5mm; padding: 1.6mm 3mm; display: grid; grid-template-columns: auto 1fr auto; gap: 2mm; align-items: baseline; font-size: 8.5pt; }
+.toc b { font-size: 7.5pt; color: var(--muted); font-weight: 500; }
+.toc em { font-style: normal; color: var(--muted); font-size: 7.5pt; }
+.qt { color: #fff; font-size: 7pt; border-radius: 1mm; padding: 0 1.5mm; margin-right: 1.5mm; vertical-align: .3mm; }
+.trendt td, .trendt th { padding: 1mm 1.4mm; }
