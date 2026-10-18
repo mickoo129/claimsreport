@@ -1,5 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#14213d"/>
-  <rect x="10" y="48" width="44" height="5" rx="2.5" fill="#f0b28f"/>
-  <text x="32" y="40" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="800" fill="#ffffff" letter-spacing="-0.5">MK</text>
+  <path d="M32 8.5 51 15v15.5c0 11.8-7.9 20.3-19 25-11.1-4.7-19-13.2-19-25V15z" fill="#ffffff"/>
+  <rect x="21" y="34" width="6.2" height="11" rx="1.6" fill="#2a78d6"/>
+  <rect x="28.9" y="27.5" width="6.2" height="17.5" rx="1.6" fill="#6250d6"/>
+  <rect x="36.8" y="21" width="6.2" height="24" rx="1.6" fill="#eb6834"/>
 </svg>

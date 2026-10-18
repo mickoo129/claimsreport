@@ -399,3 +399,4 @@ a.mult:hover { background: #fff; }
 }
 @media print { .now-bar, .sticky-pick { display: none !important; } .ch-banner { break-before: page; } }
 @media (max-width: 560px) { .year-pick.sticky-pick { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .year-pick.sticky-pick::-webkit-scrollbar { display: none; } .year-pick.sticky-pick .lbl { white-space: nowrap; } }
+.brand-icon { width: 32px; height: 32px; display: block; }
