@@ -1,26 +1,27 @@
 :root {
-  --font: -apple-system, BlinkMacSystemFont, "PingFang HK", "PingFang TC", "Heiti TC", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif;
-  --ink: #14213d; --ink-2: #4a5468; --muted: #7a8193; --line: #e2ddd2; --grid: #ebe7de;
-  --alt: #f3f0e9; --accent: #b5502a; --navy: #14213d;
+  --font: "Noto Sans HK", "PingFang HK", "Microsoft JhengHei", system-ui, sans-serif;
+  --num: "Barlow", "Noto Sans HK", system-ui, sans-serif;
+  --ink: #1D2B2A; --ink-2: #3C4A49; --muted: #5B6B6A; --line: #E3E9E7; --grid: #EEF3F1;
+  --alt: #EEF3F1; --accent: #00753E; --navy: #0E5E57;
 }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 html, body { margin: 0; }
 body {
-  background: #d9d6cf; color: var(--ink);
+  background: #D5DCDA; color: var(--ink);
   font-family: var(--font);
   font-size: 10pt; line-height: 1.5;
 }
 h1, h2, h3, p { margin: 0; }
-.num { font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; font-family: var(--num); }
 
 .toolbar {
   position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; justify-content: center; align-items: center;
-  padding: 10px; background: #14213d; color: #fff; font-size: 14px;
+  padding: 10px; background: #0E5E57; color: #fff; font-size: 14px;
 }
 .toolbar a, .toolbar button {
-  font: inherit; color: #14213d; background: #fff; border: 0; border-radius: 999px; padding: 6px 16px; cursor: pointer; text-decoration: none;
+  font: inherit; color: #0E5E57; background: #fff; border: 0; border-radius: 999px; padding: 6px 16px; cursor: pointer; text-decoration: none;
 }
-.toolbar .hint { color: #c9cfdc; font-size: 13px; }
+.toolbar .hint { color: #C9DDD8; font-size: 13px; }
 
 .page {
   width: 210mm; height: 297mm; margin: 10mm auto; background: #fff; overflow: hidden;
@@ -52,7 +53,7 @@ h3 { font-size: 10pt; font-weight: 700; margin-bottom: 2mm; }
 .kstats div { background: var(--navy); padding: 3mm 4mm; }
 .kstats span { display: block; font-size: 7.5pt; color: #aeb6c8; }
 .kstats b { display: block; font-size: 13pt; white-space: nowrap; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.kstats i { font-style: normal; font-size: 7.5pt; color: #c9cfdc; }
+.kstats i { font-style: normal; font-size: 7.5pt; color: #C9DDD8; }
 .tks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
 .tks div { background: var(--alt); border-radius: 3mm; padding: 3mm 3.5mm; font-size: 8.5pt; color: var(--ink-2); }
 .tks b { display: block; color: var(--ink); font-size: 10pt; margin-bottom: 1mm; }
@@ -81,7 +82,7 @@ th { color: var(--muted); font-weight: 500; font-size: 7.5pt; }
 .legend { display: flex; gap: 4mm; font-size: 7.5pt; color: var(--ink-2); margin-top: 1.5mm; }
 .legend i { width: 2.4mm; height: 2.4mm; border-radius: .6mm; display: inline-block; margin-right: 1mm; vertical-align: -.2mm; }
 
-.callout { background: #f6e3d8; border-left: 1.2mm solid var(--accent); border-radius: 2mm; padding: 3mm 4mm; font-size: 9pt; }
+.callout { background: #E6F6EE; border-left: 1.2mm solid var(--accent); border-radius: 2mm; padding: 3mm 4mm; font-size: 9pt; }
 
 /* questions & form */
 .qs { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2.4mm; counter-reset: q; }
@@ -95,7 +96,10 @@ th { color: var(--muted); font-weight: 500; font-size: 7.5pt; }
 .src li { margin: .6mm 0; }
 .contact { background: var(--navy); color: #fff; border-radius: 3mm; padding: 4mm 5mm; display: flex; justify-content: space-between; align-items: center; }
 .contact b { font-size: 12pt; }
-.contact span { color: #c9cfdc; font-size: 9pt; }
+.contact span { color: #C9DDD8; font-size: 9pt; }
+.contact .qr { flex: none; display: block; background: #fff; padding: 1.5mm; border-radius: 2mm; }
+.contact .qr svg { width: 22mm; height: 22mm; display: block; }
+.contact > div { padding-right: 4mm; }
 .disc { font-size: 7.5pt; color: var(--muted); }
 
 @page { size: A4; margin: 0; }
@@ -109,7 +113,7 @@ th { color: var(--muted); font-weight: 500; font-size: 7.5pt; }
   .page { transform-origin: top left; }
 }
 .pnch { display: flex; align-items: baseline; gap: 4mm; margin-top: 5mm; flex-wrap: wrap; }
-.pnch b { font-size: 24pt; color: #f0b28f; line-height: 1.1; }
+.pnch b { font-size: 24pt; color: #7FE0AE; line-height: 1.1; }
 .pnch span { font-size: 9pt; color: #dfe3ec; max-width: 110mm; }
 .g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
 .mh { display: flex; justify-content: space-between; font-weight: 700; font-size: 9pt; }

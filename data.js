@@ -17,9 +17,7 @@ window.CLAIMS = {
     years: [2019, 2020, 2021, 2022, 2023, 2024, 2025],
     latest: 2025,
     updated: "2026年10月",
-    coverage: "香港及澳門保單",
-    /* 聯絡資料：填咗先會喺頁尾顯示「WhatsApp 預約」掣（格式：85291234567） */
-    contact: { name: "Michael Koo", whatsapp: "85267256685", phone: "6725 6685", email: "" }
+    coverage: "香港及澳門保單"
   },
 
   /* ---------- 理賠總結（每份報告第 2–4 頁） ---------- */
