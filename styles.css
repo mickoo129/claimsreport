@@ -42,7 +42,7 @@ h2 { font-family: var(--font); font-weight: 900; font-size: clamp(22px, 3vw, 30p
 h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
 p { margin: 0; }
 a { color: inherit; }
-.wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; }
+.wrap { width: min(1320px, calc(100% - 2 * clamp(16px, 3vw, 32px))); margin: 0 auto; }
 .num { font-variant-numeric: tabular-nums; font-family: var(--num); }
 
 /* nav */
@@ -409,7 +409,13 @@ a.mult:hover { background: #fff; }
   --mk-warn:#8A5B00; --mk-warn-soft:#FFF5DC; --mk-danger:#C62828; --mk-danger-soft:#FDECEC;
   --mk-sans:"Noto Sans HK","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;
   --mk-num:"Barlow","Noto Sans HK",system-ui,sans-serif;
+  --mk-max:1320px;                        /* 內容最闊 */
+  --mk-gutter:clamp(16px,3vw,32px);       /* 兩邊留白：手機 16px → 桌面 32px */
 }
+/* 版面外框：工具可以用自己嘅 class，但數值要一樣 */
+.mk-wrap{width:100%;max-width:calc(var(--mk-max) + 2 * var(--mk-gutter));margin:0 auto;padding-left:var(--mk-gutter);padding-right:var(--mk-gutter);box-sizing:border-box}
+/* 標題旁 icon */
+.mk-logo{width:32px;height:32px;flex:none;display:block}
 .mk-ecard{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;margin:28px 0 0;padding:20px 22px;border-radius:14px;border:1px solid var(--mk-brand-line);background:var(--mk-brand-soft);font-family:var(--mk-sans);color:var(--mk-ink);text-align:left}
 .mk-ecard-txt{flex:1;min-width:200px}
 .mk-ecard-txt b{display:block;font-size:17px;font-weight:700;margin-bottom:2px;color:var(--mk-ink)}
