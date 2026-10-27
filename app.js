@@ -11,7 +11,7 @@
     { key: "accident", name: "意外", long: "意外", color: "#1baf7a", soft: "#9fdcc4", anchor: "#accident" }
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
-  const C = { male: "#2a78d6", female: "#e34948", grid: "#ebe7de", ink2: "#4a5468", muted: "#7a8193", old: "#c4c0b6", accent: "#b5502a" };
+  const C = { male: "#2a78d6", female: "#e34948", grid: "#EEF3F1", ink2: "#3C4A49", muted: "#5B6B6A", old: "#c4c0b6", accent: "#00753E" };
   const state = { summaryYear: LATEST, critical: LATEST, death: LATEST, trend: "amount", room: 1 };
   const charts = {};
 
@@ -71,7 +71,7 @@
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: { position: "top", align: "start", labels: { usePointStyle: true, pointStyle: "rectRounded", boxWidth: 10, boxHeight: 10, padding: 14 } },
-        tooltip: { backgroundColor: "#14213d", padding: 10, cornerRadius: 8, titleFont: { weight: "700" }, boxPadding: 4 }
+        tooltip: { backgroundColor: "#0E5E57", padding: 10, cornerRadius: 8, titleFont: { weight: "700" }, boxPadding: 4 }
       },
       scales: {
         x: { grid: { display: false }, ticks: { color: C.ink2 } },
@@ -167,12 +167,12 @@
       ["醫療：住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} → 升 ${growth(s.hospital.cases, s0.hospital.cases)}%`, series.hosp],
       ["危疾：女性佔比", fmt.p(femaleShare(ci), 0), `七年都企喺 63–68%`, series.female, [0, 100]],
       ["危疾：最高一宗", fmt.wan(ci.max), `${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；平均只係 ${fmt.wan(ci.avg)}`, series.ciMax]
-    ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#f0b28f", x[4])}<div class="s">${x[2]}</div></div>`).join("");
+    ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#7FE0AE", x[4])}<div class="s">${x[2]}</div></div>`).join("");
   }
 
   /* ---------- Part 1: overview ---------- */
   function renderChapterPick() {
-    $("chPick").innerHTML = CATS.map((c) => `<a class="chip" href="${c.anchor}" style="--c:${c.color}"><i></i>${c.long}</a>`).join("") + `<a class="chip" href="#check" style="--c:#14213d"><i></i>保障檢查</a>`;
+    $("chPick").innerHTML = CATS.map((c) => `<a class="chip" href="${c.anchor}" style="--c:${c.color}"><i></i>${c.long}</a>`).join("") + `<a class="chip" href="#check" style="--c:#0E5E57"><i></i>保障檢查</a>`;
   }
 
   function renderTrend() {
@@ -339,7 +339,7 @@
         </span>
         <span class="pc-val">${fmt.chg(d[2], d[1])}</span>
       </div>
-      <div style="font-size:12px;color:${C.muted};margin:-8px 0 6px 0" class="num">${fmt.money(d[1])} → <b style="color:#14213d">${fmt.money(d[2])}</b></div>`).join("")
+      <div style="font-size:12px;color:${C.muted};margin:-8px 0 6px 0" class="num">${fmt.money(d[1])} → <b style="color:#0E5E57">${fmt.money(d[2])}</b></div>`).join("")
       + `<div class="legend"><span><i style="background:${C.old}"></i>2018</span><span><i style="background:${C.accent}"></i>2025</span></div>`;
     renderSurgery();
     $("roomTable").innerHTML = `<table class="data-table"><thead><tr><th>醫院</th><th>半私家 2019</th><th>半私家 2026</th><th>升幅</th><th>普通房 2019</th><th>普通房 2026</th><th>升幅</th></tr></thead><tbody>${
@@ -475,7 +475,7 @@
         picto(2, 1, C.male, C.female, PERSON) + `<span class="picto-cap"><i style="background:${C.male}"></i>男 <i style="background:${C.female}"></i>女</span>`, C.male);
       keyFact("kf-death-amount", fmt.p(pct(L.bands[0], L.n), 0),
         `<b>${fmt.p(pct(L.bands[0], L.n), 0)} 身故個案賠 $25 萬或以下。</b>最高一宗 ${fmt.wan(L.max)}，分別在於當初買咗幾多保額：人壽保額要按家庭開支、按揭同供養年期去計。`, "", c.color);
-      $("hkDeath").innerHTML = bars(D.hk.death2024, "#7a8193", { valueFn: (x) => fmt.num(x[1]) + " 人" });
+      $("hkDeath").innerHTML = bars(D.hk.death2024, "#5B6B6A", { valueFn: (x) => fmt.num(x[1]) + " 人" });
     }
     renderTypeDetail(key);
   }
@@ -620,24 +620,17 @@
       ["危疾", "投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
       ["全部", "上一次檢視保障係幾時？", "手術費、病房費年年升，保額買咗幾年可能已經追唔上。建議每 1–2 年檢視一次。"]
     ];
-    const col = { 危疾: CAT.critical.color, 醫療: CAT.hospital.color, 人壽: CAT.death.color, 全部: "#14213d" };
+    const col = { 危疾: CAT.critical.color, 醫療: CAT.hospital.color, 人壽: CAT.death.color, 全部: "#0E5E57" };
     $("questions").innerHTML = q.map((x) => `<li><span class="q-tag" style="background:${col[x[0]]}">${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></li>`).join("");
     $("sourceList").innerHTML = D.sources.map((s) => `<li>${s}</li>`).join("");
     $("footMeta").textContent = `最後更新：${D.meta.updated} · 數據年份 ${YEARS[0]}–${LATEST}`;
-    $("copyright").textContent = `© ${new Date().getFullYear()} Michael Koo Protection Alliance (MKPA). 版權所有。`;
-    const ct = D.meta.contact || {};
-    let html = `<strong>想詳細睇吓自己嘅保障？</strong><p>同 ${ct.name || "你嘅顧問"} 約個時間，一齊對照呢份數據檢視保單。</p>`;
-    if (ct.phone) html += `<p>${ct.name}　電話／WhatsApp：<b style="color:#fff">${ct.phone}</b></p>`;
-    if (ct.whatsapp) html += `<div class="contact"><a href="https://wa.me/${ct.whatsapp}?text=${encodeURIComponent("你好，我睇咗理賠數據報告，想檢視吓自己嘅保障。")}" target="_blank" rel="noopener">WhatsApp 預約</a></div>`;
-    html += `<p style="margin-top:10px"><a href="print.html" style="color:#fff">下載／列印 A4 版報告 →</a></p>`;
-    $("contactBox").innerHTML = html;
   }
 
   /* ---------- nav: where am I ---------- */
   function bindNav() {
     const links = [...document.querySelectorAll(".nav-links a")];
     const nowBar = $("nowBar"), nowText = $("nowText");
-    const NAMES = { overview: ["總覽", "四類保險一齊比較", "#14213d"], medical: ["醫療／住院保險", "以下數字全部係講醫療／住院", CAT.hospital.color], critical: ["危疾保險", "以下數字全部係講危疾", CAT.critical.color], life: ["人壽保險（身故賠償）", "以下數字全部係講人壽／身故", CAT.death.color], accident: ["意外保險", "以下數字全部係講意外", CAT.accident.color], check: ["保障檢查", "對照自己嘅保障", "#14213d"] };
+    const NAMES = { overview: ["總覽", "四類保險一齊比較", "#0E5E57"], medical: ["醫療／住院保險", "以下數字全部係講醫療／住院", CAT.hospital.color], critical: ["危疾保險", "以下數字全部係講危疾", CAT.critical.color], life: ["人壽保險（身故賠償）", "以下數字全部係講人壽／身故", CAT.death.color], accident: ["意外保險", "以下數字全部係講意外", CAT.accident.color], check: ["保障檢查", "對照自己嘅保障", "#0E5E57"] };
     const setActive = (id) => {
       links.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === "#" + id));
       const a = links.find((l) => l.getAttribute("href") === "#" + id);
