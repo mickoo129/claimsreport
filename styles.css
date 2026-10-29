@@ -13,12 +13,12 @@
   --accent: #00753E;
   --accent-soft: #E6F6EE;
   --navy: #0E5E57;
-  --hosp: #2A78D6;
-  --death: #EB6834;
-  --ci: #6250D6;
-  --acc: #0E9AA7;
-  --male: #2A78D6;
-  --female: #C2417A;
+  --hosp: #3072D4;
+  --death: #D86F35;
+  --ci: #953CB3;
+  --acc: #158E92;
+  --male: #3072D4;
+  --female: #CD486B;
   --good: #1f7a4d;
   --warn: #a5620a;
   --bad: #b42318;
@@ -336,12 +336,15 @@ a.tk:hover { background: rgba(255,255,255,.11); }
 .topnav { --c: #0E5E57; }
 .nav-links a { display: inline-flex; align-items: center; gap: 6px; }
 .nav-links a i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--dot, #0E5E57); }
-.nav-links a[data-cat="hospital"] { --dot: #2A78D6; }
-.nav-links a[data-cat="critical"] { --dot: #6250D6; }
-.nav-links a[data-cat="death"] { --dot: #EB6834; }
-.nav-links a[data-cat="accident"] { --dot: #0E9AA7; }
+.nav-links a[data-cat="hospital"] { --dot: #3072D4; }
+.nav-links a[data-cat="critical"] { --dot: #953CB3; }
+.nav-links a[data-cat="death"] { --dot: #D86F35; }
+.nav-links a[data-cat="accident"] { --dot: #158E92; }
 .nav-links a[data-cat="check"] { --dot: #00753E; }
-.nav-links a.active { background: var(--dot, #0E5E57); color: #fff; font-weight: 700; }
+.nav-links a[data-cat="death"] { --dot-ink: #B95924; }
+.nav-links a[data-cat="accident"] { --dot-ink: #138185; }
+/* 選中用文字色做底（白字對比夠） */
+.nav-links a.active { background: var(--dot-ink, var(--dot, #0E5E57)); color: #fff; font-weight: 700; }
 .nav-links a.active i { background: #fff; }
 .now-bar { display: none; background: var(--c, #0E5E57); color: #fff; font-size: 13px; }
 .now-bar.show { display: block; }
@@ -351,10 +354,10 @@ a.tk:hover { background: rgba(255,255,255,.11); }
 #nowText { display: flex; gap: 10px; flex-wrap: wrap; }
 
 .chapter { --c: #0E5E57; --soft: #E7F1EF; padding-bottom: 56px; scroll-margin-top: 60px; }
-.chapter[data-cat="hospital"] { --c: #2A78D6; --soft: #E7EFF9; }
-.chapter[data-cat="critical"] { --c: #6250D6; --soft: #E9E7F9; }
-.chapter[data-cat="death"] { --c: #EB6834; --soft: #fdf0ea; }
-.chapter[data-cat="accident"] { --c: #0E9AA7; --soft: #E7F7F9; }
+.chapter[data-cat="hospital"] { --c: #3072D4; --soft: #F1F5FC; }
+.chapter[data-cat="critical"] { --c: #953CB3; --soft: #F8F1FA; }
+.chapter[data-cat="death"] { --c: #D86F35; --soft: #FCF5F1; }
+.chapter[data-cat="accident"] { --c: #158E92; --soft: #EFF7F7; }
 .chapter[data-cat="check"] { --c: #00753E; --soft: #E6F6EE; }
 .ch-banner { background: var(--soft); border-top: 6px solid var(--c); padding: 40px 0 28px; margin-bottom: 28px; }
 .ch-no { display: inline-block; font-size: 13px; font-weight: 700; color: #fff; background: var(--c); border-radius: 999px; padding: 3px 12px; margin-bottom: 10px; }
@@ -414,14 +417,14 @@ a.mult:hover { background: #fff; }
   --mk-max:1320px;                        /* 內容最闊 */
   --mk-gutter:clamp(16px,3vw,32px);       /* 兩邊留白：手機 16px → 桌面 32px */
   /* 分類色盤：主色（圓點、色條、圖表）／ -ink 白底寫字 ／ -soft 淺底 */
-  --mk-cat-1:#2A78D6; --mk-cat-1-ink:#2873CE; --mk-cat-1-soft:#E7EFF9;   /* 醫療／住院 */
-  --mk-cat-2:#6250D6; --mk-cat-2-ink:#6250D6; --mk-cat-2-soft:#E9E7F9;   /* 危疾 */
-  --mk-cat-3:#EB6834; --mk-cat-3-ink:#C94714; --mk-cat-3-soft:#F9ECE7;   /* 人壽／身故 */
-  --mk-cat-4:#0E9AA7; --mk-cat-4-ink:#0C808B; --mk-cat-4-soft:#E7F7F9;   /* 意外 */
-  --mk-cat-5:#C2417A; --mk-cat-5-ink:#C2417A; --mk-cat-5-soft:#F8E8EF;   /* 癌症 */
-  --mk-cat-6:#C99A2E; --mk-cat-6-ink:#8F6D21; --mk-cat-6-soft:#F9F3E7;   /* 儲蓄／退休／強積金 */
-  --mk-cat-7:#5B7086; --mk-cat-7-ink:#5B7086; --mk-cat-7-soft:#EDF0F3;   /* 中性／其他 */
-  --mk-cat-8:#8A5A44; --mk-cat-8-ink:#8A5A44; --mk-cat-8-soft:#F5EEEB;   /* 第8色 */
+  --mk-cat-1:#3072D4; --mk-cat-1-ink:#3072D4; --mk-cat-1-soft:#F1F5FC;   /* 1 醫療／住院 */
+  --mk-cat-2:#D86F35; --mk-cat-2-ink:#B95924; --mk-cat-2-soft:#FCF5F1;   /* 2 人壽／身故 */
+  --mk-cat-3:#953CB3; --mk-cat-3-ink:#953CB3; --mk-cat-3-soft:#F8F1FA;   /* 3 危疾 */
+  --mk-cat-4:#158E92; --mk-cat-4-ink:#138185; --mk-cat-4-soft:#EFF7F7;   /* 4 意外 */
+  --mk-cat-5:#C29323; --mk-cat-5-ink:#926F1B; --mk-cat-5-soft:#FBF7F0;   /* 5 儲蓄／退休／強積金 */
+  --mk-cat-6:#CD486B; --mk-cat-6-ink:#CB4266; --mk-cat-6-soft:#FCF2F5;   /* 6 癌症 */
+  --mk-cat-7:#6F7377; --mk-cat-7-ink:#6F7377; --mk-cat-7-soft:#F5F5F5;   /* 7 中性／其他 */
+  --mk-cat-8:#845C4A; --mk-cat-8-ink:#845C4A; --mk-cat-8-soft:#F6F4F2;   /* 8 後備 */
 }
 /* 分類 class：加喺元素上就用 var(--c) var(--c-ink) var(--c-soft) */
 .mk-cat-1{--c:var(--mk-cat-1);--c-ink:var(--mk-cat-1-ink);--c-soft:var(--mk-cat-1-soft)}
