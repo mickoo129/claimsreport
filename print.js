@@ -4,15 +4,15 @@
   const D = window.CLAIMS;
   const YEARS = D.meta.years, Y = D.meta.latest, Y0 = YEARS[0];
   const CATS = [
-    { key: "hospital", name: "住院", long: "醫療／住院", color: "#1E6FE6", soft: "#A5C5F5", bg: "#E4EEFC" },
-    { key: "death", name: "身故", long: "人壽／身故", color: "#EA6A23", soft: "#F7C3A7", bg: "#FCEDE5" },
-    { key: "critical", name: "危疾", long: "危疾", color: "#9B2FC0", soft: "#D7ACE6", bg: "#F3E6F7" },
-    { key: "accident", name: "意外", long: "意外", color: "#079BA0", soft: "#9CD7D9", bg: "#E1F3F4" }
+    { key: "hospital", name: "住院", long: "醫療／住院", color: "#3072D4", soft: "#A8C4ED", bg: "#F1F5FC" },
+    { key: "death", name: "身故", long: "人壽／身故", color: "#D86F35", soft: "#EFC3AA", bg: "#FCF5F1" },
+    { key: "critical", name: "危疾", long: "危疾", color: "#953CB3", soft: "#D2ADDF", bg: "#F8F1FA" },
+    { key: "accident", name: "意外", long: "意外", color: "#158E92", soft: "#9DD0D1", bg: "#EFF7F7" }
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
   const NAVY = { key: "all", long: "總覽", color: "#0E5E57", soft: "#C9DDD8", bg: "#E7F1EF" };
   const CHECK = { key: "check", long: "檢視保障", color: "#00753E", soft: "#B4E2C8", bg: "#E6F6EE" };
-  const C = { male: "#1E6FE6", female: "#DB3A64", grid: "#EEF3F1", muted: "#5B6B6A", ink2: "#3C4A49", old: "#c4c0b6", accent: "#00753E" };
+  const C = { male: "#3072D4", female: "#CD486B", grid: "#EEF3F1", muted: "#5B6B6A", ink2: "#3C4A49", old: "#c4c0b6", accent: "#00753E" };
   const YEAR_NOW = new Date().getFullYear();
   const PRINT_DATE = `${YEAR_NOW} 年 ${new Date().getMonth() + 1} 月 ${new Date().getDate()} 日`;
 
@@ -322,7 +322,7 @@
   yearBars("hAmt", YEARS.map((y) => D.summary[y].hospital.amt), H.color);
   yearBars("hCases", YEARS.map((y) => D.summary[y].hospital.cases), H.color);
   o = opts(); o.scales.y.ticks.callback = (v) => "$" + v / 1000 + "k";
-  mk("cSurgeon", { type: "line", data: { labels: I.surgeonMean.years.map(String), datasets: ["私家房", "半私家房", "標準房"].map((r, i) => lineDs(r, I.surgeonMean[r], ["#1E6FE6", "#EA6A23", "#079BA0"][i])) }, options: o });
+  mk("cSurgeon", { type: "line", data: { labels: I.surgeonMean.years.map(String), datasets: ["私家房", "半私家房", "標準房"].map((r, i) => lineDs(r, I.surgeonMean[r], ["#3072D4", "#D86F35", "#158E92"][i])) }, options: o });
   o = opts(); o.plugins.legend.display = false; o.scales.y.ticks.callback = (v) => v / 1e4 + "萬";
   mk("hAge", { type: "bar", data: { labels: D.hk.hospByAge2025.map((x) => x[0] + " 歲"), datasets: [barDs("住院人數", D.hk.hospByAge2025.map((x) => x[1]), H.color, { maxBarThickness: 40 })] }, options: o });
 
@@ -334,7 +334,7 @@
   mk("kGender", { type: "bar", data: { labels: D.ageGroups.slice(0, 4), datasets: [barDs("男", ci.male.slice(0, 4), C.male), barDs("女", ci.female.slice(0, 4), C.female)] }, options: o });
   o = opts(); o.plugins.legend.display = false; o.scales.y.ticks.callback = (v) => v + "%";
   mk("kAge", { type: "bar", data: { labels: D.ageGroups, datasets: [barDs("危疾", ciAge, D.ageGroups.map((_, i) => ciAge[i] === Math.max(...ciAge) ? K.color : K.soft))] }, options: o });
-  const abd = ci.ageByDisease, names = Object.keys(abd), ramp = ["#F0E0F6", "#D7ACE6", "#B96DD3", "#9B2FC0", "#601D77"];
+  const abd = ci.ageByDisease, names = Object.keys(abd), ramp = ["#F2E8F6", "#D2ADDF", "#B576CA", "#953CB3", "#5C256F"];
   o = opts({ indexAxis: "y" }); o.scales.x.stacked = true; o.scales.y.stacked = true; o.scales.x.max = 100; o.scales.x.grid = { color: C.grid }; o.scales.x.ticks = { callback: (v) => v + "%", color: C.muted }; o.scales.y.grid = { display: false };
   mk("kAgeDis", { type: "bar", data: { labels: names, datasets: D.ageGroups.map((g, i) => ({ label: g, data: names.map((n) => abd[n][i]), backgroundColor: ramp[i], borderColor: "#fff", borderWidth: { right: 1.5 }, borderSkipped: false, maxBarThickness: 26 })).filter((d) => sum(d.data) > 0) }, options: o });
   const maxChart = (id, key, c) => {

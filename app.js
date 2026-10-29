@@ -5,13 +5,13 @@
   const YEARS = D.meta.years;
   const LATEST = D.meta.latest;
   const CATS = [
-    { key: "hospital", name: "住院", long: "醫療／住院", color: "#1E6FE6", soft: "#A5C5F5", anchor: "#medical" },
-    { key: "death", name: "身故", long: "人壽／身故", color: "#EA6A23", soft: "#F7C3A7", anchor: "#life" },
-    { key: "critical", name: "危疾", long: "危疾", color: "#9B2FC0", soft: "#D7ACE6", anchor: "#critical" },
-    { key: "accident", name: "意外", long: "意外", color: "#079BA0", soft: "#9CD7D9", anchor: "#accident" }
+    { key: "hospital", name: "住院", long: "醫療／住院", color: "#3072D4", soft: "#A8C4ED", anchor: "#medical" },
+    { key: "death", name: "身故", long: "人壽／身故", color: "#D86F35", soft: "#EFC3AA", anchor: "#life" },
+    { key: "critical", name: "危疾", long: "危疾", color: "#953CB3", soft: "#D2ADDF", anchor: "#critical" },
+    { key: "accident", name: "意外", long: "意外", color: "#158E92", soft: "#9DD0D1", anchor: "#accident" }
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
-  const C = { male: "#1E6FE6", female: "#DB3A64", grid: "#EEF3F1", ink2: "#3C4A49", muted: "#5B6B6A", old: "#c4c0b6", accent: "#00753E" };
+  const C = { male: "#3072D4", female: "#CD486B", grid: "#EEF3F1", ink2: "#3C4A49", muted: "#5B6B6A", old: "#c4c0b6", accent: "#00753E" };
   const state = { summaryYear: LATEST, critical: LATEST, death: LATEST, trend: "amount", room: 1 };
   const charts = {};
 
@@ -328,7 +328,7 @@
     drawYearBars("hospCases", YEARS.map((y) => D.summary[y].hospital.cases), c, (v) => fmt.num(v) + " 宗");
     void avgSeries;
 
-    const rooms = ["私家房", "半私家房", "標準房"], rc = ["#1E6FE6", "#EA6A23", "#079BA0"];
+    const rooms = ["私家房", "半私家房", "標準房"], rc = ["#3072D4", "#D86F35", "#158E92"];
     let opts = baseOpts();
     opts.scales.y.ticks.callback = (v) => "$" + v / 1000 + "k";
     opts.plugins.tooltip.callbacks = { label: (ctx) => ` ${ctx.dataset.label}：${fmt.money(ctx.parsed.y)}` };
@@ -563,7 +563,7 @@
 
     if (isCI) {
       const ay = o.ageByDisease ? y : LATEST, abd = D.critical[ay].ageByDisease, names = Object.keys(abd);
-      const ramp = ["#F0E0F6", "#D7ACE6", "#B96DD3", "#9B2FC0", "#601D77"];
+      const ramp = ["#F2E8F6", "#D2ADDF", "#B576CA", "#953CB3", "#5C256F"];
       const o2 = baseOpts({ indexAxis: "y" });
       o2.scales.x.stacked = true; o2.scales.y.stacked = true;
       o2.scales.x.max = 100; o2.scales.x.grid = { color: C.grid }; o2.scales.x.ticks = { callback: (v) => v + "%", color: C.muted };
