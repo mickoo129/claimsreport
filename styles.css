@@ -441,3 +441,18 @@ a.mult:hover { background: #fff; }
 
 .footer .mk-ecard { margin-top: 0; }
 .footer .mk-copy { color: #C9DDD8; }
+
+/* 新增：事實卡、輪候時間 */
+.fact-list { display: grid; gap: 12px; }
+.fact-list.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.fact { border-left: 4px solid var(--c, var(--mk-brand)); background: var(--mk-bg); border-radius: 10px; padding: 12px 14px; }
+.fact b { display: block; font-family: var(--mk-num); font-size: 28px; line-height: 1.15; color: var(--c, var(--mk-brand-ink)); }
+.fact span { display: block; font-weight: 700; margin-top: 2px; }
+.fact em { display: block; font-style: normal; font-size: 13px; color: var(--mk-muted); margin-top: 2px; }
+.wait-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.wait { background: var(--mk-surface); border: 1px solid var(--mk-line); border-top: 4px solid var(--c, var(--mk-brand)); border-radius: 14px; padding: 16px 18px; }
+.wait-k { display: block; font-size: 14px; color: var(--mk-muted); }
+.wait b { display: block; font-family: var(--mk-num); font-size: 36px; line-height: 1.2; color: var(--mk-deep); }
+.wait-s { display: block; font-size: 13px; color: var(--mk-muted); }
+@media (max-width: 760px) { .fact-list.cols-3, .wait-grid { grid-template-columns: 1fr; } }
+@media print { .fact, .wait { break-inside: avoid; } }

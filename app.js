@@ -302,17 +302,22 @@
           <button data-room="0" type="button">私家房</button><button class="on" data-room="1" type="button">半私家房</button><button data-room="2" type="button">標準房</button>
         </div><div class="table-scroll" id="surgeryTable"></div><p class="chart-note">個別手術（例如甲狀腺切除嘅私家房收費）會有升有跌，但大部分手術都向上。</p>`, "mt")}
       ${card("私家醫院每日病房收費：2019 → 2026", `<div class="table-scroll" id="roomTable"></div><p class="chart-note">各醫院網站公布價（2019 年 4 月及 2026 年 6 月）。升幅按收費範圍中間值計算，只計房租。</p>`, "mt")}
+      ${card("做一次手術，全單要幾多？", `<div class="table-scroll" id="fullBillTable"></div><p class="chart-note">各私家醫院收費中位數嘅加權平均數（2020 年 12 月公布價），已包醫生費（連麻醉師）同醫院雜費（連手術室），未計病房費。以上係 2020 年價錢，參考上面嘅升幅，今日一般會更貴。</p>`, "mt")}
       ${subTitle("2.3", "一場大病，醫療費要幾多？")}
       <div class="grid-2">
         ${card("大型手術一次要幾多錢？", `<div id="complexList"></div><p class="chart-note">中大醫院定價收費（4 人房，2025 年 12 月）。Level 1 = 冇其他重大病；Level 3 = 有嚴重併發症。</p>`)}
         ${card("癌症標靶藥：一年藥費", `<div id="drugList"></div><p class="chart-note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>`)}
       </div>
+      ${card("一場癌症，一年醫療費要幾多？", `<div class="table-scroll" id="cancerCostTable"></div><p class="chart-note">醫管局、食衞局、衞生署及私家醫生資料（2019 年報告整理）。實際費用視乎病情同治療方案；「—」代表冇實際數字。</p>`, "mt")}
       ${subTitle("2.4", "香港人幾時最多入院？")}
       <div class="grid-2">
         ${card("香港住院人數（按年齡，2025 年調查）", chartBox("hospAge", "香港住院人數按年齡") + `<p class="chart-note">政府統計處主題性住戶統計調查（2024 年 10 月至 2025 年 1 月期間）。25–44 歲開始明顯上升，65 歲或以上最多。</p>`)}
         <div class="callout"><strong>約 ${D.hk.uncovered.pct}% 香港人（約 ${Math.round(D.hk.uncovered.people / 1e4)} 萬人）</strong>冇僱主醫療福利，亦冇自己買醫療保險。
           <span>政府統計處 2026 年 3 月報告。即係大約每 2 個人就有 1 個，入私家醫院要全數自己俾。</span></div>
-      </div>`;
+      </div>
+      ${subTitle("2.5", "唔用醫保、靠公立醫院，要等幾耐？")}
+      <div class="wait-grid" id="waitGrid"></div>
+      <p class="chart-note">醫院管理局數字：90% 病人可以喺上述時間內做到手術，即係有一成人要等更耐。</p>`;
 
     keyFact("kf-hospital", `${fmt.p(pct(s.hospital.cases, s.cases), 0)}`,
       `<b>${LATEST} 年每 5 宗理賠有 4 宗係醫療／住院。</b>${fmt.num(s.hospital.cases)} 宗、賠出 ${s.hospital.amt} 億，係四類之中用得最密、賠得最多嘅保障。七年宗數升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`, "", c.color);
@@ -346,6 +351,15 @@
       I.rooms.map((r) => `<tr><td>${r.name}</td><td>$${r.semi[0]}</td><td>$${r.semi[1]}</td><td>${fmt.chg(r.semiMid[1], r.semiMid[0])}</td><td>$${r.ward[0]}</td><td>$${r.ward[1]}</td><td>${fmt.chg(r.wardMid[1], r.wardMid[0])}</td></tr>`).join("")
     }</tbody></table>`;
     $("complexList").innerHTML = bars(I.complex, C.accent, { wide: true, valueFn: (x) => fmt.wan(x[1]) + "–" + fmt.wan(x[2]) }) + `<div class="legend" style="margin-top:10px"><span><i style="background:${C.accent}"></i>Level 1</span><span><i style="background:${C.accent};opacity:.35"></i>最高到 Level 3</span></div>`;
+    const fb = D.costs.fullBill2020.map((x) => ({ name: x[0], cat: x[1], doc: x[2], hosp: x[3], total: x[2] + x[3] })).sort((a, b) => a.total - b.total);
+    $("fullBillTable").innerHTML = `<table class="data-table"><thead><tr><th>手術</th><th>全單</th><th>醫生費</th><th>醫院雜費</th><th>類別</th></tr></thead><tbody>${
+      fb.map((x) => `<tr><td>${x.name}</td><td><b>${fmt.money(x.total)}</b></td><td>${fmt.money(x.doc)}</td><td>${fmt.money(x.hosp)}</td><td>${x.cat}</td></tr>`).join("")
+    }</tbody></table>`;
+    const rng = (r) => (r ? fmt.wan(r[0]) + "–" + fmt.wan(r[1]) : "—");
+    $("cancerCostTable").innerHTML = `<table class="data-table"><thead><tr><th>癌症</th><th>診斷及手術</th><th>化療<br>（4–6 週期）</th><th>電療<br>（20–30 節）</th><th>標靶／免疫<br>（每年）</th><th>估計一年總開支</th></tr></thead><tbody>${
+      D.costs.cancer2019.map((x) => `<tr><td>${x[0]}</td><td>${rng(x[1])}</td><td>${rng(x[2])}</td><td>${rng(x[3])}</td><td>${rng(x[4])}</td><td><b>${rng(x[5])}</b></td></tr>`).join("")
+    }</tbody></table>`;
+    $("waitGrid").innerHTML = D.costs.waits.map((w) => `<div class="wait"><span class="wait-k">${w[0]}</span><b>${w[1]}</b><span class="wait-s">${w[2]} · ${w[3]}</span></div>`).join("");
     $("drugList").innerHTML = bars(I.drugs, c.color, { wide: true, valueFn: (x) => x[1] === x[2] ? fmt.wan(x[1]) : fmt.wan(x[1]) + "–" + fmt.wan(x[2]) });
 
     opts = baseOpts();
@@ -398,24 +412,34 @@
         ${card("危疾：各年齡組佔比", chartBox(key + "-age", "危疾按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
         ${card("三大危疾嘅年齡分佈", chartBox("ci-ageDis", "癌症、心臟病、中風按年齡分佈") + `<p class="chart-note" id="ci-ageDisNote"></p>`)}
       </div>` : card("身故：各年齡組佔比", chartBox(key + "-age", "身故按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
-      ${subTitle(n + ".4", isCI ? "咩病最多人 claim？" : "咩原因最多？")}
+      ${isCI ? `${subTitle("3.4", "危疾年輕化、小朋友都會中")}
+      <div class="kf" id="kf-young"></div>
+      <div class="grid-2">
+        ${card("後生一輩：危疾風險上升緊", `<div class="fact-list" id="youngFacts"></div>`)}
+        ${card("但年紀越大，風險越高", chartBox("youngAge", "香港按年齡癌症發病率") + `<p class="chart-note">香港癌症發病率（每十萬人口），香港癌症資料統計中心《2022 年香港癌症統計概覽》。</p>`)}
+      </div>
+      ${card("小朋友都會有危疾同長期病", `<div class="fact-list cols-3" id="childFacts"></div><p class="chart-note">衞生防護中心（2023 年死因數字）、兒童癌病基金、美國疾控中心 2020 年數據；ADHD 輪候及費用經 2023、2024 年報告引用。</p>`, "mt")}` : ""}
+      ${subTitle(n + (isCI ? ".5" : ".4"), isCI ? "咩病最多人 claim？" : "咩原因最多？")}
       <div class="grid-2">
         ${card(`${c.long}：${T.causeWord}`, `<div id="${key}-causes"></div>`)}
         ${isCI ? card("癌症個案入面最多係邊種？", `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
       </div>
       ${card(`癌症佔${c.long}幾多？（七年）`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
-      ${subTitle(n + ".5", "一宗賠幾多？")}
+      ${subTitle(n + (isCI ? ".6" : ".5"), "一宗賠幾多？")}
       <div class="kf" id="kf-${key}-amount"></div>
       <div class="grid-2">
         ${card(`${c.long}：每宗賠償額分佈`, `<div id="${key}-bands"></div>`)}
         ${card(`${c.long}：平均 vs 最高一宗（七年）`, chartBox(key + "-max", `${c.long}平均及最高賠償額`) + `<div class="mini-stats" id="${key}-amountStats"></div>`)}
       </div>
-      ${isCI ? `${subTitle(n + ".6", "癌症知多啲")}
+      ${isCI ? `${subTitle("3.7", "癌症知多啲")}
+      <div class="kf" id="kf-survival"></div>
       <div class="grid-2">
         ${card("五年相對存活率（按期數）", `<div class="table-scroll" id="survivalTable"></div><p class="chart-note">香港癌症資料統計中心《2022 年香港癌症統計概覽》（2024 年 10 月）。</p>`)}
         ${card("危疾復發率參考", `<div id="recurrence"></div><p class="chart-note">出處見 2025 年賠償報告第 14 頁。復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
       </div>
-      ${card("香港整體：男女最常見癌症（2023 年新症）", `<div class="split" id="hkCancerGender"></div><p class="chart-note">香港癌症資料統計中心：75 歲前，大約每 4 名男性、每 5 名女性就有 1 位患癌。確診年齡中位數男 69 歲、女 64 歲。</p>`, "mt")}` : ""}`;
+      ${card("香港整體：男女最常見癌症（2023 年新症）", `<div class="split" id="hkCancerGender"></div><p class="chart-note">香港癌症資料統計中心：75 歲前，大約每 4 名男性、每 5 名女性就有 1 位患癌。確診年齡中位數男 69 歲、女 64 歲。</p>`, "mt")}
+      ${card("香港常見癌症新症：七年走勢", chartBox("hkCancerTrend", "香港常見癌症新症走勢") + `<p class="chart-note" id="hkCancerTrendNote"></p>`, "mt")}` : ""}
+      ${!isCI ? card("香港主要死因：七年走勢", chartBox("hkDeathTrend", "香港主要死因走勢") + `<p class="chart-note">按數據年份（香港統計年刊）。2022 年另有新冠 9,291 人死亡、2023 年 2,594 人，未計入圖內。</p>`, "mt") : ""}`;
 
     // static (all-years) charts
     drawYearBars(key + "-amt", YEARS.map((y) => D.summary[y][key].amt), c, (v) => fmt.yi(v) + " 億");
@@ -458,6 +482,30 @@
         picto(3, 2, C.female, C.male, PERSON) + `<span class="picto-cap"><i style="background:${C.female}"></i>女 <i style="background:${C.male}"></i>男</span>`, C.female);
       keyFact("kf-critical-amount", `${Math.round(L.max / L.avg)} 倍`,
         `<b>最高一宗危疾 ${fmt.wan(L.max)}，係平均 ${fmt.wan(L.avg)} 嘅 ${Math.round(L.max / L.avg)} 倍。</b>分別唔係病重唔重，而係<b>當初買咗幾多保額</b>：危疾一筆過賠，買幾多就賠幾多。`, "", c.color);
+      const Y = D.hk.youngCI;
+      keyFact("kf-young", "+13%",
+        `<b>20–44 歲癌症發病人數 10 年增加 13%。</b>危疾唔再只係中年人嘅事：21–40 歲已經佔危疾賠償 ${fmt.p(pct(L.male[1] + L.female[1], L.n), 0)}，而 1–14 歲兒童嘅頭號致命疾病都係癌症。`, "", c.color);
+      $("youngFacts").innerHTML = Y.facts.map((f) => `<div class="fact"><b>${f[0]}</b><span>${f[1]}</span><em>${f[2]}</em></div>`).join("");
+      $("childFacts").innerHTML = D.hk.children.map((f) => `<div class="fact"><b>${f[0]}</b><span>${f[1]}</span><em>${f[2]}</em></div>`).join("");
+      let o3 = baseOpts();
+      o3.plugins.legend.display = false;
+      o3.scales.y.beginAtZero = true;
+      o3.scales.y.title = { display: true, text: "每十萬人新症", color: C.muted };
+      o3.plugins.tooltip.callbacks = { label: (ctx) => ` 約 ${fmt.num(ctx.parsed.y)} 宗／每十萬人` };
+      draw("youngAge", { type: "bar", data: { labels: Y.incidenceByAge.map((x) => x[0]), datasets: [barDs("癌症發病率", Y.incidenceByAge.map((x) => x[1]), [c.soft, c.color, c.color], { maxBarThickness: 60 })] }, options: o3 });
+
+      const st = D.hk.survivalTrend;
+      keyFact("kf-survival", `${st[0][1]}% → ${st[1][1]}%`,
+        `<b>香港癌症病人五年存活率上升緊（${st[0][0]} → ${st[1][0]}）。</b>早發現、治療進步，活得耐咗；但治療期亦長咗，要預足醫療費同停工期間嘅收入。`, "", c.color);
+      const T2 = D.hk.cancerTrend, tcols = [C.female, "#00A758", "#0E5E57", "#8A5B00"];
+      const names2 = Object.keys(T2).filter((k) => k !== "years");
+      o3 = baseOpts();
+      o3.scales.y.title = { display: true, text: "每年新症（宗）", color: C.muted };
+      o3.plugins.tooltip.callbacks = { label: (ctx) => ` ${ctx.dataset.label}：${fmt.num(ctx.parsed.y)} 宗` };
+      draw("hkCancerTrend", { type: "line", data: { labels: T2.years, datasets: names2.map((k, i) => lineDs(k, T2[k], tcols[i])) }, options: o3 });
+      const ly = T2.years.length - 1;
+      $("hkCancerTrendNote").textContent = `按數據年份（香港癌症資料統計中心）。${T2.years[0]} → ${T2.years[ly]}：肺癌 +${growth(T2["肺癌"][ly], T2["肺癌"][0])}%、乳癌 +${growth(T2["乳癌"][ly], T2["乳癌"][0])}%、前列腺癌 +${growth(T2["前列腺癌"][ly], T2["前列腺癌"][0])}%。2020 年新症數字下跌，同疫情期間少咗人檢查有關。`;
+
       const cls = (v) => v >= 80 ? "ok" : v >= 50 ? "mid" : "bad";
       $("survivalTable").innerHTML = `<table class="data-table" style="min-width:420px"><thead><tr><th>癌症</th><th>第一期</th><th>第二期</th><th>第三期</th><th>第四期</th></tr></thead><tbody>${
         D.hk.survival.map((r) => `<tr><td>${r[0]}</td>${r[1].map((v) => `<td><span class="pill ${cls(v)}">${v.toFixed(1)}%</span></td>`).join("")}</tr>`).join("")
@@ -476,6 +524,12 @@
       keyFact("kf-death-amount", fmt.p(pct(L.bands[0], L.n), 0),
         `<b>${fmt.p(pct(L.bands[0], L.n), 0)} 身故個案賠 $25 萬或以下。</b>最高一宗 ${fmt.wan(L.max)}，分別在於當初買咗幾多保額：人壽保額要按家庭開支、按揭同供養年期去計。`, "", c.color);
       $("hkDeath").innerHTML = bars(D.hk.death2024, "#5B6B6A", { valueFn: (x) => fmt.num(x[1]) + " 人" });
+      const DT = D.hk.deathTrend, dk = Object.keys(DT).filter((k) => k !== "years"), dcols = [c.color, "#0E5E57", "#5B6B6A"];
+      const o4 = baseOpts();
+      o4.scales.y.beginAtZero = true;
+      o4.scales.y.title = { display: true, text: "死亡人數", color: C.muted };
+      o4.plugins.tooltip.callbacks = { label: (ctx) => ` ${ctx.dataset.label}：${fmt.num(ctx.parsed.y)} 人` };
+      draw("hkDeathTrend", { type: "line", data: { labels: DT.years, datasets: dk.map((k, i) => lineDs(k, DT[k], dcols[i])) }, options: o4 });
     }
     renderTypeDetail(key);
   }

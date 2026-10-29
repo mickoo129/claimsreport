@@ -144,3 +144,16 @@ th { color: var(--muted); font-weight: 500; font-size: 7.5pt; }
 .toc em { font-style: normal; color: var(--muted); font-size: 7.5pt; }
 .qt { color: #fff; font-size: 7pt; border-radius: 1mm; padding: 0 1.5mm; margin-right: 1.5mm; vertical-align: .3mm; }
 .trendt td, .trendt th { padding: 1mm 1.4mm; }
+
+/* 新增：事實卡、輪候時間 */
+.facts { display: grid; gap: 2.5mm; }
+.facts > div { border-left: 1mm solid var(--c); background: var(--bg); border-radius: 1.5mm; padding: 2mm 3mm; break-inside: avoid; }
+.facts b { display: block; font-family: var(--mk-num, inherit); font-size: 16pt; line-height: 1.15; color: var(--c); }
+.facts span { display: block; font-size: 9pt; font-weight: 700; }
+.facts em { display: block; font-style: normal; font-size: 7.5pt; color: var(--muted); }
+.waits > div { border: 1px solid var(--line); border-top: 1mm solid var(--c); border-radius: 2mm; padding: 3mm 4mm; break-inside: avoid; }
+.waits span { display: block; font-size: 8.5pt; color: var(--muted); }
+.waits b { display: block; font-family: var(--mk-num, inherit); font-size: 22pt; line-height: 1.2; color: #0E5E57; }
+.waits em { display: block; font-style: normal; font-size: 7.5pt; color: var(--muted); }
+.src { columns: 2; column-gap: 6mm; } .src li { break-inside: avoid; }
+.fill td { height: 8.5mm; }
