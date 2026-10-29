@@ -27,7 +27,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 body {
   margin: 0;
   font-family: var(--font);
@@ -222,12 +222,14 @@ a { color: inherit; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); }
   .takeaways, .grid-2, .split, .check-grid, .questions, .foot-top { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: repeat(2, 1fr); }
-  .print-btn { text-decoration: none; white-space: nowrap; display: none; }
 }
 @media (max-width: 560px) {
   body { font-size: 15px; }
   .br-sm { display: inline; }
-  .brand span:last-child { display: none; }
+  .nav-in { flex-wrap: wrap; height: auto; row-gap: 0; column-gap: 10px; padding-top: 8px; }
+  .brand { flex: 1; min-width: 0; }
+  .nav-links { order: 3; flex: none; width: 100%; margin: 6px 0 6px; }
+  .brand-icon { width: 28px; height: 28px; }
   .hero { padding: 36px 0 32px; }
   .sec { padding: 40px 0; }
   .sec-head { gap: 10px; }
@@ -388,14 +390,14 @@ a.mult:hover { background: #fff; }
 .q-tag { display: inline-block; color: #fff; font-size: 12px; font-weight: 700; border-radius: 6px; padding: 1px 8px; margin-bottom: 6px; }
 .ck { border-top: 4px solid var(--c); }
 .callout { align-self: start; }
-@media (max-width: 900px) { .ch-stats { grid-template-columns: 1fr 1fr 1fr; } .year-pick.sticky-pick { top: 88px; } }
+@media (max-width: 900px) { .ch-stats { grid-template-columns: 1fr 1fr 1fr; } .year-pick.sticky-pick { top: 92px; } }
 @media (max-width: 560px) {
   .ch-stats { grid-template-columns: 1fr; gap: 8px; }
   .cs { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0 10px; }
   .cs em { grid-column: 1 / -1; }
   .ch-banner { padding: 28px 0 22px; }
   .now-bar .wrap { font-size: 12px; }
-  .year-pick.sticky-pick { top: 86px; }
+  .year-pick.sticky-pick { top: 124px; }
 }
 @media print { .now-bar, .sticky-pick { display: none !important; } .ch-banner { break-before: page; } }
 @media (max-width: 560px) { .year-pick.sticky-pick { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .year-pick.sticky-pick::-webkit-scrollbar { display: none; } .year-pick.sticky-pick .lbl { white-space: nowrap; } }
@@ -429,7 +431,8 @@ a.mult:hover { background: #fff; }
 .mk-print-head{display:none}
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .mk-no-print,.mk-print-btn,.mk-ecard-btn{display:none!important}
+  .mk-no-print,.mk-print-btn,.mk-share-btn,.mk-toast,.mk-ecard-btn{display:none!important}
+  .mk-header{position:static}
   .mk-ecard{break-inside:avoid;padding:10px 14px;margin-top:14px}
   .mk-ecard-qr{display:block}
   .mk-ecard-qr svg{width:22mm;height:22mm;display:block}
@@ -437,6 +440,18 @@ a.mult:hover { background: #fff; }
   .mk-print-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:2px solid var(--mk-brand);padding:0 0 5px;margin:0 0 10px;font-family:var(--mk-sans);color:var(--mk-muted);font-size:9pt}
   .mk-print-head b{color:var(--mk-deep);font-size:11pt}
 }
+/* 頁頭：統一鎖住喺頂；第一行 icon + 工具名 + 按鈕 */
+.mk-header{position:sticky;top:0;z-index:50}
+.mk-bar{display:flex;align-items:center;gap:12px;min-height:56px}
+.mk-title{display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--mk-sans);font-weight:900;font-size:17px;white-space:nowrap}
+.mk-title span{overflow:hidden;text-overflow:ellipsis}
+.mk-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none}
+/* 分享呢個方案（同列印按鈕一樣樣式） */
+.mk-share-btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--mk-brand);background:var(--mk-surface);color:var(--mk-brand-ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.mk-share-btn:hover{background:var(--mk-brand-soft)}
+.mk-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:999;background:var(--mk-ink);color:#fff;font:600 14px/1.4 var(--mk-sans);padding:10px 16px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.18);max-width:calc(100vw - 32px)}
+/* 手機：按鈕字縮短（「分享」「列印」） */
+@media (max-width:480px){.mk-long{display:none}.mk-print-btn,.mk-share-btn{padding:0 10px}}
 /* ===== MKPA 統一標準 完 ===== */
 
 .footer .mk-ecard { margin-top: 0; }
