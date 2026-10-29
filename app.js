@@ -308,7 +308,7 @@
         ${card("大型手術一次要幾多錢？", `<div id="complexList"></div><p class="chart-note">中大醫院定價收費（4 人房，2025 年 12 月）。Level 1 = 冇其他重大病；Level 3 = 有嚴重併發症。</p>`)}
         ${card("癌症標靶藥：一年藥費", `<div id="drugList"></div><p class="chart-note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>`)}
       </div>
-      ${card("一場癌症，一年醫療費要幾多？", `<div class="table-scroll" id="cancerCostTable"></div><p class="chart-note">醫管局、食衞局、衞生署及私家醫生資料（2019 年報告整理）。實際費用視乎病情同治療方案；「—」代表冇實際數字。</p>`, "mt")}
+      ${card("一場癌症，一年醫療費要幾多？", `<div class="table-scroll" id="cancerCostTable"></div><p class="chart-note">醫管局、食衞局、衞生署及私家醫生資料（2019 年）。實際費用視乎病情同治療方案；「—」代表冇實際數字。</p>`, "mt")}
       ${subTitle("2.4", "香港人幾時最多入院？")}
       <div class="grid-2">
         ${card("香港住院人數（按年齡，2025 年調查）", chartBox("hospAge", "香港住院人數按年齡") + `<p class="chart-note">政府統計處主題性住戶統計調查（2024 年 10 月至 2025 年 1 月期間）。25–44 歲開始明顯上升，65 歲或以上最多。</p>`)}
@@ -418,7 +418,7 @@
         ${card("後生一輩：危疾風險上升緊", `<div class="fact-list" id="youngFacts"></div>`)}
         ${card("但年紀越大，風險越高", chartBox("youngAge", "香港按年齡癌症發病率") + `<p class="chart-note">香港癌症發病率（每十萬人口），香港癌症資料統計中心《2022 年香港癌症統計概覽》。</p>`)}
       </div>
-      ${card("小朋友都會有危疾同長期病", `<div class="fact-list cols-3" id="childFacts"></div><p class="chart-note">衞生防護中心（2023 年死因數字）、兒童癌病基金、美國疾控中心 2020 年數據；ADHD 輪候及費用經 2023、2024 年報告引用。</p>`, "mt")}` : ""}
+      ${card("小朋友都會有危疾同長期病", `<div class="fact-list cols-3" id="childFacts"></div><p class="chart-note">衞生防護中心（2023 年死因數字）、兒童癌病基金、美國疾控中心 2020 年數據。</p>`, "mt")}` : ""}
       ${subTitle(n + (isCI ? ".5" : ".4"), isCI ? "咩病最多人 claim？" : "咩原因最多？")}
       <div class="grid-2">
         ${card(`${c.long}：${T.causeWord}`, `<div id="${key}-causes"></div>`)}
@@ -435,7 +435,7 @@
       <div class="kf" id="kf-survival"></div>
       <div class="grid-2">
         ${card("五年相對存活率（按期數）", `<div class="table-scroll" id="survivalTable"></div><p class="chart-note">香港癌症資料統計中心《2022 年香港癌症統計概覽》（2024 年 10 月）。</p>`)}
-        ${card("危疾復發率參考", `<div id="recurrence"></div><p class="chart-note">出處見 2025 年賠償報告第 14 頁。復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
+        ${card("危疾復發率參考", `<div id="recurrence"></div><p class="chart-note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
       </div>
       ${card("香港整體：男女最常見癌症（2023 年新症）", `<div class="split" id="hkCancerGender"></div><p class="chart-note">香港癌症資料統計中心：75 歲前，大約每 4 名男性、每 5 名女性就有 1 位患癌。確診年齡中位數男 69 歲、女 64 歲。</p>`, "mt")}
       ${card("香港常見癌症新症：七年走勢", chartBox("hkCancerTrend", "香港常見癌症新症走勢") + `<p class="chart-note" id="hkCancerTrendNote"></p>`, "mt")}` : ""}
