@@ -506,3 +506,11 @@ a.mult:hover { background: #fff; }
 /* 年份掣只喺需要揀年份嘅小節黐住；有年份標籤嘅圖先跟年份轉 */
 .yr-scope { position: relative; }
 .yr-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--c-ink, var(--c)); background: var(--soft, #F5F5F5); font-family: var(--mk-num, inherit); vertical-align: 1px; }
+
+/* 開頭兩個大數字 */
+.punch-figs { display: flex; flex-wrap: wrap; gap: 14px 40px; margin-top: 14px; width: 100%; }
+.punch-figs .pf { display: flex; flex-direction: column; }
+.punch-figs .pf b { font-family: var(--num, var(--mk-num)); font-size: clamp(36px, 5.6vw, 60px); font-weight: 700; line-height: 1.05; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.punch-figs .pf b small { font-family: var(--mk-sans, inherit); font-size: .42em; font-weight: 700; margin-left: 4px; color: #C9E9DA; }
+.punch-figs .pf > span { font-size: 14px; color: #C9DDD8; margin-top: 4px; }
+@media print { .punch-figs .pf b, .punch-figs .pf b small { color: var(--ink) !important; } }

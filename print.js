@@ -56,8 +56,8 @@
     const s = D.summary[Y][c.key], s0 = D.summary[Y0][c.key];
     const avg = c.key === "death" ? D.death[Y].avg : c.key === "critical" ? D.critical[Y].avg : (s.amt * 1e8) / s.cases;
     return `<div class="chs">${[
-      [`${Y} 年賠款`, `${f.yi(s.amt)} 億`, `七年 +${growth(s.amt, s0.amt)}%`],
-      [`${Y} 年成功宗數`, `${f.num(s.cases)}+`, `七年 +${growth(s.cases, s0.cases)}%`],
+      [`${Y} 年賠款`, `${f.yi(s.amt)} 億`, `比 ${Y0} 年 +${growth(s.amt, s0.amt)}%`],
+      [`${Y} 年成功宗數`, `${f.num(s.cases)}+`, `比 ${Y0} 年 +${growth(s.cases, s0.cases)}%`],
       ["平均每宗", f.wan(avg), c.key === "hospital" || c.key === "accident" ? "總額 ÷ 宗數推算" : "報告公布平均"]
     ].map((x) => `<div><span>${x[0]}</span><b>${x[1]}</b><em>${x[2]}</em></div>`).join("")}</div>`;
   }
@@ -83,7 +83,7 @@
     </div>
     <div class="toc">${[[NAVY, "1", "總覽：四類比較", "@all"], [CAT.hospital, "2", "醫療／住院", "@hospital"], [CAT.critical, "3", "危疾", "@critical"], [CAT.death, "4", "人壽／身故", "@death"], [CAT.accident, "5", "意外", "@accident"], [CHECK, "6", "檢視保障", "@check"]]
       .map((x) => `<div style="border-left:1.4mm solid ${x[0].color}"><b>第 ${x[1]} 部分</b><span>${x[2]}</span><em>P.{{${x[3]}}}</em></div>`).join("")}</div>
-    ${sub("1.1", "七年走勢：賠款差唔多翻倍")}
+    ${sub("1.1", "賠款走勢：差唔多翻倍")}
     <p class="lead-s">${Y0} → ${Y}：醫療 +${growth(s.hospital.amt, s0.hospital.amt)}%、危疾 +${growth(s.critical.amt, s0.critical.amt)}%、人壽 +${growth(s.death.amt, s0.death.amt)}%、意外 +${growth(s.accident.amt, s0.accident.amt)}%。</p>
     <div class="box">${chart("cTrend", 52)}</div>
     <table>
@@ -163,7 +163,7 @@
     <div class="g2">${box("每年賠款（億港元）", chart("kAmt", 42))}${box("每年成功宗數", chart("kCases", 42))}</div>
     ${sub("3.2", "男定女多？")}
     <div class="g2">
-      ${box("女性佔幾多？（七年）", chart("kFemale", 48) + `<p class="note">七年都企喺 63–68%，主因乳癌。</p>`)}
+      ${box("女性佔幾多？", chart("kFemale", 48) + `<p class="note">七年都企喺 63–68%，主因乳癌。</p>`)}
       ${box(`${Y} 年：年齡 × 性別`, chart("kGender", 48) + `<p class="note">21–40 歲女性個案係男性嘅 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p>`)}
     </div>`);
   page(K, "第 3 部分 · 危疾保險（續）", `
@@ -186,7 +186,7 @@
     ${kf(`${Math.round(ci.max / ci.avg)} 倍`, `最高一宗 ${f.wan(ci.max)}，係平均 ${f.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。分別在於當初買咗幾多保額。`)}
     <div class="g2">
       ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, ci.bands[i]]), (x, i) => i >= 3 ? K.color : K.soft, { total: ci.n }))}
-      ${box("平均 vs 最高一宗（七年）", chart("kMax", 40))}
+      ${box("平均 vs 最高一宗", chart("kMax", 40))}
     </div>`);
   const cls = (v) => v >= 80 ? "ok" : v >= 50 ? "mid" : "bad";
   page(K, "第 3 部分 · 危疾保險（續）", `
@@ -205,7 +205,7 @@
     <p class="note">香港癌症資料統計中心：75 歲前，${D.hk.cancerRisk.men}、${D.hk.cancerRisk.women}可能患癌。</p>`);
   const CT = D.hk.cancerTrend, ctl = CT.years.length - 1;
   page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.7", "癌症知多啲（續）：香港常見癌症新症七年走勢")}
+    ${sub("3.7", `癌症知多啲（續）：香港常見癌症新症走勢（${D.hk.cancerTrend.years[0]}–${D.hk.cancerTrend.years[D.hk.cancerTrend.years.length - 1]}）`)}
     ${box("香港常見癌症每年新症", chart("kCancerTrend", 70) + `<p class="note">按數據年份（香港癌症資料統計中心）。${CT.years[0]} → ${CT.years[ctl]}：肺癌 +${growth(CT["肺癌"][ctl], CT["肺癌"][0])}%、乳癌 +${growth(CT["乳癌"][ctl], CT["乳癌"][0])}%、前列腺癌 +${growth(CT["前列腺癌"][ctl], CT["前列腺癌"][0])}%。2020 年新症下跌，同疫情期間少咗人檢查有關。</p>`)}
     <table class="trendt"><thead><tr><th>新症（宗）</th>${CT.years.map((y) => `<th>${y}</th>`).join("")}</tr></thead><tbody>
       ${Object.keys(CT).filter((k) => k !== "years").map((k) => `<tr><td>${k}</td>${CT[k].map((v) => `<td>${f.num(v)}</td>`).join("")}</tr>`).join("")}
@@ -228,11 +228,11 @@
     </div>
     <div class="g2">
       ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, de.bands[i]]), (x, i) => i >= 3 ? L.color : L.soft, { total: de.n }))}
-      ${box("平均 vs 最高一宗（七年）", chart("lMax", 34))}
+      ${box("平均 vs 最高一宗", chart("lMax", 34))}
     </div>`);
   const DT = D.hk.deathTrend;
   page(L, "第 4 部分 · 人壽保險（續）", `
-    ${sub("4.4", "咩原因最多？（續）：香港主要死因七年走勢")}
+    ${sub("4.4", `咩原因最多？（續）：香港主要死因走勢（${D.hk.deathTrend.years[0]}–${D.hk.deathTrend.years[D.hk.deathTrend.years.length - 1]}）`)}
     ${box("香港每年死亡人數（三大死因）", chart("lDeathTrend", 70) + `<p class="note">按數據年份（香港統計年刊）。2022 年另有新冠 9,291 人死亡、2023 年 2,594 人，未計入圖內。</p>`)}
     <table class="trendt"><thead><tr><th>死亡人數</th>${DT.years.map((y) => `<th>${y}</th>`).join("")}</tr></thead><tbody>
       ${Object.keys(DT).filter((k) => k !== "years").map((k) => `<tr><td>${k}</td>${DT[k].map((v) => `<td>${f.num(v)}</td>`).join("")}</tr>`).join("")}

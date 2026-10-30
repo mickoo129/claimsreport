@@ -145,7 +145,11 @@
     const days = 365;
     $("punch").innerHTML = `
       <div class="punch-big">每 ${cnt((days * 24 * 60) / s.cases, { dec: 1 })} 分鐘</div>
-      <div class="punch-text">就有一宗理賠成功賠出。${LATEST} 年全年 <b>${fmt.num(s.cases)}</b> 宗，合共賠出超過 <b>${s.total} 億</b>。</div>`;
+      <div class="punch-text">就有一宗理賠成功賠出</div>
+      <div class="punch-figs">
+        <div class="pf"><b>${cnt(s.cases)}<small>宗</small></b><span>${LATEST} 年成功理賠</span></div>
+        <div class="pf"><b>${cnt(s.total, { pre: "$" })}<small>億+</small></b><span>${LATEST} 年合共賠出</span></div>
+      </div>`;
     const perDay = [
       [null, "每日賠出", cnt((s.total * 1e8) / days / 1e4, { pre: "$", post: "萬" }), C.accent, "全年 " + s.total + " 億 ÷ 365 日"],
       ["hospital", "醫療／住院", cnt(s.hospital.cases / days, { post: " 宗" }), CAT.hospital.color, "每日 →"],
@@ -247,7 +251,7 @@
       return `<div class="rate-row"><span class="rate-n"><i style="background:${c.color}"></i>${c.long}</span>
         <span class="rate-track"><i style="width:${v}%;background:${c.color}"></i></span>
         <span class="rate-v"><b>${Math.round(v)}</b> / 100</span>
-        <span class="rate-r">七年 ${Math.min(...all).toFixed(1)}–${Math.max(...all).toFixed(1)}%</span></div>`;
+        <span class="rate-r">${ys[0]}–${ly}：${Math.min(...all).toFixed(1)}–${Math.max(...all).toFixed(1)}%</span></div>`;
     }).join("");
   }
   function renderRates() {
@@ -275,8 +279,8 @@
       const avg = c.key === "death" ? D.death[LATEST].avg : c.key === "critical" ? D.critical[LATEST].avg : (s.amt * 1e8) / s.cases;
       const totalAmt = catSum(LATEST, "amt");
       $("chStats-" + c.key).innerHTML = [
-        [`${LATEST} 年賠款`, `${fmt.yi(s.amt)} 億`, `佔四類 ${fmt.p(pct(s.amt, totalAmt), 0)} · 七年 +${growth(s.amt, s0.amt)}%`],
-        [`${LATEST} 年成功宗數`, `${fmt.num(s.cases)}+`, `七年 +${growth(s.cases, s0.cases)}%`],
+        [`${LATEST} 年賠款`, `${fmt.yi(s.amt)} 億`, `佔四類 ${fmt.p(pct(s.amt, totalAmt), 0)} · 比 ${YEARS[0]} 年 +${growth(s.amt, s0.amt)}%`],
+        [`${LATEST} 年成功宗數`, `${fmt.num(s.cases)}+`, `比 ${YEARS[0]} 年 +${growth(s.cases, s0.cases)}%`],
         ["平均每宗", fmt.wan(avg), c.key === "hospital" || c.key === "accident" ? "總額 ÷ 宗數推算" : "報告公布平均賠償額"]
       ].map((x) => `<div class="cs"><span>${x[0]}</span><b>${x[1]}</b><em>${x[2]}</em></div>`).join("");
     });
@@ -407,7 +411,7 @@
       ${subTitle(n + ".2", "男定女多？")}
       <div class="kf" id="kf-${key}-gender"></div>
       <div class="grid-2">
-        ${card(`${c.long}：女性佔幾多？（七年）`, chartBox(key + "-gshare", `${c.long}女性佔比`))}
+        ${card(`${c.long}：女性佔幾多？`, chartBox(key + "-gshare", `${c.long}女性佔比`))}
         ${card(`${c.long}：年齡 × 性別<span class="yr-tag" data-yr="${key}"></span>`, chartBox(key + "-gage", `${c.long}按年齡及性別`) + `<p class="chart-note" id="${key}-gnote"></p>`)}
       </div>
       ${subTitle(n + ".3", "幾多歲最多？")}
@@ -420,12 +424,12 @@
         ${card(`${c.long}：${T.causeWord}<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-causes"></div>`)}
         ${isCI ? card(`癌症個案入面最多係邊種？<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
       </div>
-      ${card(`癌症佔${c.long}幾多？（七年）`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
+      ${card(`癌症佔${c.long}幾多？`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
       ${subTitle(n + ".5", "一宗賠幾多？")}
       <div class="kf" id="kf-${key}-amount"></div>
       <div class="grid-2">
         ${card(`${c.long}：每宗賠償額分佈<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-bands"></div>`)}
-        ${card(`${c.long}：平均 vs 最高一宗（七年）`, chartBox(key + "-max", `${c.long}平均及最高賠償額`) + `<div class="mini-stats" id="${key}-amountStats"></div>`)}
+        ${card(`${c.long}：平均 vs 最高一宗`, chartBox(key + "-max", `${c.long}平均及最高賠償額`) + `<div class="mini-stats" id="${key}-amountStats"></div>`)}
       </div>
       </div>
       ${isCI ? `${subTitle("3.6", "危疾年輕化、小朋友都會中")}
@@ -442,8 +446,8 @@
         ${card("危疾復發率參考", `<div id="recurrence"></div><p class="chart-note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
       </div>
       ${card("香港整體：男女最常見癌症（2023 年新症）", `<div class="split" id="hkCancerGender"></div><p class="chart-note">香港癌症資料統計中心：75 歲前，大約每 4 名男性、每 5 名女性就有 1 位患癌。確診年齡中位數男 69 歲、女 64 歲。</p>`, "mt")}
-      ${card("香港常見癌症新症：七年走勢", chartBox("hkCancerTrend", "香港常見癌症新症走勢") + `<p class="chart-note" id="hkCancerTrendNote"></p>`, "mt")}` : ""}
-      ${!isCI ? card("香港主要死因：七年走勢", chartBox("hkDeathTrend", "香港主要死因走勢") + `<p class="chart-note">按數據年份（香港統計年刊）。2022 年另有新冠 9,291 人死亡、2023 年 2,594 人，未計入圖內。</p>`, "mt") : ""}`;
+      ${card(`香港常見癌症新症走勢（${D.hk.cancerTrend.years[0]}–${D.hk.cancerTrend.years[D.hk.cancerTrend.years.length - 1]}）`, chartBox("hkCancerTrend", "香港常見癌症新症走勢") + `<p class="chart-note" id="hkCancerTrendNote"></p>`, "mt")}` : ""}
+      ${!isCI ? card(`香港主要死因走勢（${D.hk.deathTrend.years[0]}–${D.hk.deathTrend.years[D.hk.deathTrend.years.length - 1]}）`, chartBox("hkDeathTrend", "香港主要死因走勢") + `<p class="chart-note">按數據年份（香港統計年刊）。2022 年另有新冠 9,291 人死亡、2023 年 2,594 人，未計入圖內。</p>`, "mt") : ""}`;
 
     // static (all-years) charts
     drawYearBars(key + "-amt", YEARS.map((y) => D.summary[y][key].amt), c, (v) => fmt.yi(v) + " 億");
