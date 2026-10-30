@@ -70,8 +70,8 @@
   page(NAVY, "", `
     <div class="cover">
       <p class="eb">個人保險賠償報告 · ${Y0}–${Y} · 香港及澳門保單</p>
-      <h1>七年理賠數據，<br>睇清楚錢賠咗去邊</h1>
-      <p>按醫療、危疾、人壽、意外四類分開講：邊類最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+      <h1>理賠數據，<br>睇清楚錢賠咗去邊</h1>
+      <p>年度理賠報告，按醫療、危疾、人壽、意外四類分開講：邊類最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
       <div class="pnch"><b>每 ${((365 * 24 * 60) / s.cases).toFixed(1)} 分鐘</b><span>就有一宗理賠成功賠出 · 平均每日賠出 $${f.num((s.total * 1e8) / 365 / 1e4)}萬</span></div>
       <div class="kstats">${[
         [null, "四類總賠償", `${s.total}億+`, `${Y0} 年 ${s0.total} 億 · +${growth(s.total, s0.total)}%`],
@@ -97,7 +97,7 @@
   const tc = catSum(Y, "cases"), ta = catSum(Y, "amt");
   page(NAVY, "第 1 部分 · 總覽", `
     ${sub("1.2", "咩 claim 得最多？")}
-    ${kf("醫療", `每 5 宗理賠有 4 宗係醫療／住院（${Y} 年 ${f.num(s.hospital.cases)} 宗），七年宗數升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`)}
+    ${kf("醫療", `每 5 宗理賠有 4 宗係醫療／住院（${Y} 年 ${f.num(s.hospital.cases)} 宗），宗數比 ${Y0} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`)}
     ${box(`每類每年成功獲賠宗數（${Y0}–${Y}）`, `<div class="g4">${CATS.map((c) => { const a = D.summary[Y0][c.key].cases, b = s[c.key].cases; return `<div><div class="mh"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${c.color}">+${growth(b, a)}%</b></div><div class="mv">${f.num(a)} → <b>${f.num(b)}</b></div>${chart("cCnt-" + c.key, 44)}</div>`; }).join("")}</div><p class="note">各圖刻度唔同；2019–2021 年身故及危疾以「保單」計。</p>`)}
     ${box(`${Y} 年四類比較`, `<table>
         <thead><tr><th></th><th>成功宗數</th><th>佔宗數</th><th>金額（億）</th><th>佔金額</th><th>平均每宗</th></tr></thead>
@@ -163,7 +163,7 @@
     <div class="g2">${box("每年賠款（億港元）", chart("kAmt", 42))}${box("每年成功宗數", chart("kCases", 42))}</div>
     ${sub("3.2", "男定女多？")}
     <div class="g2">
-      ${box("女性佔幾多？", chart("kFemale", 48) + `<p class="note">七年都企喺 63–68%，主因乳癌。</p>`)}
+      ${box("女性佔幾多？", chart("kFemale", 48) + `<p class="note">歷年都企喺 63–68%，主因乳癌。</p>`)}
       ${box(`${Y} 年：年齡 × 性別`, chart("kGender", 48) + `<p class="note">21–40 歲女性個案係男性嘅 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p>`)}
     </div>`);
   page(K, "第 3 部分 · 危疾保險（續）", `

@@ -171,7 +171,7 @@
     $("heroStats").innerHTML = [
       ["四類總賠償", `${s.total}億+`, `${YEARS[0]} 年 ${s0.total} 億 → 升 ${growth(s.total, s0.total)}%`, series.total],
       ["醫療：住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} → 升 ${growth(s.hospital.cases, s0.hospital.cases)}%`, series.hosp],
-      ["危疾：女性佔比", fmt.p(femaleShare(ci), 0), `七年都企喺 63–68%`, series.female, [0, 100]],
+      ["危疾：女性佔比", fmt.p(femaleShare(ci), 0), `歷年都企喺 63–68%`, series.female, [0, 100]],
       ["危疾：最高一宗", fmt.wan(ci.max), `${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；平均只係 ${fmt.wan(ci.avg)}`, series.ciMax]
     ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#7FE0AE", x[4])}<div class="s">${x[2]}</div></div>`).join("");
   }
@@ -266,10 +266,10 @@
   function renderOverviewFacts() {
     const s = D.summary[LATEST], s0 = D.summary[YEARS[0]];
     keyFact("kf-trend", `+${growth(s.total, s0.total)}%`,
-      `<b>四類加埋，七年總賠款由 ${s0.total} 億升到 ${s.total} 億。</b>升得最快係危疾（+${growth(s.critical.amt, s0.critical.amt)}%）同醫療（+${growth(s.hospital.amt, s0.hospital.amt)}%），即係「病」嘅開支升得最急。`);
+      `<b>四類加埋，總賠款由 ${YEARS[0]} 年 ${s0.total} 億升到 ${LATEST} 年 ${s.total} 億。</b>升得最快係危疾（+${growth(s.critical.amt, s0.critical.amt)}%）同醫療（+${growth(s.hospital.amt, s0.hospital.amt)}%），即係「病」嘅開支升得最急。`);
     const hospAvg = (s.hospital.amt * 1e8) / s.hospital.cases;
     keyFact("kf-mix", "醫療",
-      `<b>醫療／住院係 claim 得最多嘅保障：每 5 宗理賠有 4 宗係住院（${LATEST} 年 ${fmt.num(s.hospital.cases)} 宗），七年宗數升 ${growth(s.hospital.cases, s0.hospital.cases)}%。</b>不過每宗平均只係 ${fmt.wan(hospAvg)}；一宗危疾平均 ${fmt.wan(D.critical[LATEST].avg)}。`, "", CAT.hospital.color);
+      `<b>醫療／住院係 claim 得最多嘅保障：每 5 宗理賠有 4 宗係住院（${LATEST} 年 ${fmt.num(s.hospital.cases)} 宗），宗數比 ${YEARS[0]} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。</b>不過每宗平均只係 ${fmt.wan(hospAvg)}；一宗危疾平均 ${fmt.wan(D.critical[LATEST].avg)}。`, "", CAT.hospital.color);
   }
 
   /* ---------- chapter banner stats ---------- */
@@ -293,7 +293,7 @@
     $("body-hospital").innerHTML = `
       <div class="kf" id="kf-hospital"></div>
       ${subTitle("2.1", "醫療 claim 咗幾多？")}
-      ${lead(`醫療賠款同宗數七年都差唔多升咗七至九成；平均每宗就企喺 $2 萬左右。`)}
+      ${lead(`醫療賠款同宗數由 ${YEARS[0]} 年起都升咗七至九成；平均每宗就企喺 $2 萬左右。`)}
       <div class="grid-2">
         ${card("每年醫療／住院賠款（億港元）", chartBox("hospAmt", "每年住院賠款"))}
         ${card("每年醫療／住院成功宗數", chartBox("hospCases", "每年住院宗數"))}
@@ -302,7 +302,7 @@
       <div class="kf" id="kf-inflation"></div>
       <div class="grid-2">
         ${card("住院手術費平均數（個人保單）", chartBox("surgeonChart", "住院手術費平均數走勢") + `<p class="chart-note">香港保險業聯會醫療索償數據調查。2019→2022 年，半私家房平均手術費升 22%，標準房升 25%。</p>`)}
-        ${card("私家外科醫生收費：2018 → 2025", `<div id="doctorFees"></div><p class="chart-note">香港醫學會私家醫生收費調查：7 年間升 20%–50%。</p>`)}
+        ${card("私家外科醫生收費：2018 → 2025", `<div id="doctorFees"></div><p class="chart-note">香港醫學會私家醫生收費調查：2018 至 2025 年升 20%–50%。</p>`)}
       </div>
       ${card("常見手術收費中位數：2018 → 2022", `<div class="seg small" id="roomSeg">
           <button data-room="0" type="button">私家房</button><button class="on" data-room="1" type="button">半私家房</button><button data-room="2" type="button">標準房</button>
@@ -326,9 +326,9 @@
       <p class="chart-note">醫院管理局數字：90% 病人可以喺上述時間內做到手術，即係有一成人要等更耐。</p>`;
 
     keyFact("kf-hospital", `${fmt.p(pct(s.hospital.cases, s.cases), 0)}`,
-      `<b>${LATEST} 年每 5 宗理賠有 4 宗係醫療／住院。</b>${fmt.num(s.hospital.cases)} 宗、賠出 ${s.hospital.amt} 億，係四類之中用得最密、賠得最多嘅保障。七年宗數升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`, "", c.color);
+      `<b>${LATEST} 年每 5 宗理賠有 4 宗係醫療／住院。</b>${fmt.num(s.hospital.cases)} 宗、賠出 ${s.hospital.amt} 億，係四類之中用得最密、賠得最多嘅保障。宗數比 ${YEARS[0]} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`, "", c.color);
     keyFact("kf-inflation", fmt.wan(I.drugs[0][2]),
-      `<b>一年肝癌標靶藥嘅藥費。</b>私家外科醫生收費 7 年升 20–50%，私家醫院病房費亦普遍升一至五成；一次複雜大手術可以去到 ${fmt.wan(I.complex[0][2])}。`, "", c.color);
+      `<b>一年肝癌標靶藥嘅藥費。</b>私家外科醫生收費 2018 至 2025 年升 20–50%，私家醫院病房費亦普遍升一至五成；一次複雜大手術可以去到 ${fmt.wan(I.complex[0][2])}。`, "", c.color);
 
     drawYearBars("hospAmt", YEARS.map((y) => D.summary[y].hospital.amt), c, (v) => fmt.yi(v) + " 億");
     drawYearBars("hospCases", YEARS.map((y) => D.summary[y].hospital.cases), c, (v) => fmt.num(v) + " 宗");
@@ -401,7 +401,7 @@
     $("body-" + key).innerHTML = `
       <div class="kf" id="kf-${key}"></div>
       ${subTitle(n + ".1", `${c.long} claim 咗幾多？`)}
-      ${lead(`七年賠款由 ${fmt.yi(s0.amt)} 億升到 ${fmt.yi(s.amt)} 億（+${growth(s.amt, s0.amt)}%），宗數由 ${fmt.num(s0.cases)} 升到 ${fmt.num(s.cases)}（+${growth(s.cases, s0.cases)}%）。`)}
+      ${lead(`賠款由 ${YEARS[0]} 年 ${fmt.yi(s0.amt)} 億升到 ${LATEST} 年 ${fmt.yi(s.amt)} 億（+${growth(s.amt, s0.amt)}%），宗數由 ${fmt.num(s0.cases)} 升到 ${fmt.num(s.cases)}（+${growth(s.cases, s0.cases)}%）。`)}
       <div class="grid-2">
         ${card(`每年${c.long}賠款（億港元）`, chartBox(key + "-amt", `每年${c.long}賠款`))}
         ${card(`每年${c.long}成功宗數`, chartBox(key + "-cases", `每年${c.long}宗數`) + `<p class="chart-note">2019–2021 年以「保單」計，2022 年起以「個案」計。</p>`)}
@@ -486,7 +486,7 @@
       keyFact("kf-critical", `${L.avgAge} 歲`,
         `<b>危疾平均索賠年齡 ${L.avgAge} 歲，${fmt.p(a4160, 0)} 喺 41–60 歲出事</b>，正正係供樓、養家、供書最重嘅時候。${LATEST} 年 ${fmt.num(L.n)} 宗，${fmt.p(causePct(L, "癌症"), 0)} 係癌症。`, "", c.color);
       keyFact("kf-critical-gender", "3 宗有 2 宗",
-        `<b>危疾賠償 ${fmt.p(femaleShare(L), 0)} 係女性</b>，七年都一樣，主因係乳癌。21–40 歲女性個案係男性嘅 ${(L.female[1] / L.male[1]).toFixed(1)} 倍。`,
+        `<b>危疾賠償 ${fmt.p(femaleShare(L), 0)} 係女性</b>，歷年都一樣，主因係乳癌。21–40 歲女性個案係男性嘅 ${(L.female[1] / L.male[1]).toFixed(1)} 倍。`,
         picto(3, 2, C.female, C.male, PERSON) + `<span class="picto-cap"><i style="background:${C.female}"></i>女 <i style="background:${C.male}"></i>男</span>`, C.female);
       keyFact("kf-critical-amount", `${Math.round(L.max / L.avg)} 倍`,
         `<b>最高一宗危疾 ${fmt.wan(L.max)}，係平均 ${fmt.wan(L.avg)} 嘅 ${Math.round(L.max / L.avg)} 倍。</b>分別唔係病重唔重，而係<b>當初買咗幾多保額</b>：危疾一筆過賠，買幾多就賠幾多。`, "", c.color);
@@ -609,7 +609,7 @@
       </div>
       ${card("意外：平均每宗賠幾多？", chartBox("acc-avg", "意外平均每宗賠償") + `<p class="chart-note">總額 ÷ 成功宗數推算。報告冇公布意外嘅類型（交通、工作、家居等）同年齡分佈。${accDeath ? `另外，${LATEST} 年身故賠償之中有 ${accDeath[1]} 宗（${fmt.p(pct(accDeath[1], de.n))}）係意外身故。` : ""}</p>`, "mt")}`;
     keyFact("kf-accident", `${fmt.num(s.accident.cases)} 宗`,
-      `<b>意外宗數僅次於醫療，但每宗平均只係 ${fmt.money(avg[avg.length - 1])}。</b>屬於「宗數多、每宗細」；七年宗數升 ${growth(s.accident.cases, s0.accident.cases)}%。真正大額嘅意外（例如嚴重受傷、身故）要靠醫療同人壽保障。`, "", c.color);
+      `<b>意外宗數僅次於醫療，但每宗平均只係 ${fmt.money(avg[avg.length - 1])}。</b>屬於「宗數多、每宗細」；宗數比 ${YEARS[0]} 年升 ${growth(s.accident.cases, s0.accident.cases)}%。真正大額嘅意外（例如嚴重受傷、身故）要靠醫療同人壽保障。`, "", c.color);
     drawYearBars("acc-amt", YEARS.map((y) => D.summary[y].accident.amt), c, (v) => fmt.yi(v) + " 億");
     drawYearBars("acc-cases", YEARS.map((y) => D.summary[y].accident.cases), c, (v) => fmt.num(v) + " 宗");
     const opts = baseOpts();
