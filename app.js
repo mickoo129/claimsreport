@@ -684,23 +684,22 @@
 
   /* ---------- nav: where am I ---------- */
   function bindNav() {
+    /* 年份掣黐喺頁頭下面：按頁頭實際高度計 */
+    const hdr = $("topnav");
+    const setHdr = () => document.documentElement.style.setProperty("--hdr-h", hdr.offsetHeight + "px");
+    setHdr(); window.addEventListener("resize", setHdr);
     const links = [...document.querySelectorAll(".nav-links a")];
-    const nowBar = $("nowBar"), nowText = $("nowText");
-    const NAMES = { overview: ["總覽", "四類保險一齊比較", "#0E5E57"], medical: ["醫療／住院保險", "以下數字全部係講醫療／住院", CAT.hospital.color], critical: ["危疾保險", "以下數字全部係講危疾", CAT.critical.color], life: ["人壽保險（身故賠償）", "以下數字全部係講人壽／身故", "#B95924"], accident: ["意外保險", "以下數字全部係講意外", "#138185"], check: ["保障檢查", "對照自己嘅保障", "#0E5E57"] };
     const setActive = (id) => {
       links.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === "#" + id));
       const a = links.find((l) => l.getAttribute("href") === "#" + id);
       if (a) { const nav = a.parentElement; if (nav.scrollWidth > nav.clientWidth) nav.scrollLeft = a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2; }
-      const n = NAMES[id];
-      if (n) { nowBar.style.setProperty("--c", n[2]); nowText.innerHTML = `<b>你而家睇緊：${n[0]}</b><span>${n[1]}</span>`; nowBar.classList.add("show"); }
-      else nowBar.classList.remove("show");
     };
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
       }, { rootMargin: "-30% 0px -65% 0px" });
       document.querySelectorAll(".chapter").forEach((el) => io.observe(el));
-      const heroIo = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { links.forEach((l) => l.classList.remove("active")); nowBar.classList.remove("show"); } }); }, { rootMargin: "0px 0px -60% 0px" });
+      const heroIo = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) { links.forEach((l) => l.classList.remove("active")); } }); }, { rootMargin: "0px 0px -60% 0px" });
       heroIo.observe($("top"));
     }
   }
