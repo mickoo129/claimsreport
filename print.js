@@ -5,9 +5,9 @@
   const YEARS = D.meta.years, Y = D.meta.latest, Y0 = YEARS[0];
   const CATS = [
     { key: "hospital", name: "住院", long: "醫療／住院", color: "#3072D4", soft: "#A8C4ED", bg: "#F1F5FC" },
-    { key: "death", name: "身故", long: "人壽／身故", color: "#D86F35", soft: "#EFC3AA", bg: "#FCF5F1" },
+    { key: "death", name: "身故", long: "人壽／身故", color: "#D86F35", ink: "#B95924", soft: "#EFC3AA", bg: "#FCF5F1" },
     { key: "critical", name: "危疾", long: "危疾", color: "#953CB3", soft: "#D2ADDF", bg: "#F8F1FA" },
-    { key: "accident", name: "意外", long: "意外", color: "#158E92", soft: "#9DD0D1", bg: "#EFF7F7" }
+    { key: "accident", name: "意外", long: "意外", color: "#158E92", ink: "#138185", soft: "#9DD0D1", bg: "#EFF7F7" }
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
   const NAVY = { key: "all", long: "總覽", color: "#0E5E57", soft: "#C9DDD8", bg: "#E7F1EF" };
@@ -257,7 +257,7 @@
     ["危疾", "投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。"],
     ["全部", "上一次檢視保障係幾時？", "手術費、病房費年年升，建議每 1–2 年檢視一次。"]
   ];
-  const qc = { 危疾: K.color, 醫療: H.color, 人壽: L.color, 全部: NAVY.color };
+  const qc = { 危疾: K.color, 醫療: H.color, 人壽: L.ink, 全部: NAVY.color };
   page(CHECK, "第 6 部分 · 檢視保障", `
     ${sub("6.1", "同顧問傾之前，問自己 5 條問題")}
     <ol class="qs">${qs.map((q) => `<li><b><span class="qt" style="background:${qc[q[0]]}">${q[0]}</span>${q[1]}</b>${q[2]}</li>`).join("")}</ol>
@@ -284,7 +284,7 @@
   firstPage.all = 2;
   pages.forEach((p) => { p.body = p.body.replace(/\{\{@(\w+)\}\}/g, (_, k) => firstPage[k] || ""); });
   document.getElementById("pages").innerHTML = pages.map((p, i) => `
-    <section class="page" style="--c:${p.cat.color};--soft:${p.cat.soft};--bg:${p.cat.bg}">
+    <section class="page" style="--c:${p.cat.color};--c-ink:${p.cat.ink || p.cat.color};--soft:${p.cat.soft};--bg:${p.cat.bg}">
       ${i > 0 ? `<div class="ph"><span><b>MKPA</b> · 理賠數據解讀 ${Y0}–${Y}</span><span class="tag">${p.title}</span></div>` : ""}
       <div class="body">${p.body}</div>
       <div class="pf"><span>© ${YEAR_NOW} Michael Koo Protection Alliance (MKPA). 版權所有。　列印日期：${PRINT_DATE}</span><span>${i + 1} / ${total}</span></div>

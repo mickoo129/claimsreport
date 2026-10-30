@@ -93,7 +93,9 @@
   const PERSON = '<path d="M12 2.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm-7 19c0-4.6 3.1-8 7-8s7 3.4 7 8c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1Z"/>';
   const BLOCK = '<rect x="3" y="3" width="18" height="18" rx="4"/>';
   const picto = (n, filled, on, off, shape) => `<span class="picto" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<svg viewBox="0 0 24 24" fill="${i < filled ? on : off}">${shape}</svg>`).join("")}</span>`;
+  const TEXT_INK = { "#D86F35": "#B95924", "#158E92": "#138185" }; /* 白底寫字用分類文字色 */
   function keyFact(id, big, text, extra = "", color = C.accent) {
+    color = TEXT_INK[color] || color;
     const el = $(id);
     if (el) el.innerHTML = `<div class="kf-big" style="color:${color}">${big}</div><div class="kf-text">${text}</div>${extra ? `<div class="kf-extra">${extra}</div>` : ""}`;
   }
@@ -202,7 +204,7 @@
   function renderCounts() {
     $("countMultiples").innerHTML = CATS.map((c) => {
       const first = D.summary[YEARS[0]][c.key].cases, last = D.summary[LATEST][c.key].cases;
-      return `<a class="mult" href="${c.anchor}" style="--c:${c.color}"><div class="mult-h"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${c.color}">+${growth(last, first)}%</b></div>
+      return `<a class="mult" href="${c.anchor}" style="--c:${c.color}"><div class="mult-h"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${TEXT_INK[c.color] || c.color}">+${growth(last, first)}%</b></div>
         <div class="mult-v num">${fmt.num(first)} → <b>${fmt.num(last)}</b> 宗</div>
         <div class="chart-box mini"><canvas id="cnt-${c.key}" aria-label="${c.long}每年成功獲賠宗數"></canvas></div></a>`;
     }).join("");
@@ -674,7 +676,7 @@
       ["危疾", "投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。如實申報、清楚定義，可以減低日後爭議。"],
       ["全部", "上一次檢視保障係幾時？", "手術費、病房費年年升，保額買咗幾年可能已經追唔上。建議每 1–2 年檢視一次。"]
     ];
-    const col = { 危疾: CAT.critical.color, 醫療: CAT.hospital.color, 人壽: CAT.death.color, 全部: "#0E5E57" };
+    const col = { 危疾: "#953CB3", 醫療: "#3072D4", 人壽: "#B95924", 全部: "#0E5E57" };
     $("questions").innerHTML = q.map((x) => `<li><span class="q-tag" style="background:${col[x[0]]}">${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></li>`).join("");
     $("sourceList").innerHTML = D.sources.map((s) => `<li>${s}</li>`).join("");
     $("footMeta").textContent = `最後更新：${D.meta.updated} · 數據年份 ${YEARS[0]}–${LATEST}`;
@@ -684,7 +686,7 @@
   function bindNav() {
     const links = [...document.querySelectorAll(".nav-links a")];
     const nowBar = $("nowBar"), nowText = $("nowText");
-    const NAMES = { overview: ["總覽", "四類保險一齊比較", "#0E5E57"], medical: ["醫療／住院保險", "以下數字全部係講醫療／住院", CAT.hospital.color], critical: ["危疾保險", "以下數字全部係講危疾", CAT.critical.color], life: ["人壽保險（身故賠償）", "以下數字全部係講人壽／身故", CAT.death.color], accident: ["意外保險", "以下數字全部係講意外", CAT.accident.color], check: ["保障檢查", "對照自己嘅保障", "#0E5E57"] };
+    const NAMES = { overview: ["總覽", "四類保險一齊比較", "#0E5E57"], medical: ["醫療／住院保險", "以下數字全部係講醫療／住院", CAT.hospital.color], critical: ["危疾保險", "以下數字全部係講危疾", CAT.critical.color], life: ["人壽保險（身故賠償）", "以下數字全部係講人壽／身故", "#B95924"], accident: ["意外保險", "以下數字全部係講意外", "#138185"], check: ["保障檢查", "對照自己嘅保障", "#0E5E57"] };
     const setActive = (id) => {
       links.forEach((l) => l.classList.toggle("active", l.getAttribute("href") === "#" + id));
       const a = links.find((l) => l.getAttribute("href") === "#" + id);
