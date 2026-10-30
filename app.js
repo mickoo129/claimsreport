@@ -169,10 +169,10 @@
       ciMax: YEARS.map((y) => D.critical[y].max)
     };
     $("heroStats").innerHTML = [
-      ["四類總賠償", `${s.total}億+`, `${YEARS[0]} 年 ${s0.total} 億 → 升 ${growth(s.total, s0.total)}%`, series.total],
-      ["醫療：住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} → 升 ${growth(s.hospital.cases, s0.hospital.cases)}%`, series.hosp],
+      ["四類總賠償", `${s.total}億+`, `${YEARS[0]} 年 ${s0.total} 億 <span class="nw">→ 升 ${growth(s.total, s0.total)}%</span>`, series.total],
+      ["醫療：住院賠償宗數", fmt.num(s.hospital.cases), `${YEARS[0]} 年 ${fmt.num(s0.hospital.cases)} <span class="nw">→ 升 ${growth(s.hospital.cases, s0.hospital.cases)}%</span>`, series.hosp],
       ["危疾：女性佔比", fmt.p(femaleShare(ci), 0), `歷年都企喺 63–68%`, series.female, [0, 100]],
-      ["危疾：最高一宗", fmt.wan(ci.max), `${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；平均只係 ${fmt.wan(ci.avg)}`, series.ciMax]
+      ["危疾：最高一宗", fmt.wan(ci.max), `<span class="nw">${YEARS[0]} 年 ${fmt.wan(D.critical[YEARS[0]].max)}；</span><span class="nw">平均只係 ${fmt.wan(ci.avg)}</span>`, series.ciMax]
     ].map((x) => `<div class="hstat"><div class="k">${x[0]}<span class="yr">${YEARS[0]}–${LATEST}</span></div><div class="v">${x[1]}</div>${spark(x[3], "#7FE0AE", x[4])}<div class="s">${x[2]}</div></div>`).join("");
   }
 
@@ -209,7 +209,7 @@
     $("countMultiples").innerHTML = CATS.map((c) => {
       const first = D.summary[YEARS[0]][c.key].cases, last = D.summary[LATEST][c.key].cases;
       return `<a class="mult" href="${c.anchor}" style="--c:${c.color}"><div class="mult-h"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${TEXT_INK[c.color] || c.color}">+${growth(last, first)}%</b></div>
-        <div class="mult-v num">${fmt.num(first)} → <b>${fmt.num(last)}</b> 宗</div>
+        <div class="mult-v num"><span class="nw">${fmt.num(first)} →</span> <span class="nw"><b>${fmt.num(last)}</b> 宗</span></div>
         <div class="chart-box mini"><canvas id="cnt-${c.key}" aria-label="${c.long}每年成功獲賠宗數"></canvas></div></a>`;
     }).join("");
     CATS.forEach((c) => drawYearBars("cnt-" + c.key, YEARS.map((y) => D.summary[y][c.key].cases), c, (v) => fmt.num(v) + " 宗", true));
@@ -646,7 +646,7 @@
     else if (medType === "full") medVerdict = `<p class="verdict ok">全數賠償類型，大額住院較有保障</p><p class="hint">記得睇清楚門診癌症治療、標靶藥有冇包，同埋有冇終身或每年上限。</p>`;
     else if (med >= drug) medVerdict = `<p class="verdict ok">年限額足夠應付一年標靶藥</p>`;
     else if (med >= complexTop) medVerdict = `<p class="verdict warn">夠一次大型手術，但未必夠一年標靶藥</p>`;
-    else medVerdict = `<p class="verdict bad">年限額低過一次複雜大手術（${fmt.wan(complexTop)}）</p>`;
+    else medVerdict = `<p class="verdict bad">年限額低過一次複雜大手術<span class="nw">（${fmt.wan(complexTop)}）</span></p>`;
     $("checkResults").innerHTML = `
       <div class="ck" style="--c:${CAT.death.color}">
         <h4>人壽</h4><p class="sub">家庭開支 × ${yrs} 年 ＋ 債務</p>
