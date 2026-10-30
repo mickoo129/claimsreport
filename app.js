@@ -402,37 +402,39 @@
         ${card(`每年${c.long}賠款（億港元）`, chartBox(key + "-amt", `每年${c.long}賠款`))}
         ${card(`每年${c.long}成功宗數`, chartBox(key + "-cases", `每年${c.long}宗數`) + `<p class="chart-note">2019–2021 年以「保單」計，2022 年起以「個案」計。</p>`)}
       </div>
-      <div class="year-pick sticky-pick" data-scope="${key}" data-label="以下${c.long}數據年份"></div>
+      <div class="yr-scope">
+      <div class="year-pick sticky-pick" data-scope="${key}" data-label="${c.long}數據年份"></div>
       ${subTitle(n + ".2", "男定女多？")}
       <div class="kf" id="kf-${key}-gender"></div>
       <div class="grid-2">
         ${card(`${c.long}：女性佔幾多？（七年）`, chartBox(key + "-gshare", `${c.long}女性佔比`))}
-        ${card(`${c.long}：年齡 × 性別`, chartBox(key + "-gage", `${c.long}按年齡及性別`) + `<p class="chart-note" id="${key}-gnote"></p>`)}
+        ${card(`${c.long}：年齡 × 性別<span class="yr-tag" data-yr="${key}"></span>`, chartBox(key + "-gage", `${c.long}按年齡及性別`) + `<p class="chart-note" id="${key}-gnote"></p>`)}
       </div>
       ${subTitle(n + ".3", "幾多歲最多？")}
       ${isCI ? `<div class="grid-2">
-        ${card("危疾：各年齡組佔比", chartBox(key + "-age", "危疾按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
+        ${card(`危疾：各年齡組佔比<span class="yr-tag" data-yr="${key}"></span>`, chartBox(key + "-age", "危疾按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
         ${card("三大危疾嘅年齡分佈", chartBox("ci-ageDis", "癌症、心臟病、中風按年齡分佈") + `<p class="chart-note" id="ci-ageDisNote"></p>`)}
-      </div>` : card("身故：各年齡組佔比", chartBox(key + "-age", "身故按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
-      ${isCI ? `${subTitle("3.4", "危疾年輕化、小朋友都會中")}
+      </div>` : card(`身故：各年齡組佔比<span class="yr-tag" data-yr="${key}"></span>`, chartBox(key + "-age", "身故按年齡分佈") + `<div class="mini-stats" id="${key}-ageStats"></div>`)}
+      ${subTitle(n + ".4", isCI ? "咩病最多人 claim？" : "咩原因最多？")}
+      <div class="grid-2">
+        ${card(`${c.long}：${T.causeWord}<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-causes"></div>`)}
+        ${isCI ? card(`癌症個案入面最多係邊種？<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
+      </div>
+      ${card(`癌症佔${c.long}幾多？（七年）`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
+      ${subTitle(n + ".5", "一宗賠幾多？")}
+      <div class="kf" id="kf-${key}-amount"></div>
+      <div class="grid-2">
+        ${card(`${c.long}：每宗賠償額分佈<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-bands"></div>`)}
+        ${card(`${c.long}：平均 vs 最高一宗（七年）`, chartBox(key + "-max", `${c.long}平均及最高賠償額`) + `<div class="mini-stats" id="${key}-amountStats"></div>`)}
+      </div>
+      </div>
+      ${isCI ? `${subTitle("3.6", "危疾年輕化、小朋友都會中")}
       <div class="kf" id="kf-young"></div>
       <div class="grid-2">
         ${card("後生一輩：危疾風險上升緊", `<div class="fact-list" id="youngFacts"></div>`)}
         ${card("但年紀越大，風險越高", chartBox("youngAge", "香港按年齡癌症發病率") + `<p class="chart-note">香港癌症發病率（每十萬人口），香港癌症資料統計中心《2022 年香港癌症統計概覽》。</p>`)}
       </div>
       ${card("小朋友都會有危疾同長期病", `<div class="fact-list cols-3" id="childFacts"></div><p class="chart-note">衞生防護中心（2023 年死因數字）、兒童癌病基金、美國疾控中心 2020 年數據。</p>`, "mt")}` : ""}
-      ${subTitle(n + (isCI ? ".5" : ".4"), isCI ? "咩病最多人 claim？" : "咩原因最多？")}
-      <div class="grid-2">
-        ${card(`${c.long}：${T.causeWord}`, `<div id="${key}-causes"></div>`)}
-        ${isCI ? card("癌症個案入面最多係邊種？", `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
-      </div>
-      ${card(`癌症佔${c.long}幾多？（七年）`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
-      ${subTitle(n + (isCI ? ".6" : ".5"), "一宗賠幾多？")}
-      <div class="kf" id="kf-${key}-amount"></div>
-      <div class="grid-2">
-        ${card(`${c.long}：每宗賠償額分佈`, `<div id="${key}-bands"></div>`)}
-        ${card(`${c.long}：平均 vs 最高一宗（七年）`, chartBox(key + "-max", `${c.long}平均及最高賠償額`) + `<div class="mini-stats" id="${key}-amountStats"></div>`)}
-      </div>
       ${isCI ? `${subTitle("3.7", "癌症知多啲")}
       <div class="kf" id="kf-survival"></div>
       <div class="grid-2">
@@ -538,6 +540,7 @@
 
   function renderTypeDetail(key) {
     const c = TYPE[key].c, isCI = key === "critical", y = state[key], o = D[key][y];
+    document.querySelectorAll(`.yr-tag[data-yr="${key}"]`).forEach((e) => { e.textContent = `${y} 年`; });
     let labels = D.ageGroups.slice(), male = o.male.slice(), female = o.female.slice();
     if (isCI && male[4] + female[4] < 5) { labels.pop(); male.pop(); female.pop(); }
     let opts = baseOpts();

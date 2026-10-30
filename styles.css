@@ -502,3 +502,7 @@ a.mult:hover { background: #fff; }
   .brand { flex: 1; min-width: 0; }
   .nav-links { order: 3; flex: none; width: 100%; margin: 2px 0 6px; }
 }
+
+/* 年份掣只喺需要揀年份嘅小節黐住；有年份標籤嘅圖先跟年份轉 */
+.yr-scope { position: relative; }
+.yr-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--c-ink, var(--c)); background: var(--soft, #F5F5F5); font-family: var(--mk-num, inherit); vertical-align: 1px; }
