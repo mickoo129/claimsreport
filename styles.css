@@ -102,6 +102,7 @@ a { color: inherit; }
 .year-pick .lbl { font-size: 13px; color: var(--muted); margin-right: 4px; }
 .year-pick button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--paper); color: var(--ink-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-variant-numeric: tabular-nums; }
 .year-pick button.on { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
+.year-pick.mt { margin-top: 24px; }
 
 /* share rows */
 .share-row { margin-bottom: 18px; }
