@@ -180,10 +180,10 @@
   function renderChapterPick() {
     {
       const S = D.summary[LATEST], tc = catSum(LATEST, "cases");
-      const order = [...CATS].sort((a, b) => S[b.key].cases - S[a.key].cases);
-      $("chPick").innerHTML = `<p class="pk-lead">${LATEST} 年成功理賠宗數，由多至少（撳一類睇詳情）：</p><div class="pk-grid">` +
-        order.map((c, i) => `<a class="pk" href="${c.anchor}" style="--c:${c.color};--ci:${TEXT_INK[c.color] || c.color}">
-          <span class="pk-name"><em>${i + 1}</em>${c.long}</span>
+      const order = ["hospital", "critical", "death", "accident"].map((k) => CATS.find((c) => c.key === k));
+      $("chPick").innerHTML = `<p class="pk-lead">${LATEST} 年成功理賠宗數（撳一類睇詳情）：</p><div class="pk-grid">` +
+        order.map((c) => `<a class="pk" href="${c.anchor}" style="--c:${c.color};--ci:${TEXT_INK[c.color] || c.color}">
+          <span class="pk-name"><i></i>${c.long}</span>
           <b class="num">${fmt.num(S[c.key].cases)}<small>宗</small></b>
           <span class="pk-sub">佔 ${fmt.p(pct(S[c.key].cases, tc), 0)} · 賠 <span class="nw">${fmt.yi(S[c.key].amt)} 億</span></span>
           <span class="pk-go">睇詳情 →</span></a>`).join("") + `</div>`;
