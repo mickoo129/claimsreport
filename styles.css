@@ -519,3 +519,18 @@ a.mult:hover { background: #fff; }
 .nw { white-space: nowrap; }
 .cs b, .punch-figs .pf b, .kf b.num, .hstat .v { white-space: nowrap; }
 .yr-tag, .hstat .yr { white-space: nowrap; }
+
+/* 總覽：四類宗數掣 */
+.ch-pick { display: block; }
+.pk-lead { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.pk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.pk { display: flex; flex-direction: column; gap: 2px; text-decoration: none; color: var(--ink); background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 12px; padding: 12px 14px; transition: background .15s; }
+.pk:hover { background: var(--soft); }
+.pk-name { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.pk-name em { font-style: normal; font-size: 11px; font-weight: 700; color: #fff; background: var(--ci); border-radius: 999px; width: 18px; height: 18px; display: inline-grid; place-items: center; }
+.pk b { font-family: var(--num); font-size: clamp(24px, 3vw, 32px); font-weight: 700; color: var(--ci); line-height: 1.15; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pk b small { font-family: var(--font); font-size: .5em; margin-left: 3px; }
+.pk-sub { font-size: 12.5px; color: var(--ink-2); }
+.pk-go { font-size: 12.5px; color: var(--ci); font-weight: 700; margin-top: 4px; }
+@media (max-width: 760px) { .pk-grid { grid-template-columns: 1fr 1fr; gap: 8px; } .pk { padding: 10px 12px; } }
+@media print { .ch-pick { display: none; } }
