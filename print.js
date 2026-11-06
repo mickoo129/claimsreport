@@ -11,7 +11,7 @@
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
   const NAVY = { key: "all", long: "總覽", color: "#0E5E57", soft: "#C9DDD8", bg: "#E7F1EF" };
-  const CHECK = { key: "check", long: "檢視保障", color: "#00753E", soft: "#B4E2C8", bg: "#E6F6EE" };
+  const CHECK = { key: "check", long: "保障檢查", color: "#00753E", soft: "#B4E2C8", bg: "#E6F6EE" };
   const C = { male: "#3072D4", female: "#CD486B", grid: "#EEF3F1", muted: "#5B6B6A", ink2: "#3C4A49", old: "#c4c0b6", accent: "#00753E" };
   const YEAR_NOW = new Date().getFullYear();
   const PRINT_DATE = `${YEAR_NOW} 年 ${new Date().getMonth() + 1} 月 ${new Date().getDate()} 日`;
@@ -81,7 +81,7 @@
         ["accident", "意外", `${Math.round(s.accident.cases / 365)} 宗／日`, `${f.num(s.accident.cases)} 宗／年`]
       ].map((x) => `<div style="border-top:1.2mm solid ${x[0] ? CAT[x[0]].color : "#7FE0AE"}"><span>${x[1]}</span><b>${x[2]}</b><i>${x[3]}</i></div>`).join("")}</div>
     </div>
-    <div class="toc">${[[NAVY, "1", "總覽：四類比較", "@all"], [CAT.hospital, "2", "醫療／住院", "@hospital"], [CAT.critical, "3", "危疾", "@critical"], [CAT.death, "4", "人壽／身故", "@death"], [CAT.accident, "5", "意外", "@accident"], [CHECK, "6", "檢視保障", "@check"]]
+    <div class="toc">${[[NAVY, "1", "總覽：四類比較", "@all"], [CAT.hospital, "2", "醫療／住院", "@hospital"], [CAT.critical, "3", "危疾", "@critical"], [CAT.death, "4", "人壽／身故", "@death"], [CAT.accident, "5", "意外", "@accident"], [CHECK, "6", "保障檢查", "@check"]]
       .map((x) => `<div style="border-left:1.4mm solid ${x[0].color}"><b>第 ${x[1]} 部分</b><span>${x[2]}</span><em>P.{{${x[3]}}}</em></div>`).join("")}</div>
     ${sub("1.1", "賠款走勢：差唔多翻倍")}
     <p class="lead-s">${Y0} → ${Y}：醫療 +${growth(s.hospital.amt, s0.hospital.amt)}%、危疾 +${growth(s.critical.amt, s0.critical.amt)}%、人壽 +${growth(s.death.amt, s0.death.amt)}%、意外 +${growth(s.accident.amt, s0.accident.amt)}%。</p>
@@ -96,7 +96,7 @@
   const per = CATS.map((c) => c.key === "death" ? de.avg : c.key === "critical" ? ci.avg : (s[c.key].amt * 1e8) / s[c.key].cases);
   const tc = catSum(Y, "cases"), ta = catSum(Y, "amt");
   page(NAVY, "第 1 部分 · 總覽", `
-    ${sub("1.2", "咩 claim 得最多？")}
+    ${sub("1.2", "宗數多，唔等於賠得多")}
     ${kf("醫療", `每 5 宗理賠有 4 宗係醫療／住院（${Y} 年 ${f.num(s.hospital.cases)} 宗），宗數比 ${Y0} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`)}
     ${box(`每類每年成功獲賠宗數（${Y0}–${Y}）`, `<div class="g4">${CATS.map((c) => { const a = D.summary[Y0][c.key].cases, b = s[c.key].cases; return `<div><div class="mh"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${c.color}">+${growth(b, a)}%</b></div><div class="mv">${f.num(a)} → <b>${f.num(b)}</b></div>${chart("cCnt-" + c.key, 44)}</div>`; }).join("")}</div><p class="note">各圖刻度唔同；2019–2021 年身故及危疾以「保單」計。</p>`)}
     ${box(`${Y} 年四類比較`, `<table>
@@ -135,7 +135,7 @@
   page(H, "第 2 部分 · 醫療／住院保險（續）", `
     ${sub("2.3", "一場大病，醫療費要幾多？")}
     <div class="g2">
-      ${box("大型手術一次要幾多錢？（中大醫院定價）", bars(I.complex, C.accent, { wide: true, val: (x) => f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<div class="legend"><span><i style="background:${C.accent}"></i>Level 1</span><span><i style="background:${C.accent};opacity:.35"></i>最高到 Level 3</span></div><p class="note">4 人房，2025 年 12 月。Level 3 = 有嚴重併發症。</p>`)}
+      ${box("大型手術一次要幾多錢？（中大醫院定價）", bars(I.complex, C.accent, { wide: true, val: (x) => f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<div class="legend"><span><i style="background:${C.accent}"></i>Level 1：冇併發症、冇其他重大病</span><span><i style="background:${C.accent};opacity:.35"></i>最高 Level 3：有嚴重併發症</span></div><p class="note">4 人房，2025 年 12 月。Level 係醫院按病情複雜程度分嘅收費級別。</p>`)}
       ${box("癌症標靶藥：一年藥費", bars(I.drugs, H.color, { val: (x) => x[1] === x[2] ? f.wan(x[1]) : f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<p class="note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>`)}
     </div>
         ${box("主要癌症醫療費用（港元）", `<table><thead><tr><th>癌症</th><th>診斷及手術</th><th>化療</th><th>電療</th><th>標靶／免疫</th><th>估計一年總開支</th></tr></thead><tbody>
@@ -169,25 +169,26 @@
   page(K, "第 3 部分 · 危疾保險（續）", `
     ${sub("3.3", "幾多歲最多？")}
     <div class="g2">${box(`${Y} 年各年齡組佔比`, chart("kAge", 46))}${box(`三大危疾嘅年齡分佈（${Y}）`, chart("kAgeDis", 46))}</div>
-    ${sub("3.4", "危疾年輕化、小朋友都會中")}
+    ${sub("3.4", "咩病最多人 claim？")}
+    <div class="g2">
+      ${box(`${Y} 年危疾原因（首 6 位）`, bars(ci.causes.slice(0, 6), (x, i) => i < 3 ? K.color : K.soft, { total: ci.n }))}
+      ${box("癌症個案首 5 位", bars(ci.cancers, (x, i) => i === 0 ? C.female : K.color, { total: ci.causes[0][1] }) + `<p class="note">百分比係佔癌症個案。</p>`)}
+    </div>
+`);
+  page(K, "第 3 部分 · 危疾保險（續）", `
+    ${sub("3.5", "一宗賠幾多？")}
+    ${kf(`${Math.round(ci.max / ci.avg)} 倍`, `最高一宗 ${f.wan(ci.max)}，係平均 ${f.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。分別在於當初買咗幾多保額。`)}
+    <div class="g2">
+      ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, ci.bands[i]]), (x, i) => i >= 3 ? K.color : K.soft, { total: ci.n }))}
+      ${box("平均 vs 最高一宗", chart("kMax", 40))}
+    </div>
+    ${sub("3.6", "危疾年輕化、小朋友都會中")}
     ${kf("+13%", `20–44 歲癌症發病人數 10 年增加 13%。21–40 歲已經佔危疾賠償 ${f.p(ciAge[1], 0)}；1–14 歲兒童嘅頭號致命疾病都係癌症。`)}
     <div class="g2">
       ${box("後生一輩：危疾風險上升緊", `<div class="facts">${D.hk.youngCI.facts.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}
       ${box("但年紀越大，風險越高", chart("kYoung", 52) + `<p class="note">香港癌症發病率（每十萬人口），香港癌症資料統計中心。</p>`)}
     </div>
     ${box("小朋友都會有危疾同長期病", `<div class="g3 facts">${D.hk.children.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}`);
-  page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.5", "咩病最多人 claim？")}
-    <div class="g2">
-      ${box(`${Y} 年危疾原因（首 6 位）`, bars(ci.causes.slice(0, 6), (x, i) => i < 3 ? K.color : K.soft, { total: ci.n }))}
-      ${box("癌症個案首 5 位", bars(ci.cancers, (x, i) => i === 0 ? C.female : K.color, { total: ci.causes[0][1] }) + `<p class="note">百分比係佔癌症個案。</p>`)}
-    </div>
-    ${sub("3.6", "一宗賠幾多？")}
-    ${kf(`${Math.round(ci.max / ci.avg)} 倍`, `最高一宗 ${f.wan(ci.max)}，係平均 ${f.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。分別在於當初買咗幾多保額。`)}
-    <div class="g2">
-      ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, ci.bands[i]]), (x, i) => i >= 3 ? K.color : K.soft, { total: ci.n }))}
-      ${box("平均 vs 最高一宗", chart("kMax", 40))}
-    </div>`);
   const cls = (v) => v >= 80 ? "ok" : v >= 50 ? "mid" : "bad";
   page(K, "第 3 部分 · 危疾保險（續）", `
     ${sub("3.7", "癌症知多啲")}
@@ -196,7 +197,7 @@
       ${box("五年相對存活率（按期數）", `<table><thead><tr><th>癌症</th><th>第一期</th><th>第二期</th><th>第三期</th><th>第四期</th></tr></thead><tbody>
         ${D.hk.survival.map((r) => `<tr><td>${r[0]}</td>${r[1].map((v) => `<td><span class="pill ${cls(v)}">${v.toFixed(1)}%</span></td>`).join("")}</tr>`).join("")}
         </tbody></table><p class="note">香港癌症資料統計中心（2024 年 10 月）。</p>`)}
-      ${box("危疾復發率參考", `<table><tbody>${D.hk.recurrence.map((r) => `<tr><td>${r[0]}</td><td><b style="color:${C.accent}">${r[1]}</b></td></tr>`).join("")}</tbody></table><p class="note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
+      ${box("危疾復發率參考", `<table><tbody>${D.hk.recurrence.map((r) => `<tr><td>${r[0]}</td><td><b style="color:${CAT.critical.color}">${r[1]}</b></td></tr>`).join("")}</tbody></table><p class="note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
     </div>
     <div class="g2">
       ${box("香港男性最常見癌症（2023）", bars(D.hk.cancerByGender2023.male, C.male, { val: (x) => f.num(x[1]) + " 宗" }))}
@@ -258,7 +259,7 @@
     ["全部", "上一次檢視保障係幾時？", "手術費、病房費年年升，建議每 1–2 年檢視一次。"]
   ];
   const qc = { 危疾: K.color, 醫療: H.color, 人壽: L.ink, 全部: NAVY.color };
-  page(CHECK, "第 6 部分 · 檢視保障", `
+  page(CHECK, "第 6 部分 · 保障檢查", `
     ${sub("6.1", "同顧問傾之前，問自己 5 條問題")}
     <ol class="qs">${qs.map((q) => `<li><b><span class="qt" style="background:${qc[q[0]]}">${q[0]}</span>${q[1]}</b>${q[2]}</li>`).join("")}</ol>
     ${sub("6.2", "我嘅保障一覽")}

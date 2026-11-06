@@ -16,7 +16,7 @@ window.CLAIMS = {
     brandFull: "Michael Koo Protection Alliance",
     years: [2019, 2020, 2021, 2022, 2023, 2024, 2025],
     latest: 2025,
-    updated: "2026年10月",
+    updated: "2026 年 10 月",
     coverage: "香港及澳門保單"
   },
 

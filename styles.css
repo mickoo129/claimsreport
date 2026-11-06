@@ -174,7 +174,7 @@ a { color: inherit; }
   border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.field input:focus, .field select:focus { outline: 2px solid var(--hosp); outline-offset: 1px; }
+.field input:focus, .field select:focus { outline: none; border-color: var(--mk-brand); }
 .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
 .ck { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: #fcfbf8; }
 .ck h4 { font-size: 16px; margin-bottom: 4px; }
@@ -307,18 +307,19 @@ a.tk:hover { background: rgba(255,255,255,.11); }
 .mult-h b { font-size: 20px; }
 .mult-v { font-size: 13px; color: var(--ink-2); margin: 2px 0 4px; }
 .chart-box.mini { height: 150px; }
-.rate-row { display: grid; grid-template-columns: 6.5rem 1fr 5.5rem 8.5rem; gap: 12px; align-items: center; margin: 12px 0; font-size: 14px; }
+.rate-row { display: grid; grid-template-columns: 6.5rem 1fr 5.5rem 10.5rem; gap: 12px; align-items: center; margin: 12px 0; font-size: 14px; }
 .rate-n { display: flex; align-items: center; gap: 6px; font-weight: 700; }
 .rate-n i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 .rate-track { height: 14px; background: var(--alt); border-radius: 4px; overflow: hidden; }
 .rate-track i { display: block; height: 100%; border-radius: 0 4px 4px 0; }
 .rate-v { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
 .rate-v b { font-size: 18px; color: var(--ink); }
-.rate-r { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rate-r { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rate-n { white-space: nowrap; }
 @media (max-width: 900px) { .multiples { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) {
   .multiples { grid-template-columns: 1fr 1fr; gap: 8px; } .mult { padding: 8px 8px 4px; } .mult-h { font-size: 13px; } .mult-h b { font-size: 15px; } .chart-box.mini { height: 120px; }
-  .rate-row { grid-template-columns: 4rem 1fr 4.8rem; }
+  .rate-row { grid-template-columns: 5.4rem 1fr 4.8rem; font-size: 13px; gap: 8px; }
   .rate-r { grid-column: 2 / -1; margin-top: -8px; }
 }
 
@@ -540,3 +541,22 @@ a.mult:hover { background: #fff; }
 .pk-go { font-size: 12.5px; color: var(--ci); font-weight: 700; margin-top: 4px; }
 @media (max-width: 760px) { .pk-grid { grid-template-columns: 1fr 1fr; gap: 8px; } .pk { padding: 10px 12px; } }
 @media print { .ch-pick { display: none; } }
+
+/* 6.2 問題標籤：白字（蓋過 .questions span 嘅灰字） */
+.questions .q-tag { color: #fff; font-size: 12px; }
+/* Level 解釋標籤 */
+.lvl-legend span { gap: 6px; }
+.lvl-legend b { font-weight: 700; color: var(--ink); }
+.lvl-legend em { font-style: normal; font-size: 12px; color: var(--ink-2); background: #F1F4F3; border-radius: 6px; padding: 1px 7px; }
+/* 5.2 意外身故 */
+.acc-death b { color: #138185; }
+.acc-death b.txt { font-family: var(--font); font-size: 26px; font-weight: 900; }
+/* 手機：闊表格提示可以左右掃 */
+.scroll-hint { display: none; font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+.scroll-hint.show { display: block; }
+@media print { .scroll-hint { display: none !important; } }
+.table-toggle[open] summary { margin-bottom: 8px; }
+
+/* 頁尾（按標準次序：免責 → 資料來源 → 電子名片 → 工具箱 → 版權） */
+.foot-disclaimer p { margin-top: 6px; }
+.footer .mk-ecard { margin-top: 22px; max-width: 640px; }

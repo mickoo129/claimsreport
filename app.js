@@ -11,7 +11,7 @@
     { key: "accident", name: "意外", long: "意外", color: "#158E92", soft: "#9DD0D1", anchor: "#accident" }
   ];
   const CAT = Object.fromEntries(CATS.map((c) => [c.key, c]));
-  const C = { male: "#3072D4", female: "#CD486B", grid: "#EEF3F1", ink2: "#3C4A49", muted: "#5B6B6A", old: "#c4c0b6", accent: "#00753E" };
+  const C = { male: "#3072D4", female: "#CD486B", grid: "#EEF3F1", ink2: "#3C4A49", muted: "#5B6B6A", old: "#c4c0b6", accent: "#00753E", have: "#6F7377", cancer: "#CD486B" };
   const state = { summaryYear: LATEST, critical: LATEST, death: LATEST, trend: "amount", room: 1 };
   const charts = {};
 
@@ -316,26 +316,25 @@
       ${card("常見手術收費中位數：2018 → 2022", `<div class="seg small" id="roomSeg">
           <button data-room="0" type="button">私家房</button><button class="on" data-room="1" type="button">半私家房</button><button data-room="2" type="button">標準房</button>
         </div><div class="table-scroll" id="surgeryTable"></div><p class="chart-note">個別手術（例如甲狀腺切除嘅私家房收費）會有升有跌，但大部分手術都向上。</p>`, "mt")}
-      ${card("私家醫院每日病房收費：2019 → 2026", `<div class="table-scroll" id="roomTable"></div><p class="chart-note">各醫院網站公布價（2019 年 4 月及 2026 年 6 月）。升幅按收費範圍中間值計算，只計房租。</p>`, "mt")}
-      ${card("做一次手術，全單要幾多？", `<div class="table-scroll" id="fullBillTable"></div><p class="chart-note">各私家醫院收費中位數嘅加權平均數（2020 年 12 月公布價），已包醫生費（連麻醉師）同醫院雜費（連手術室），未計病房費。以上係 2020 年價錢，參考上面嘅升幅，今日一般會更貴。</p>`, "mt")}
+      ${card("私家醫院每日病房收費：2019 → 2026", `<details class="table-toggle"><summary>展開睇 ${I.rooms.length} 間私家醫院收費表</summary><div class="table-scroll" id="roomTable"></div></details><p class="chart-note">各醫院網站公布價（2019 年 4 月及 2026 年 6 月）。升幅按收費範圍中間值計算，只計房租。</p>`, "mt")}
+      ${card("做一次手術，全單要幾多？", `<details class="table-toggle"><summary>展開睇 ${D.costs.fullBill2020.length} 項常見手術（全單 ${fmt.wan(Math.min(...D.costs.fullBill2020.map((x) => x[2] + x[3])))}–${fmt.wan(Math.max(...D.costs.fullBill2020.map((x) => x[2] + x[3])))}）</summary><div class="table-scroll" id="fullBillTable"></div></details><p class="chart-note">各私家醫院收費中位數嘅加權平均數（2020 年 12 月公布價），已包醫生費（連麻醉師）同醫院雜費（連手術室），未計病房費。以上係 2020 年價錢，參考上面嘅升幅，今日一般會更貴。</p>`, "mt")}
       ${subTitle("2.3", "一場大病，醫療費要幾多？")}
       <div class="grid-2">
-        ${card("大型手術一次要幾多錢？", `<div id="complexList"></div><p class="chart-note">中大醫院定價收費（4 人房，2025 年 12 月）。Level 1 = 冇其他重大病；Level 3 = 有嚴重併發症。</p>`)}
+        ${card("大型手術一次要幾多錢？", `<div id="complexList"></div><p class="chart-note">中大醫院定價收費（4 人房，2025 年 12 月）。Level 係醫院按病情複雜程度分嘅收費級別，醫生報價時會講你屬邊級。</p>`)}
         ${card("癌症標靶藥：一年藥費", `<div id="drugList"></div><p class="chart-note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>`)}
       </div>
       ${card("一場癌症，一年醫療費要幾多？", `<div class="table-scroll" id="cancerCostTable"></div><p class="chart-note">醫管局、食衞局、衞生署及私家醫生資料（2019 年）。實際費用視乎病情同治療方案；「—」代表冇實際數字。</p>`, "mt")}
-      ${subTitle("2.4", "香港人幾時最多入院？")}
-      <div class="grid-2">
-        ${card("香港住院人數（按年齡，2025 年調查）", chartBox("hospAge", "香港住院人數按年齡") + `<p class="chart-note">政府統計處主題性住戶統計調查（2024 年 10 月至 2025 年 1 月期間）。25–44 歲開始明顯上升，65 歲或以上最多。</p>`)}
-        <div class="callout"><strong>約 ${D.hk.uncovered.pct}% 香港人（約 ${Math.round(D.hk.uncovered.people / 1e4)} 萬人）</strong>冇僱主醫療福利，亦冇自己買醫療保險。
-          <span>政府統計處 2026 年 3 月報告。即係大約每 2 個人就有 1 個，入私家醫院要全數自己俾。</span></div>
-      </div>
+      ${subTitle("2.4", "幾多人冇醫保？幾時最多入院？")}
+      <div class="kf" id="kf-uncovered"></div>
+      ${card("香港住院人數（按年齡，2025 年調查）", chartBox("hospAge", "香港住院人數按年齡") + `<p class="chart-note">政府統計處主題性住戶統計調查（2024 年 10 月至 2025 年 1 月期間）。25–44 歲開始明顯上升，65 歲或以上最多。</p>`)}
       ${subTitle("2.5", "唔用醫保、靠公立醫院，要等幾耐？")}
       <div class="wait-grid" id="waitGrid"></div>
       <p class="chart-note">醫院管理局數字：90% 病人可以喺上述時間內做到手術，即係有一成人要等更耐。</p>`;
 
     keyFact("kf-hospital", `${fmt.p(pct(s.hospital.cases, s.cases), 0)}`,
       `<b>${LATEST} 年每 5 宗理賠有 4 宗係醫療／住院。</b>${fmt.num(s.hospital.cases)} 宗、賠出 ${s.hospital.amt} 億，係四類之中用得最密、賠得最多嘅保障。宗數比 ${YEARS[0]} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`, "", c.color);
+    keyFact("kf-uncovered", `${D.hk.uncovered.pct}%`,
+      `<b>約 ${D.hk.uncovered.pct}% 香港人（約 ${Math.round(D.hk.uncovered.people / 1e4)} 萬人）冇僱主醫療福利，亦冇自己買醫療保險。</b>即係大約每 2 個人就有 1 個，入私家醫院要全數自己俾（政府統計處 2026 年 3 月報告）。`, "", c.color);
     keyFact("kf-inflation", fmt.wan(I.drugs[0][2]),
       `<b>一年肝癌標靶藥嘅藥費。</b>私家外科醫生收費 2018 至 2025 年升 20–50%，私家醫院病房費亦普遍升一至五成；一次複雜大手術可以去到 ${fmt.wan(I.complex[0][2])}。`, "", c.color);
 
@@ -365,7 +364,7 @@
     $("roomTable").innerHTML = `<table class="data-table"><thead><tr><th>醫院</th><th>半私家 2019</th><th>半私家 2026</th><th>升幅</th><th>普通房 2019</th><th>普通房 2026</th><th>升幅</th></tr></thead><tbody>${
       I.rooms.map((r) => `<tr><td>${r.name}</td><td>$${r.semi[0]}</td><td>$${r.semi[1]}</td><td>${fmt.chg(r.semiMid[1], r.semiMid[0])}</td><td>$${r.ward[0]}</td><td>$${r.ward[1]}</td><td>${fmt.chg(r.wardMid[1], r.wardMid[0])}</td></tr>`).join("")
     }</tbody></table>`;
-    $("complexList").innerHTML = bars(I.complex, C.accent, { wide: true, valueFn: (x) => fmt.wan(x[1]) + "–" + fmt.wan(x[2]) }) + `<div class="legend" style="margin-top:10px"><span><i style="background:${C.accent}"></i>Level 1</span><span><i style="background:${C.accent};opacity:.35"></i>最高到 Level 3</span></div>`;
+    $("complexList").innerHTML = bars(I.complex, C.accent, { wide: true, valueFn: (x) => fmt.wan(x[1]) + "–" + fmt.wan(x[2]) }) + `<div class="legend lvl-legend" style="margin-top:10px"><span><i style="background:${C.accent}"></i><b>Level 1</b><em>冇併發症、冇其他重大病</em></span><span><i style="background:${C.accent};opacity:.35"></i><b>最高 Level 3</b><em>有嚴重併發症</em></span></div>`;
     const fb = D.costs.fullBill2020.map((x) => ({ name: x[0], cat: x[1], doc: x[2], hosp: x[3], total: x[2] + x[3] })).sort((a, b) => a.total - b.total);
     $("fullBillTable").innerHTML = `<table class="data-table"><thead><tr><th>手術</th><th>全單</th><th>醫生費</th><th>醫院雜費</th><th>類別</th></tr></thead><tbody>${
       fb.map((x) => `<tr><td>${x.name}</td><td><b>${fmt.money(x.total)}</b></td><td>${fmt.money(x.doc)}</td><td>${fmt.money(x.hosp)}</td><td>${x.cat}</td></tr>`).join("")
@@ -527,7 +526,7 @@
       $("survivalTable").innerHTML = `<table class="data-table" style="min-width:420px"><thead><tr><th>癌症</th><th>第一期</th><th>第二期</th><th>第三期</th><th>第四期</th></tr></thead><tbody>${
         D.hk.survival.map((r) => `<tr><td>${r[0]}</td>${r[1].map((v) => `<td><span class="pill ${cls(v)}">${v.toFixed(1)}%</span></td>`).join("")}</tr>`).join("")
       }</tbody></table><div class="legend" style="margin-top:10px"><span><i style="background:#dcefe3"></i>80% 或以上</span><span><i style="background:#f8ebc9"></i>50–80%</span><span><i style="background:#f6d9d4"></i>低於 50%</span></div>`;
-      $("recurrence").innerHTML = D.hk.recurrence.map((r) => `<div class="rec"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("");
+      $("recurrence").innerHTML = D.hk.recurrence.map((r) => `<div class="rec"><span>${r[0]}</span><b style="color:${CAT.critical.color}">${r[1]}</b></div>`).join("");
       const g = D.hk.cancerByGender2023;
       $("hkCancerGender").innerHTML = `
         <div><p class="sub-h">男性 首 5 位</p>${bars(g.male, C.male, { valueFn: (x) => fmt.num(x[1]) + " 宗" })}</div>
@@ -616,7 +615,13 @@
         ${card("每年意外賠款（億港元）", chartBox("acc-amt", "每年意外賠款"))}
         ${card("每年意外成功宗數", chartBox("acc-cases", "每年意外宗數"))}
       </div>
-      ${card("意外：平均每宗賠幾多？", chartBox("acc-avg", "意外平均每宗賠償") + `<p class="chart-note">總額 ÷ 成功宗數推算。報告冇公布意外嘅類型（交通、工作、家居等）同年齡分佈。${accDeath ? `另外，${LATEST} 年身故賠償之中有 ${accDeath[1]} 宗（${fmt.p(pct(accDeath[1], de.n))}）係意外身故。` : ""}</p>`, "mt")}`;
+      ${card("意外：平均每宗賠幾多？", chartBox("acc-avg", "意外平均每宗賠償") + `<p class="chart-note">總額 ÷ 成功宗數推算。報告冇公布意外嘅類型（交通、工作、家居等）同年齡分佈。</p>`, "mt")}
+      ${accDeath ? `${subTitle("5.2", "最嚴重嘅意外：意外身故")}
+      <div class="wait-grid acc-death">
+        <div class="wait" style="--c:${c.color}"><span class="wait-k">${LATEST} 年意外身故</span><b>${fmt.num(accDeath[1])} 宗</b><span class="wait-s">佔身故賠償 ${fmt.p(pct(accDeath[1], de.n))}（共 ${fmt.num(de.n)} 宗）</span></div>
+        <div class="wait" style="--c:${c.color}"><span class="wait-k">意外平均每宗賠</span><b>${fmt.money(avg[avg.length - 1])}</b><span class="wait-s">大部分係小傷、門診、跌打</span></div>
+        <div class="wait" style="--c:${c.color}"><span class="wait-k">真正大額嘅意外</span><b class="txt">靠人壽＋醫療</b><span class="wait-s">嚴重受傷要住院、身故要留錢俾家人</span></div>
+      </div>` : ""}`;
     keyFact("kf-accident", `${fmt.num(s.accident.cases)} 宗`,
       `<b>意外宗數僅次於醫療，但每宗平均只係 ${fmt.money(avg[avg.length - 1])}。</b>屬於「宗數多、每宗細」；宗數比 ${YEARS[0]} 年升 ${growth(s.accident.cases, s0.accident.cases)}%。真正大額嘅意外（例如嚴重受傷、身故）要靠醫療同人壽保障。`, "", c.color);
     drawYearBars("acc-amt", YEARS.map((y) => D.summary[y].accident.amt), c, (v) => fmt.yi(v) + " 億");
@@ -630,7 +635,37 @@
   }
 
   /* ---------- Part 6: check ---------- */
-  function val(id) { const n = Number($(id).value); return Number.isFinite(n) && n > 0 ? n : 0; }
+  function val(id) { const n = Number(String($(id).value).replace(/[^\d.]/g, "")); return Number.isFinite(n) && n > 0 ? n : 0; }
+  /* 金額輸入格：打字時自動加千位逗號，游標位置保持 */
+  function fmtMoneyInput(el) {
+    const pos = el.selectionStart ?? el.value.length;
+    const digitsBefore = el.value.slice(0, pos).replace(/\D/g, "").length;
+    const raw = el.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+    el.value = raw ? Number(raw).toLocaleString("en-US") : "";
+    let i = 0, seen = 0;
+    while (i < el.value.length && seen < digitsBefore) { if (/\d/.test(el.value[i])) seen++; i++; }
+    if (document.activeElement === el) el.setSelectionRange(i, i);
+  }
+  /* 分享呢個方案：保障檢查嘅輸入放喺網址 # 後面（冇客人姓名） */
+  const CK_KEYS = { e: "inExpense", y: "inYears", d: "inDebt", s: "inSaving", l: "inLife", i: "inIncome", c: "inCi", m: "inMed", t: "inMedType" };
+  const CK_DEFAULT = {};
+  function ckHash() {
+    const parts = Object.entries(CK_KEYS).map(([k, id]) => [k, id === "inMedType" ? $(id).value : String(val(id))]);
+    if (parts.every(([k, v]) => CK_DEFAULT[k] === v)) return "";
+    return "#check&" + parts.map(([k, v]) => k + "=" + encodeURIComponent(v)).join("&");
+  }
+  function readCkHash() {
+    Object.entries(CK_KEYS).forEach(([k, id]) => { CK_DEFAULT[k] = id === "inMedType" ? $(id).value : String(val(id)); });
+    if (!location.hash.startsWith("#check&")) return false;
+    const p = new URLSearchParams(location.hash.slice(7));
+    Object.entries(CK_KEYS).forEach(([k, id]) => {
+      if (!p.has(k)) return;
+      const v = p.get(k);
+      if (id === "inMedType") { if ([...$(id).options].some((o) => o.value === v)) $(id).value = v; }
+      else if (/^\d+$/.test(v)) { $(id).value = id === "inYears" ? v : Number(v).toLocaleString("en-US"); }
+    });
+    return true;
+  }
   function ckRow(label, v, max, color) {
     return `<div class="ck-row"><span>${label}</span><span class="n">${fmt.wan(v)}</span><span class="t"><i style="width:${Math.min(100, max ? (v / max) * 100 : 0)}%;background:${color}"></i></span></div>`;
   }
@@ -659,27 +694,27 @@
     $("checkResults").innerHTML = `
       <div class="ck" style="--c:${CAT.death.color}">
         <h4>人壽</h4><p class="sub">家庭開支 × ${yrs} 年 ＋ 債務</p>
-        ${ckRow("你現有（保額＋儲蓄）", lifeHave, lMax, C.male)}
-        ${ckRow("估計需要", lifeNeed, lMax, C.accent)}
+        ${ckRow("你現有（保額＋儲蓄）", lifeHave, lMax, C.have)}
+        ${ckRow("估計需要", lifeNeed, lMax, CAT.death.color)}
         ${ckRow(`${LATEST} 平均身故賠償`, ld.avg, lMax, C.old)}
         ${verdict(lifeHave, lifeNeed, "現有保障足夠應付估算需要")}
         <p class="hint">${LATEST} 年身故平均只賠 ${fmt.wan(ld.avg)}，但有 ${fmt.p(pct(ld.bands[4], ld.n), 0)} 個案超過 $100 萬。</p>
       </div>
       <div class="ck" style="--c:${CAT.critical.color}">
         <h4>危疾</h4><p class="sub">年收入 3–5 倍（停工＋治療）</p>
-        ${ckRow("你現有危疾保額", ci, cMax, C.male)}
-        ${ckRow("建議下限（3 倍）", ciLow, cMax, C.accent)}
-        ${ckRow("建議上限（5 倍）", ciHigh, cMax, C.accent)}
+        ${ckRow("你現有危疾保額", ci, cMax, C.have)}
+        ${ckRow("建議下限（3 倍）", ciLow, cMax, CAT.critical.color)}
+        ${ckRow("建議上限（5 倍）", ciHigh, cMax, CAT.critical.color)}
         ${ckRow(`${LATEST} 平均危疾賠償`, cd.avg, cMax, C.old)}
-        ${ckRow("肝癌標靶藥一年", drug, cMax, CAT.critical.color)}
+        ${ckRow("肝癌標靶藥一年", drug, cMax, C.cancer)}
         ${verdict(ci, ciLow, "達到建議下限")}
         <p class="hint">癌症有機會復發（乳癌約 30%），檢查下保單有冇多次賠償。</p>
       </div>
       <div class="ck" style="--c:${CAT.hospital.color}">
         <h4>醫療</h4><p class="sub">對照大型手術同標靶藥開支</p>
-        ${medType === "limit" ? ckRow("你嘅每年限額", med, mMax, C.male) : medType === "none" ? ckRow("你嘅醫療保障", 0, mMax, C.male) : ""}
-        ${ckRow("肝葉切除（Level 3）", complexTop, mMax, C.accent)}
-        ${ckRow("肝癌標靶藥一年", drug, mMax, CAT.critical.color)}
+        ${medType === "limit" ? ckRow("你嘅每年限額", med, mMax, C.have) : medType === "none" ? ckRow("你嘅醫療保障", 0, mMax, C.have) : ""}
+        ${ckRow("肝葉切除（最高 Level 3）", complexTop, mMax, CAT.hospital.color)}
+        ${ckRow("肝癌標靶藥一年", drug, mMax, C.cancer)}
         ${medVerdict}
       </div>`;
   }
@@ -729,10 +764,20 @@
     const det = $("rateChart").closest("details");
     det.addEventListener("toggle", () => { if (det.open) renderRates(); });
     ["inExpense", "inYears", "inDebt", "inSaving", "inLife", "inIncome", "inCi", "inMed", "inMedType"].forEach((id) => {
-      $(id).addEventListener("input", renderCheck);
+      $(id).addEventListener("input", () => { if ($(id).classList.contains("money")) fmtMoneyInput($(id)); renderCheck(); });
       $(id).addEventListener("change", renderCheck);
     });
+    $("shareBtn").addEventListener("click", () => mkShare(location.href.split("#")[0] + ckHash()));
     window.addEventListener("beforeprint", () => Object.values(charts).forEach((c) => c.resize()));
+  }
+
+  /* 闊表格：要左右掃先睇得晒就喺上面加提示 */
+  function markScroll() {
+    document.querySelectorAll(".table-scroll").forEach((el) => {
+      let h = el.previousElementSibling;
+      if (!h || !h.classList.contains("scroll-hint")) { h = document.createElement("p"); h.className = "scroll-hint"; h.textContent = "← 表格可以左右掃 →"; el.before(h); }
+      h.classList.toggle("show", el.offsetParent !== null && el.scrollWidth > el.clientWidth + 4);
+    });
   }
 
   function init() {
@@ -755,11 +800,17 @@
     buildType("death");
     renderAccident();
     renderYearPicks();
+    const fromLink = readCkHash();
     renderCheck();
     renderNext();
     bindControls();
     bindNav();
     countUp();
+    markScroll();
+    if (fromLink) setTimeout(() => $("check").scrollIntoView(), 300);
+    window.addEventListener("resize", markScroll);
+    document.addEventListener("toggle", markScroll, true);
+    document.addEventListener("click", (e) => { if (e.target.closest(".seg, .year-pick")) setTimeout(markScroll, 50); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
