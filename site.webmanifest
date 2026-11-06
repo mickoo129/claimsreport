@@ -3,7 +3,7 @@
   "short_name": "MKPA 理賠",
   "lang": "zh-HK",
   "start_url": "index.html",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#F6F9F8",
   "theme_color": "#0E5E57",
   "icons": [
