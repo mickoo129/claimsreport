@@ -157,7 +157,7 @@
       ["death", "人壽／身故", cnt(de.n / days, { post: " 宗", dec: 1 }), CAT.death.color, "每日約 " + Math.round(de.n / days) + " 個家庭 →"],
       ["accident", "意外", cnt(s.accident.cases / days, { post: " 宗" }), CAT.accident.color, "每日 →"]
     ];
-    $("perDay").innerHTML = `<div class="pd-title">${LATEST} 年，平均一日入面（按一類看詳情）：</div><div class="pd-grid">${perDay.map((x) => {
+    $("perDay").innerHTML = `<div class="pd-title">${LATEST} 年，平均每日（按一類看詳情）：</div><div class="pd-grid">${perDay.map((x) => {
       const tag = x[0] ? "a" : "div";
       const href = x[0] ? ` href="${CAT[x[0]].anchor}"` : "";
       return `<${tag} class="pd"${href} style="--c:${x[3]}"><span class="pd-k"><i style="background:${x[3]}"></i>${x[1]}</span><b>${x[2]}</b><span class="pd-s">${x[4]}</span></${tag}>`;
@@ -430,7 +430,7 @@
       ${subTitle(n + ".4", isCI ? "甚麼病索償最多？" : "甚麼原因最多？")}
       <div class="grid-2">
         ${card(`${c.long}：${T.causeWord}<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-causes"></div>`)}
-        ${isCI ? card(`癌症個案入面最多是哪種？<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
+        ${isCI ? card(`癌症個案中最多是哪種？<span class="yr-tag" data-yr="${key}"></span>`, `<div id="${key}-cancers"></div>`) + `` : card("香港整體：2024 年主要死因", `<div id="hkDeath"></div><p class="chart-note">香港統計年刊 2025 年版。男女出生時平均預期壽命：男 ${D.hk.lifeExp.male} 歲、女 ${D.hk.lifeExp.female} 歲。</p>`)}
       </div>
       ${card(`癌症佔${c.long}多少？`, chartBox(key + "-ctrend", `癌症佔${c.long}比例走勢`), "mt")}
       ${subTitle(n + ".5", "一宗賠多少？")}
