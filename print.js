@@ -70,8 +70,8 @@
   page(NAVY, "", `
     <div class="cover">
       <p class="eb">個人保險賠償報告 · ${Y0}–${Y} · 香港及澳門保單</p>
-      <h1>理賠數據，<br>睇清楚錢賠咗去邊</h1>
-      <p>年度理賠報告，按醫療、危疾、人壽、意外四類分開講：邊類最多人用、男女有咩分別、幾多歲最易出事，同埋醫療費每年升幾多。</p>
+      <h1>理賠數據，<br>看清楚賠款去向</h1>
+      <p>年度理賠報告，按醫療、危疾、人壽、意外四類分開分析：哪類使用最多、男女有甚麼分別、哪個年齡最常索償，以及醫療費每年上升多少。</p>
       <div class="pnch"><b>每 ${((365 * 24 * 60) / s.cases).toFixed(1)} 分鐘</b><span>就有一宗理賠成功賠出 · 平均每日賠出 $${f.num((s.total * 1e8) / 365 / 1e4)}萬</span></div>
       <div class="kstats">${[
         [null, "四類總賠償", `${s.total}億+`, `${Y0} 年 ${s0.total} 億 · +${growth(s.total, s0.total)}%`],
@@ -83,7 +83,7 @@
     </div>
     <div class="toc">${[[NAVY, "1", "總覽：四類比較", "@all"], [CAT.hospital, "2", "醫療／住院", "@hospital"], [CAT.critical, "3", "危疾", "@critical"], [CAT.death, "4", "人壽／身故", "@death"], [CAT.accident, "5", "意外", "@accident"], [CHECK, "6", "保障檢查", "@check"]]
       .map((x) => `<div style="border-left:1.4mm solid ${x[0].color}"><b>第 ${x[1]} 部分</b><span>${x[2]}</span><em>P.{{${x[3]}}}</em></div>`).join("")}</div>
-    ${sub("1.1", "賠款走勢：差唔多翻倍")}
+    ${sub("1.1", "賠款走勢：差不多翻倍")}
     <p class="lead-s">${Y0} → ${Y}：醫療 +${growth(s.hospital.amt, s0.hospital.amt)}%、危疾 +${growth(s.critical.amt, s0.critical.amt)}%、人壽 +${growth(s.death.amt, s0.death.amt)}%、意外 +${growth(s.accident.amt, s0.accident.amt)}%。</p>
     <div class="box">${chart("cTrend", 52)}</div>
     <table>
@@ -96,23 +96,23 @@
   const per = CATS.map((c) => c.key === "death" ? de.avg : c.key === "critical" ? ci.avg : (s[c.key].amt * 1e8) / s[c.key].cases);
   const tc = catSum(Y, "cases"), ta = catSum(Y, "amt");
   page(NAVY, "第 1 部分 · 總覽", `
-    ${sub("1.2", "宗數多，唔等於賠得多")}
-    ${kf("醫療", `每 5 宗理賠有 4 宗係醫療／住院（${Y} 年 ${f.num(s.hospital.cases)} 宗），宗數比 ${Y0} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`)}
-    ${box(`每類每年成功獲賠宗數（${Y0}–${Y}）`, `<div class="g4">${CATS.map((c) => { const a = D.summary[Y0][c.key].cases, b = s[c.key].cases; return `<div><div class="mh"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${c.color}">+${growth(b, a)}%</b></div><div class="mv">${f.num(a)} → <b>${f.num(b)}</b></div>${chart("cCnt-" + c.key, 44)}</div>`; }).join("")}</div><p class="note">各圖刻度唔同；2019–2021 年身故及危疾以「保單」計。</p>`)}
+    ${sub("1.2", "宗數多，不等於賠得多")}
+    ${kf("醫療", `每 5 宗理賠有 4 宗是醫療／住院（${Y} 年 ${f.num(s.hospital.cases)} 宗），宗數比 ${Y0} 年升 ${growth(s.hospital.cases, s0.hospital.cases)}%。`)}
+    ${box(`每類每年成功獲賠宗數（${Y0}–${Y}）`, `<div class="g4">${CATS.map((c) => { const a = D.summary[Y0][c.key].cases, b = s[c.key].cases; return `<div><div class="mh"><span><i style="background:${c.color}"></i>${c.long}</span><b style="color:${c.color}">+${growth(b, a)}%</b></div><div class="mv">${f.num(a)} → <b>${f.num(b)}</b></div>${chart("cCnt-" + c.key, 44)}</div>`; }).join("")}</div><p class="note">各圖刻度不同；2019–2021 年身故及危疾以「保單」計。</p>`)}
     ${box(`${Y} 年四類比較`, `<table>
         <thead><tr><th></th><th>成功宗數</th><th>佔宗數</th><th>金額（億）</th><th>佔金額</th><th>平均每宗</th></tr></thead>
         <tbody>${CATS.map((c, i) => `<tr><td><span class="dot" style="background:${c.color}"></span>${c.long}</td><td>${f.num(s[c.key].cases)}</td><td>${f.p(pct(s[c.key].cases, tc))}</td><td>${f.yi(s[c.key].amt)}</td><td>${f.p(pct(s[c.key].amt, ta))}</td><td><b>${f.money(per[i])}</b></td></tr>`).join("")}</tbody>
       </table><p class="note">一宗危疾平均賠償約等於 ${Math.round(per[2] / per[0])} 宗住院。住院、意外平均 = 總額 ÷ 成功宗數。</p>`)}
-    ${box("每 100 宗申請，有幾多宗獲賠？（2024 年）", CATS.map((c) => { const v = D.summary[2024][c.key].rate; return `<div class="br w"><span>${c.long}</span><span class="bt"><i style="width:${v}%;background:${c.color}"></i></span><span class="bv"><b>${Math.round(v)}</b> / 100</span></div>`; }).join("") + `<p class="note">危疾要符合指定疾病定義，所以相對低；投保時要如實申報。</p>`)}`);
+    ${box("每 100 宗申請，有多少宗獲賠？（2024 年）", CATS.map((c) => { const v = D.summary[2024][c.key].rate; return `<div class="br w"><span>${c.long}</span><span class="bt"><i style="width:${v}%;background:${c.color}"></i></span><span class="bv"><b>${Math.round(v)}</b> / 100</span></div>`; }).join("") + `<p class="note">危疾要符合指定疾病定義，所以相對低；投保時要如實申報。</p>`)}`);
 
   /* ---- 3–5 medical ---- */
   const H = CAT.hospital;
   page(H, "第 2 部分 · 醫療／住院保險", `
-    ${chBanner(H, "第 2 部分 · 醫療／住院保險", "醫療：claim 得最多、用得最密", "住院、手術、醫生費嘅賠償。本部分所有數字都係講醫療／住院。", catStats(H))}
-    ${kf(f.p(pct(s.hospital.cases, s.cases), 0), `${Y} 年每 5 宗理賠有 4 宗係醫療／住院，賠出 ${s.hospital.amt} 億，係四類之中用得最密、賠得最多。`)}
-    ${sub("2.1", "醫療 claim 咗幾多？")}
+    ${chBanner(H, "第 2 部分 · 醫療／住院保險", "醫療：索償 得最多、用得最密", "住院、手術、醫生費的賠償。本部分所有數字均屬於醫療／住院。", catStats(H))}
+    ${kf(f.p(pct(s.hospital.cases, s.cases), 0), `${Y} 年每 5 宗理賠有 4 宗是醫療／住院，賠出 ${s.hospital.amt} 億，是四類之中用得最密、賠得最多。`)}
+    ${sub("2.1", "醫療索償了多少？")}
     <div class="g2">${box("每年賠款（億港元）", chart("hAmt", 48))}${box("每年成功宗數", chart("hCases", 48))}</div>
-    ${sub("2.2", "醫療費升幾多？")}
+    ${sub("2.2", "醫療費升多少？")}
     <div class="g2">
       ${box("住院手術費平均數（個人保單）", chart("cSurgeon", 52) + `<p class="note">香港保險業聯會。2019→2022：半私家房 +22%、標準房 +25%。</p>`)}
       ${box("私家外科醫生收費：2018 → 2025", `<table><thead><tr><th></th><th>2018</th><th>2025</th><th>升幅</th></tr></thead><tbody>${I.doctorFees.map((d) => `<tr><td>${d[0]}</td><td>${f.money(d[1])}</td><td><b>${f.money(d[2])}</b></td><td>${f.chg(d[2], d[1])}</td></tr>`).join("")}</tbody></table><p class="note">香港醫學會私家醫生收費調查。</p>`)}
@@ -120,84 +120,84 @@
 
   const surg = I.surgeries.map((x) => ({ ...x, c: pct(x.y2022[1] - x.y2018[1], x.y2018[1]) })).sort((a, b) => b.c - a.c);
   page(H, "第 2 部分 · 醫療／住院保險（續）", `
-    ${sub("2.2", "醫療費升幾多？（續）")}
+    ${sub("2.2", "醫療費升多少？（續）")}
     ${box("常見手術收費中位數：2018 → 2022", `<table><thead><tr><th>手術</th><th>私家房 2018</th><th>私家房 2022</th><th>半私家 2018</th><th>半私家 2022</th><th>半私家升幅</th><th>標準房 2018</th><th>標準房 2022</th></tr></thead><tbody>
       ${surg.map((x) => `<tr><td>${x.name}</td><td>${f.money(x.y2018[0])}</td><td>${f.money(x.y2022[0])}</td><td>${f.money(x.y2018[1])}</td><td><b>${f.money(x.y2022[1])}</b></td><td>${f.chg(x.y2022[1], x.y2018[1])}</td><td>${f.money(x.y2018[2])}</td><td>${f.money(x.y2022[2])}</td></tr>`).join("")}
       </tbody></table>`)}
     ${box("私家醫院每日病房收費：2019 → 2026", `<table><thead><tr><th>醫院</th><th>半私家 2019</th><th>半私家 2026</th><th>升幅</th><th>普通房 2019</th><th>普通房 2026</th><th>升幅</th></tr></thead><tbody>
       ${I.rooms.map((r) => `<tr><td>${r.name}</td><td>$${r.semi[0]}</td><td>$${r.semi[1]}</td><td>${f.chg(r.semiMid[1], r.semiMid[0])}</td><td>$${r.ward[0]}</td><td>$${r.ward[1]}</td><td>${f.chg(r.wardMid[1], r.wardMid[0])}</td></tr>`).join("")}
       </tbody></table><p class="note">各醫院網站公布價（2019 年 4 月及 2026 年 6 月）。升幅按收費範圍中間值計，只計房租。</p>`)}
-    <div class="callout"><b>約 ${D.hk.uncovered.pct}% 香港人（約 ${Math.round(D.hk.uncovered.people / 1e4)} 萬人）</b>冇僱主醫療福利，亦冇自己買醫療保險。（政府統計處，2026 年 3 月）</div>`);
+    <div class="callout"><b>約 ${D.hk.uncovered.pct}% 香港人（約 ${Math.round(D.hk.uncovered.people / 1e4)} 萬人）</b>沒有僱主醫療福利，亦沒有自己買醫療保險。（政府統計處，2026 年 3 月）</div>`);
 
   const CC = D.costs;
   const fb = CC.fullBill2020.map((x) => ({ name: x[0], cat: x[1], doc: x[2], hosp: x[3], total: x[2] + x[3] })).sort((a, b) => a.total - b.total);
   const rng = (r) => (r ? f.wan(r[0]) + "–" + f.wan(r[1]) : "—");
   page(H, "第 2 部分 · 醫療／住院保險（續）", `
-    ${sub("2.3", "一場大病，醫療費要幾多？")}
+    ${sub("2.3", "一場大病，醫療費要多少？")}
     <div class="g2">
-      ${box("大型手術一次要幾多錢？（中大醫院定價）", bars(I.complex, C.accent, { wide: true, val: (x) => f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<div class="legend"><span><i style="background:${C.accent}"></i>Level 1：冇併發症、冇其他重大病</span><span><i style="background:${C.accent};opacity:.35"></i>最高 Level 3：有嚴重併發症</span></div><p class="note">4 人房，2025 年 12 月。Level 係醫院按病情複雜程度分嘅收費級別。</p>`)}
-      ${box("癌症標靶藥：一年藥費", bars(I.drugs, H.color, { val: (x) => x[1] === x[2] ? f.wan(x[1]) : f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<p class="note">每月平均支出 × 12 估算。部分屬門診藥物，要睇醫療保障有冇包。</p>`)}
+      ${box("大型手術一次要多少錢？（中大醫院定價）", bars(I.complex, C.accent, { wide: true, val: (x) => f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<div class="legend"><span><i style="background:${C.accent}"></i>Level 1：沒有併發症、沒有其他重大病</span><span><i style="background:${C.accent};opacity:.35"></i>最高 Level 3：有嚴重併發症</span></div><p class="note">4 人房，2025 年 12 月。Level 是醫院按病情複雜程度分的收費級別。</p>`)}
+      ${box("癌症標靶藥：一年藥費", bars(I.drugs, H.color, { val: (x) => x[1] === x[2] ? f.wan(x[1]) : f.wan(x[1]) + "–" + f.wan(x[2]) }) + `<p class="note">每月平均支出 × 12 估算。部分屬門診藥物，要留意醫療保障是否包括。</p>`)}
     </div>
         ${box("主要癌症醫療費用（港元）", `<table><thead><tr><th>癌症</th><th>診斷及手術</th><th>化療</th><th>電療</th><th>標靶／免疫</th><th>估計一年總開支</th></tr></thead><tbody>
       ${CC.cancer2019.map((x) => `<tr><td>${x[0]}</td><td>${rng(x[1])}</td><td>${rng(x[2])}</td><td>${rng(x[3])}</td><td>${rng(x[4])}</td><td><b>${rng(x[5])}</b></td></tr>`).join("")}
-      </tbody></table><p class="note">化療 4–6 週期、電療 20–30 節、標靶／免疫以每年計。醫管局、食衞局、衞生署及私家醫生資料（2019 年）；「—」代表冇實際數字。</p>`)}
-    ${sub("2.4", "香港人幾時最多入院？")}
+      </tbody></table><p class="note">化療 4–6 週期、電療 20–30 節、標靶／免疫以每年計。醫管局、食衞局、衞生署及私家醫生資料（2019 年）；「—」代表沒有實際數字。</p>`)}
+    ${sub("2.4", "香港人何時最多入院？")}
     ${box("香港住院人數（按年齡，2025 年調查）", chart("hAge", 44) + `<p class="note">政府統計處主題性住戶統計調查。25–44 歲開始明顯上升，65 歲或以上最多。</p>`)}`);
 
   page(H, "第 2 部分 · 醫療／住院保險（續）", `
-    ${sub("2.2", "醫療費升幾多？（續）：做一次手術，全單要幾多？")}
+    ${sub("2.2", "醫療費升多少？（續）：做一次手術，全單要多少？")}
     ${box("常見手術全單收費（2020 年 12 月）", `<table><thead><tr><th>手術</th><th>類別</th><th>醫生費</th><th>醫院雜費</th><th>全單</th></tr></thead><tbody>
       ${fb.map((x) => `<tr><td>${x.name}</td><td>${x.cat}</td><td>${f.money(x.doc)}</td><td>${f.money(x.hosp)}</td><td><b>${f.money(x.total)}</b></td></tr>`).join("")}
-      </tbody></table><p class="note">各私家醫院收費中位數嘅加權平均數，已包醫生費（連麻醉師）同醫院雜費（連手術室），未計病房費。以上係 2020 年價錢，今日一般會更貴。</p>`)}
-    ${sub("2.5", "唔用醫保、靠公立醫院，要等幾耐？")}
+      </tbody></table><p class="note">各私家醫院收費中位數的加權平均數，已包醫生費（連麻醉師）和醫院雜費（連手術室），未計病房費。以上是 2020 年價錢，今日一般會更貴。</p>`)}
+    ${sub("2.5", "不用醫保、靠公立醫院，要等多久？")}
     <div class="g3 waits">${CC.waits.map((w) => `<div><span>${w[0]}</span><b>${w[1]}</b><em>${w[2]} · ${w[3]}</em></div>`).join("")}</div>
-    <p class="note">醫院管理局數字：90% 病人可以喺上述時間內做到手術，即係有一成人要等更耐。</p>`);
+    <p class="note">醫院管理局數字：90% 病人可以在上述時間內完成手術，即有一成病人要等更久。</p>`);
 
   /* ---- 6–8 critical ---- */
   const K = CAT.critical;
   const ciAge = D.ageGroups.map((_, i) => pct(ci.male[i] + ci.female[i], ci.n));
   page(K, "第 3 部分 · 危疾保險", `
-    ${chBanner(K, "第 3 部分 · 危疾保險", "危疾：一確診就一筆過賠", "癌症、心臟病、中風等指定疾病嘅賠償。本部分所有數字都係講危疾。", catStats(K))}
-    ${kf(`${ci.avgAge} 歲`, `危疾平均索賠年齡 ${ci.avgAge} 歲，${f.p(ciAge[2], 0)} 喺 41–60 歲出事，正正係供樓、養家最重嘅時候。`)}
-    ${sub("3.1", "危疾 claim 咗幾多？")}
+    ${chBanner(K, "第 3 部分 · 危疾保險", "危疾：一確診就一筆過賠", "癌症、心臟病、中風等指定疾病的賠償。本部分所有數字均屬於危疾。", catStats(K))}
+    ${kf(`${ci.avgAge} 歲`, `危疾平均索賠年齡 ${ci.avgAge} 歲，${f.p(ciAge[2], 0)} 在 41–60 歲索償，正正是供樓、養家負擔最重的時候。`)}
+    ${sub("3.1", "危疾索償了多少？")}
     <div class="g2">${box("每年賠款（億港元）", chart("kAmt", 42))}${box("每年成功宗數", chart("kCases", 42))}</div>
     ${sub("3.2", "男定女多？")}
     <div class="g2">
-      ${box("女性佔幾多？", chart("kFemale", 48) + `<p class="note">歷年都企喺 63–68%，主因乳癌。</p>`)}
-      ${box(`${Y} 年：年齡 × 性別`, chart("kGender", 48) + `<p class="note">21–40 歲女性個案係男性嘅 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p>`)}
+      ${box("女性佔多少？", chart("kFemale", 48) + `<p class="note">歷年都維持在 63–68%，主因乳癌。</p>`)}
+      ${box(`${Y} 年：年齡 × 性別`, chart("kGender", 48) + `<p class="note">21–40 歲女性個案是男性的 ${(ci.female[1] / ci.male[1]).toFixed(1)} 倍。</p>`)}
     </div>`);
   page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.3", "幾多歲最多？")}
-    <div class="g2">${box(`${Y} 年各年齡組佔比`, chart("kAge", 46))}${box(`三大危疾嘅年齡分佈（${Y}）`, chart("kAgeDis", 46))}</div>
-    ${sub("3.4", "咩病最多人 claim？")}
+    ${sub("3.3", "多少歲最多？")}
+    <div class="g2">${box(`${Y} 年各年齡組佔比`, chart("kAge", 46))}${box(`三大危疾的年齡分佈（${Y}）`, chart("kAgeDis", 46))}</div>
+    ${sub("3.4", "甚麼病索償最多？")}
     <div class="g2">
       ${box(`${Y} 年危疾原因（首 6 位）`, bars(ci.causes.slice(0, 6), (x, i) => i < 3 ? K.color : K.soft, { total: ci.n }))}
-      ${box("癌症個案首 5 位", bars(ci.cancers, (x, i) => i === 0 ? C.female : K.color, { total: ci.causes[0][1] }) + `<p class="note">百分比係佔癌症個案。</p>`)}
+      ${box("癌症個案首 5 位", bars(ci.cancers, (x, i) => i === 0 ? C.female : K.color, { total: ci.causes[0][1] }) + `<p class="note">百分比是佔癌症個案。</p>`)}
     </div>
 `);
   page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.5", "一宗賠幾多？")}
-    ${kf(`${Math.round(ci.max / ci.avg)} 倍`, `最高一宗 ${f.wan(ci.max)}，係平均 ${f.wan(ci.avg)} 嘅 ${Math.round(ci.max / ci.avg)} 倍。分別在於當初買咗幾多保額。`)}
+    ${sub("3.5", "一宗賠多少？")}
+    ${kf(`${Math.round(ci.max / ci.avg)} 倍`, `最高一宗 ${f.wan(ci.max)}，是平均 ${f.wan(ci.avg)} 的 ${Math.round(ci.max / ci.avg)} 倍。分別在於當初買了多少保額。`)}
     <div class="g2">
       ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, ci.bands[i]]), (x, i) => i >= 3 ? K.color : K.soft, { total: ci.n }))}
       ${box("平均 vs 最高一宗", chart("kMax", 40))}
     </div>
-    ${sub("3.6", "危疾年輕化、小朋友都會中")}
-    ${kf("+13%", `20–44 歲癌症發病人數 10 年增加 13%。21–40 歲已經佔危疾賠償 ${f.p(ciAge[1], 0)}；1–14 歲兒童嘅頭號致命疾病都係癌症。`)}
+    ${sub("3.6", "危疾年輕化、兒童亦會患上")}
+    ${kf("+13%", `20–44 歲癌症發病人數 10 年增加 13%。21–40 歲已經佔危疾賠償 ${f.p(ciAge[1], 0)}；1–14 歲兒童的頭號致命疾病都是癌症。`)}
     <div class="g2">
-      ${box("後生一輩：危疾風險上升緊", `<div class="facts">${D.hk.youngCI.facts.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}
+      ${box("年輕一輩：危疾風險正在上升", `<div class="facts">${D.hk.youngCI.facts.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}
       ${box("但年紀越大，風險越高", chart("kYoung", 52) + `<p class="note">香港癌症發病率（每十萬人口），香港癌症資料統計中心。</p>`)}
     </div>
-    ${box("小朋友都會有危疾同長期病", `<div class="g3 facts">${D.hk.children.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}`);
+    ${box("兒童亦會患上危疾及長期病", `<div class="g3 facts">${D.hk.children.map((x) => `<div><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join("")}</div>`)}`);
   const cls = (v) => v >= 80 ? "ok" : v >= 50 ? "mid" : "bad";
   page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.7", "癌症知多啲")}
-    ${kf(`${D.hk.survivalTrend[0][1]}% → ${D.hk.survivalTrend[1][1]}%`, `香港 15 歲或以上癌症病人五年存活率上升緊（${D.hk.survivalTrend[0][0]} → ${D.hk.survivalTrend[1][0]}）。活得耐咗，治療期亦長咗，要預足醫療費同停工期間嘅收入。`)}
+    ${sub("3.7", "認識癌症")}
+    ${kf(`${D.hk.survivalTrend[0][1]}% → ${D.hk.survivalTrend[1][1]}%`, `香港 15 歲或以上癌症病人五年存活率正在上升（${D.hk.survivalTrend[0][0]} → ${D.hk.survivalTrend[1][0]}）。存活時間延長了，治療期亦長了，要預留足夠醫療費和停工期間的收入。`)}
     <div class="g2">
       ${box("五年相對存活率（按期數）", `<table><thead><tr><th>癌症</th><th>第一期</th><th>第二期</th><th>第三期</th><th>第四期</th></tr></thead><tbody>
         ${D.hk.survival.map((r) => `<tr><td>${r[0]}</td>${r[1].map((v) => `<td><span class="pill ${cls(v)}">${v.toFixed(1)}%</span></td>`).join("")}</tr>`).join("")}
         </tbody></table><p class="note">香港癌症資料統計中心（2024 年 10 月）。</p>`)}
-      ${box("危疾復發率參考", `<table><tbody>${D.hk.recurrence.map((r) => `<tr><td>${r[0]}</td><td><b style="color:${CAT.critical.color}">${r[1]}</b></td></tr>`).join("")}</tbody></table><p class="note">復發率視乎研究、期數同治療，只供參考。如果保障只賠一次，復發時就可能冇得再 claim。</p>`)}
+      ${box("危疾復發率參考", `<table><tbody>${D.hk.recurrence.map((r) => `<tr><td>${r[0]}</td><td><b style="color:${CAT.critical.color}">${r[1]}</b></td></tr>`).join("")}</tbody></table><p class="note">復發率視乎研究、期數和治療，只供參考。如果保障只賠一次，復發時就可能無法再索償。</p>`)}
     </div>
     <div class="g2">
       ${box("香港男性最常見癌症（2023）", bars(D.hk.cancerByGender2023.male, C.male, { val: (x) => f.num(x[1]) + " 宗" }))}
@@ -206,8 +206,8 @@
     <p class="note">香港癌症資料統計中心：75 歲前，${D.hk.cancerRisk.men}、${D.hk.cancerRisk.women}可能患癌。</p>`);
   const CT = D.hk.cancerTrend, ctl = CT.years.length - 1;
   page(K, "第 3 部分 · 危疾保險（續）", `
-    ${sub("3.7", `癌症知多啲（續）：香港常見癌症新症走勢（${D.hk.cancerTrend.years[0]}–${D.hk.cancerTrend.years[D.hk.cancerTrend.years.length - 1]}）`)}
-    ${box("香港常見癌症每年新症", chart("kCancerTrend", 70) + `<p class="note">按數據年份（香港癌症資料統計中心）。${CT.years[0]} → ${CT.years[ctl]}：肺癌 +${growth(CT["肺癌"][ctl], CT["肺癌"][0])}%、乳癌 +${growth(CT["乳癌"][ctl], CT["乳癌"][0])}%、前列腺癌 +${growth(CT["前列腺癌"][ctl], CT["前列腺癌"][0])}%。2020 年新症下跌，同疫情期間少咗人檢查有關。</p>`)}
+    ${sub("3.7", `認識癌症（續）：香港常見癌症新症走勢（${D.hk.cancerTrend.years[0]}–${D.hk.cancerTrend.years[D.hk.cancerTrend.years.length - 1]}）`)}
+    ${box("香港常見癌症每年新症", chart("kCancerTrend", 70) + `<p class="note">按數據年份（香港癌症資料統計中心）。${CT.years[0]} → ${CT.years[ctl]}：肺癌 +${growth(CT["肺癌"][ctl], CT["肺癌"][0])}%、乳癌 +${growth(CT["乳癌"][ctl], CT["乳癌"][0])}%、前列腺癌 +${growth(CT["前列腺癌"][ctl], CT["前列腺癌"][0])}%。2020 年新症下跌，與疫情期間較少人接受檢查有關。</p>`)}
     <table class="trendt"><thead><tr><th>新症（宗）</th>${CT.years.map((y) => `<th>${y}</th>`).join("")}</tr></thead><tbody>
       ${Object.keys(CT).filter((k) => k !== "years").map((k) => `<tr><td>${k}</td>${CT[k].map((v) => `<td>${f.num(v)}</td>`).join("")}</tr>`).join("")}
     </tbody></table>
@@ -220,12 +220,12 @@
   const L = CAT.death;
   const deAge = D.ageGroups.map((_, i) => pct(de.male[i] + de.female[i], de.n));
   page(L, "第 4 部分 · 人壽保險（身故賠償）", `
-    ${chBanner(L, "第 4 部分 · 人壽保險（身故賠償）", "人壽：留俾屋企人嘅一筆錢", "受保人身故後賠俾家人嘅錢。本部分所有數字都係講人壽／身故。", catStats(L))}
-    ${kf(f.wan(de.avg), `${Y} 年身故平均每宗只賠 ${f.wan(de.avg)}；${f.p(pct(de.bands[0], de.n), 0)} 個案賠 $25 萬或以下。人壽保額要按家庭開支、按揭同供養年期去計。`)}
+    ${chBanner(L, "第 4 部分 · 人壽保險（身故賠償）", "人壽：留給家人的一筆錢", "受保人身故後賠給家人的錢。本部分所有數字均屬於人壽／身故。", catStats(L))}
+    ${kf(f.wan(de.avg), `${Y} 年身故平均每宗只賠 ${f.wan(de.avg)}；${f.p(pct(de.bands[0], de.n), 0)} 個案賠 $25 萬或以下。人壽保額要按家庭開支、按揭和供養年期去計。`)}
     <div class="g2">${box("每年賠款（億港元）", chart("lAmt", 28))}${box("每年成功宗數", chart("lCases", 28))}</div>
     <div class="g2">
       ${box(`${Y} 年：年齡 × 性別`, chart("lGender", 44) + `<p class="note">男性佔 ${f.p(100 - femaleShare(de), 0)}；61–80 歲男性明顯較多，80 歲以上女性較多。</p>`)}
-      ${box(`${Y} 年死因（首 6 位）`, bars(de.causes.slice(0, 6), (x, i) => i < 3 ? L.color : L.soft, { total: de.n }) + `<p class="note">平均索賠年齡 ${de.avgAge} 歲；${f.p(deAge[3], 0)} 喺 61–80 歲。</p>`)}
+      ${box(`${Y} 年死因（首 6 位）`, bars(de.causes.slice(0, 6), (x, i) => i < 3 ? L.color : L.soft, { total: de.n }) + `<p class="note">平均索賠年齡 ${de.avgAge} 歲；${f.p(deAge[3], 0)} 在 61–80 歲。</p>`)}
     </div>
     <div class="g2">
       ${box(`${Y} 年每宗賠償額分佈`, bars(D.bandLabels.map((l, i) => [l, de.bands[i]]), (x, i) => i >= 3 ? L.color : L.soft, { total: de.n }))}
@@ -233,7 +233,7 @@
     </div>`);
   const DT = D.hk.deathTrend;
   page(L, "第 4 部分 · 人壽保險（續）", `
-    ${sub("4.4", `咩原因最多？（續）：香港主要死因走勢（${D.hk.deathTrend.years[0]}–${D.hk.deathTrend.years[D.hk.deathTrend.years.length - 1]}）`)}
+    ${sub("4.4", `甚麼原因最多？（續）：香港主要死因走勢（${D.hk.deathTrend.years[0]}–${D.hk.deathTrend.years[D.hk.deathTrend.years.length - 1]}）`)}
     ${box("香港每年死亡人數（三大死因）", chart("lDeathTrend", 70) + `<p class="note">按數據年份（香港統計年刊）。2022 年另有新冠 9,291 人死亡、2023 年 2,594 人，未計入圖內。</p>`)}
     <table class="trendt"><thead><tr><th>死亡人數</th>${DT.years.map((y) => `<th>${y}</th>`).join("")}</tr></thead><tbody>
       ${Object.keys(DT).filter((k) => k !== "years").map((k) => `<tr><td>${k}</td>${DT[k].map((v) => `<td>${f.num(v)}</td>`).join("")}</tr>`).join("")}
@@ -245,29 +245,29 @@
   const accDeath = de.causes.find((x) => x[0] === "意外");
   const accAvg = YEARS.map((y) => (D.summary[y].accident.amt * 1e8) / D.summary[y].accident.cases);
   page(A, "第 5 部分 · 意外保險", `
-    ${chBanner(A, "第 5 部分 · 意外保險", "意外：宗數多、每宗細", "意外受傷嘅醫療同賠償。本部分所有數字都係講意外。", catStats(A))}
-    ${kf(`${f.num(s.accident.cases)} 宗`, `意外宗數僅次於醫療，但每宗平均只係 ${f.money(accAvg[accAvg.length - 1])}，屬於「宗數多、每宗細」。真正大額嘅意外要靠醫療同人壽保障。`)}
+    ${chBanner(A, "第 5 部分 · 意外保險", "意外：宗數多、每宗金額小", "意外受傷的醫療和賠償。本部分所有數字均屬於意外。", catStats(A))}
+    ${kf(`${f.num(s.accident.cases)} 宗`, `意外宗數僅次於醫療，但每宗平均只是 ${f.money(accAvg[accAvg.length - 1])}，屬於「宗數多、每宗金額小」。真正大額的意外要靠醫療和人壽保障。`)}
     <div class="g2">${box("每年賠款（億港元）", chart("aAmt", 50))}${box("每年成功宗數", chart("aCases", 50))}</div>
-    ${box("平均每宗賠幾多？", chart("aAvg", 46) + `<p class="note">總額 ÷ 成功宗數推算。報告冇公布意外類型同年齡分佈。${accDeath ? `${Y} 年身故賠償之中有 ${accDeath[1]} 宗係意外身故。` : ""}</p>`)}`);
+    ${box("平均每宗賠多少？", chart("aAvg", 46) + `<p class="note">總額 ÷ 成功宗數推算。報告沒有公布意外類型及年齡分佈。${accDeath ? `${Y} 年身故賠償之中有 ${accDeath[1]} 宗是意外身故。` : ""}</p>`)}`);
 
   /* ---- 11 check ---- */
   const qs = [
-    ["危疾", "我嘅危疾保單賠幾多次？", "癌症、心臟病、中風都有機會復發。如果只賠一次，第二次出事就要靠自己。"],
-    ["醫療", "醫療保險有冇全數賠償，或者夠高嘅每年限額？", "一次複雜手術可以去到 $86 萬，一年標靶藥可以超過 $180 萬。"],
-    ["人壽", "人壽保額夠唔夠還按揭同養家？", `身故平均賠償只係 ${f.wan(de.avg)}，對大部分家庭嚟講遠遠唔夠。`],
-    ["危疾", "投保時有冇如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，係四類之中最低。"],
-    ["全部", "上一次檢視保障係幾時？", "手術費、病房費年年升，建議每 1–2 年檢視一次。"]
+    ["危疾", "我的危疾保單賠多少次？", "癌症、心臟病、中風都有機會復發。如果只賠一次，第二次患病就要自行承擔。"],
+    ["醫療", "醫療保險有沒有全數賠償，或夠高的每年限額？", "一次複雜手術可以達到 $86 萬，一年標靶藥可以超過 $180 萬。"],
+    ["人壽", "人壽保額是否足夠償還按揭及養家？", `身故平均賠償只是 ${f.wan(de.avg)}，對大部分家庭來說遠遠不足。`],
+    ["危疾", "投保時有沒有如實申報健康狀況？", "危疾每 100 宗申請約有 85–89 宗獲賠，是四類之中最低。"],
+    ["全部", "上一次檢視保障是何時？", "手術費、病房費年年升，建議每 1–2 年檢視一次。"]
   ];
   const qc = { 危疾: K.color, 醫療: H.color, 人壽: L.ink, 全部: NAVY.color };
   page(CHECK, "第 6 部分 · 保障檢查", `
-    ${sub("6.1", "同顧問傾之前，問自己 5 條問題")}
+    ${sub("6.1", "與顧問商討之前，問自己 5 條問題")}
     <ol class="qs">${qs.map((q) => `<li><b><span class="qt" style="background:${qc[q[0]]}">${q[0]}</span>${q[1]}</b>${q[2]}</li>`).join("")}</ol>
-    ${sub("6.2", "我嘅保障一覽")}
+    ${sub("6.2", "我的保障一覽")}
     <table class="fill">
       <thead><tr><th>保障</th><th>現有保額／計劃</th><th>建議參考</th><th>缺口／跟進</th></tr></thead>
       <tbody>
         <tr><td style="border-left:1.2mm solid ${H.color}">醫療</td><td></td><td>全數賠償或足夠年限額；門診癌症治療</td><td></td></tr>
-        <tr><td style="border-left:1.2mm solid ${K.color}">危疾</td><td></td><td>年收入 3–5 倍；有冇多次賠償</td><td></td></tr>
+        <tr><td style="border-left:1.2mm solid ${K.color}">危疾</td><td></td><td>年收入 3–5 倍；有沒有多次賠償</td><td></td></tr>
         <tr><td style="border-left:1.2mm solid ${L.color}">人壽</td><td></td><td>家庭開支 × 年數 ＋ 債務 − 儲蓄</td><td></td></tr>
         <tr><td style="border-left:1.2mm solid ${A.color}">意外</td><td></td><td></td><td></td></tr>
         <tr><td>其他</td><td></td><td></td><td></td></tr>
@@ -278,7 +278,7 @@
       <a class="qr" href="https://api.portfoplus.com/api/v1/adviser/5e41564ab3b1bc00153394db?m=link&amp;r=adviser"><svg viewBox="0 0 41 41" width="90" height="90" shape-rendering="crispEdges" aria-label="電子名片二維碼"><rect width="41" height="41" fill="#fff"/><path d="M2,2h1v1h-1zM3,2h1v1h-1zM4,2h1v1h-1zM5,2h1v1h-1zM6,2h1v1h-1zM7,2h1v1h-1zM8,2h1v1h-1zM11,2h1v1h-1zM16,2h1v1h-1zM19,2h1v1h-1zM20,2h1v1h-1zM21,2h1v1h-1zM22,2h1v1h-1zM25,2h1v1h-1zM28,2h1v1h-1zM32,2h1v1h-1zM33,2h1v1h-1zM34,2h1v1h-1zM35,2h1v1h-1zM36,2h1v1h-1zM37,2h1v1h-1zM38,2h1v1h-1zM2,3h1v1h-1zM8,3h1v1h-1zM11,3h1v1h-1zM15,3h1v1h-1zM16,3h1v1h-1zM18,3h1v1h-1zM19,3h1v1h-1zM22,3h1v1h-1zM24,3h1v1h-1zM28,3h1v1h-1zM29,3h1v1h-1zM32,3h1v1h-1zM38,3h1v1h-1zM2,4h1v1h-1zM4,4h1v1h-1zM5,4h1v1h-1zM6,4h1v1h-1zM8,4h1v1h-1zM10,4h1v1h-1zM14,4h1v1h-1zM22,4h1v1h-1zM23,4h1v1h-1zM24,4h1v1h-1zM25,4h1v1h-1zM29,4h1v1h-1zM32,4h1v1h-1zM34,4h1v1h-1zM35,4h1v1h-1zM36,4h1v1h-1zM38,4h1v1h-1zM2,5h1v1h-1zM4,5h1v1h-1zM5,5h1v1h-1zM6,5h1v1h-1zM8,5h1v1h-1zM10,5h1v1h-1zM11,5h1v1h-1zM14,5h1v1h-1zM18,5h1v1h-1zM19,5h1v1h-1zM21,5h1v1h-1zM24,5h1v1h-1zM25,5h1v1h-1zM26,5h1v1h-1zM27,5h1v1h-1zM28,5h1v1h-1zM29,5h1v1h-1zM30,5h1v1h-1zM32,5h1v1h-1zM34,5h1v1h-1zM35,5h1v1h-1zM36,5h1v1h-1zM38,5h1v1h-1zM2,6h1v1h-1zM4,6h1v1h-1zM5,6h1v1h-1zM6,6h1v1h-1zM8,6h1v1h-1zM10,6h1v1h-1zM11,6h1v1h-1zM16,6h1v1h-1zM17,6h1v1h-1zM20,6h1v1h-1zM21,6h1v1h-1zM25,6h1v1h-1zM30,6h1v1h-1zM32,6h1v1h-1zM34,6h1v1h-1zM35,6h1v1h-1zM36,6h1v1h-1zM38,6h1v1h-1zM2,7h1v1h-1zM8,7h1v1h-1zM10,7h1v1h-1zM12,7h1v1h-1zM14,7h1v1h-1zM20,7h1v1h-1zM22,7h1v1h-1zM23,7h1v1h-1zM24,7h1v1h-1zM29,7h1v1h-1zM32,7h1v1h-1zM38,7h1v1h-1zM2,8h1v1h-1zM3,8h1v1h-1zM4,8h1v1h-1zM5,8h1v1h-1zM6,8h1v1h-1zM7,8h1v1h-1zM8,8h1v1h-1zM10,8h1v1h-1zM12,8h1v1h-1zM14,8h1v1h-1zM16,8h1v1h-1zM18,8h1v1h-1zM20,8h1v1h-1zM22,8h1v1h-1zM24,8h1v1h-1zM26,8h1v1h-1zM28,8h1v1h-1zM30,8h1v1h-1zM32,8h1v1h-1zM33,8h1v1h-1zM34,8h1v1h-1zM35,8h1v1h-1zM36,8h1v1h-1zM37,8h1v1h-1zM38,8h1v1h-1zM10,9h1v1h-1zM11,9h1v1h-1zM12,9h1v1h-1zM13,9h1v1h-1zM15,9h1v1h-1zM16,9h1v1h-1zM17,9h1v1h-1zM23,9h1v1h-1zM24,9h1v1h-1zM25,9h1v1h-1zM26,9h1v1h-1zM28,9h1v1h-1zM2,10h1v1h-1zM4,10h1v1h-1zM5,10h1v1h-1zM6,10h1v1h-1zM7,10h1v1h-1zM8,10h1v1h-1zM15,10h1v1h-1zM16,10h1v1h-1zM17,10h1v1h-1zM19,10h1v1h-1zM22,10h1v1h-1zM27,10h1v1h-1zM29,10h1v1h-1zM30,10h1v1h-1zM32,10h1v1h-1zM33,10h1v1h-1zM34,10h1v1h-1zM35,10h1v1h-1zM36,10h1v1h-1zM2,11h1v1h-1zM3,11h1v1h-1zM4,11h1v1h-1zM7,11h1v1h-1zM9,11h1v1h-1zM11,11h1v1h-1zM13,11h1v1h-1zM16,11h1v1h-1zM17,11h1v1h-1zM18,11h1v1h-1zM20,11h1v1h-1zM21,11h1v1h-1zM24,11h1v1h-1zM25,11h1v1h-1zM26,11h1v1h-1zM28,11h1v1h-1zM31,11h1v1h-1zM37,11h1v1h-1zM3,12h1v1h-1zM4,12h1v1h-1zM5,12h1v1h-1zM8,12h1v1h-1zM11,12h1v1h-1zM15,12h1v1h-1zM16,12h1v1h-1zM20,12h1v1h-1zM23,12h1v1h-1zM24,12h1v1h-1zM26,12h1v1h-1zM27,12h1v1h-1zM28,12h1v1h-1zM29,12h1v1h-1zM32,12h1v1h-1zM34,12h1v1h-1zM35,12h1v1h-1zM37,12h1v1h-1zM38,12h1v1h-1zM2,13h1v1h-1zM4,13h1v1h-1zM5,13h1v1h-1zM7,13h1v1h-1zM11,13h1v1h-1zM14,13h1v1h-1zM16,13h1v1h-1zM18,13h1v1h-1zM21,13h1v1h-1zM23,13h1v1h-1zM24,13h1v1h-1zM25,13h1v1h-1zM26,13h1v1h-1zM29,13h1v1h-1zM31,13h1v1h-1zM32,13h1v1h-1zM35,13h1v1h-1zM38,13h1v1h-1zM4,14h1v1h-1zM5,14h1v1h-1zM8,14h1v1h-1zM11,14h1v1h-1zM13,14h1v1h-1zM14,14h1v1h-1zM15,14h1v1h-1zM19,14h1v1h-1zM22,14h1v1h-1zM26,14h1v1h-1zM27,14h1v1h-1zM28,14h1v1h-1zM29,14h1v1h-1zM30,14h1v1h-1zM31,14h1v1h-1zM32,14h1v1h-1zM34,14h1v1h-1zM36,14h1v1h-1zM37,14h1v1h-1zM38,14h1v1h-1zM3,15h1v1h-1zM5,15h1v1h-1zM6,15h1v1h-1zM7,15h1v1h-1zM9,15h1v1h-1zM10,15h1v1h-1zM13,15h1v1h-1zM14,15h1v1h-1zM15,15h1v1h-1zM20,15h1v1h-1zM21,15h1v1h-1zM25,15h1v1h-1zM30,15h1v1h-1zM31,15h1v1h-1zM33,15h1v1h-1zM37,15h1v1h-1zM2,16h1v1h-1zM3,16h1v1h-1zM6,16h1v1h-1zM8,16h1v1h-1zM10,16h1v1h-1zM15,16h1v1h-1zM17,16h1v1h-1zM23,16h1v1h-1zM24,16h1v1h-1zM26,16h1v1h-1zM28,16h1v1h-1zM29,16h1v1h-1zM30,16h1v1h-1zM32,16h1v1h-1zM33,16h1v1h-1zM34,16h1v1h-1zM35,16h1v1h-1zM38,16h1v1h-1zM2,17h1v1h-1zM5,17h1v1h-1zM6,17h1v1h-1zM7,17h1v1h-1zM10,17h1v1h-1zM12,17h1v1h-1zM13,17h1v1h-1zM14,17h1v1h-1zM16,17h1v1h-1zM20,17h1v1h-1zM21,17h1v1h-1zM22,17h1v1h-1zM23,17h1v1h-1zM24,17h1v1h-1zM25,17h1v1h-1zM28,17h1v1h-1zM30,17h1v1h-1zM31,17h1v1h-1zM33,17h1v1h-1zM34,17h1v1h-1zM37,17h1v1h-1zM38,17h1v1h-1zM5,18h1v1h-1zM6,18h1v1h-1zM7,18h1v1h-1zM8,18h1v1h-1zM9,18h1v1h-1zM10,18h1v1h-1zM12,18h1v1h-1zM14,18h1v1h-1zM16,18h1v1h-1zM17,18h1v1h-1zM19,18h1v1h-1zM22,18h1v1h-1zM24,18h1v1h-1zM25,18h1v1h-1zM26,18h1v1h-1zM27,18h1v1h-1zM30,18h1v1h-1zM31,18h1v1h-1zM32,18h1v1h-1zM34,18h1v1h-1zM36,18h1v1h-1zM37,18h1v1h-1zM38,18h1v1h-1zM2,19h1v1h-1zM3,19h1v1h-1zM5,19h1v1h-1zM9,19h1v1h-1zM13,19h1v1h-1zM14,19h1v1h-1zM16,19h1v1h-1zM17,19h1v1h-1zM21,19h1v1h-1zM22,19h1v1h-1zM25,19h1v1h-1zM27,19h1v1h-1zM28,19h1v1h-1zM33,19h1v1h-1zM35,19h1v1h-1zM37,19h1v1h-1zM3,20h1v1h-1zM4,20h1v1h-1zM5,20h1v1h-1zM6,20h1v1h-1zM8,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM12,20h1v1h-1zM13,20h1v1h-1zM14,20h1v1h-1zM15,20h1v1h-1zM17,20h1v1h-1zM24,20h1v1h-1zM26,20h1v1h-1zM27,20h1v1h-1zM28,20h1v1h-1zM29,20h1v1h-1zM30,20h1v1h-1zM32,20h1v1h-1zM33,20h1v1h-1zM37,20h1v1h-1zM38,20h1v1h-1zM4,21h1v1h-1zM6,21h1v1h-1zM7,21h1v1h-1zM15,21h1v1h-1zM20,21h1v1h-1zM21,21h1v1h-1zM22,21h1v1h-1zM23,21h1v1h-1zM24,21h1v1h-1zM28,21h1v1h-1zM32,21h1v1h-1zM35,21h1v1h-1zM38,21h1v1h-1zM2,22h1v1h-1zM3,22h1v1h-1zM4,22h1v1h-1zM5,22h1v1h-1zM6,22h1v1h-1zM8,22h1v1h-1zM11,22h1v1h-1zM12,22h1v1h-1zM14,22h1v1h-1zM16,22h1v1h-1zM17,22h1v1h-1zM18,22h1v1h-1zM19,22h1v1h-1zM22,22h1v1h-1zM24,22h1v1h-1zM26,22h1v1h-1zM27,22h1v1h-1zM28,22h1v1h-1zM29,22h1v1h-1zM31,22h1v1h-1zM32,22h1v1h-1zM34,22h1v1h-1zM36,22h1v1h-1zM3,23h1v1h-1zM4,23h1v1h-1zM9,23h1v1h-1zM10,23h1v1h-1zM11,23h1v1h-1zM12,23h1v1h-1zM16,23h1v1h-1zM18,23h1v1h-1zM21,23h1v1h-1zM22,23h1v1h-1zM25,23h1v1h-1zM26,23h1v1h-1zM28,23h1v1h-1zM30,23h1v1h-1zM35,23h1v1h-1zM3,24h1v1h-1zM5,24h1v1h-1zM8,24h1v1h-1zM10,24h1v1h-1zM11,24h1v1h-1zM13,24h1v1h-1zM14,24h1v1h-1zM15,24h1v1h-1zM16,24h1v1h-1zM17,24h1v1h-1zM18,24h1v1h-1zM19,24h1v1h-1zM22,24h1v1h-1zM23,24h1v1h-1zM24,24h1v1h-1zM27,24h1v1h-1zM29,24h1v1h-1zM32,24h1v1h-1zM33,24h1v1h-1zM34,24h1v1h-1zM35,24h1v1h-1zM37,24h1v1h-1zM38,24h1v1h-1zM3,25h1v1h-1zM5,25h1v1h-1zM7,25h1v1h-1zM9,25h1v1h-1zM12,25h1v1h-1zM14,25h1v1h-1zM17,25h1v1h-1zM18,25h1v1h-1zM20,25h1v1h-1zM21,25h1v1h-1zM22,25h1v1h-1zM23,25h1v1h-1zM25,25h1v1h-1zM26,25h1v1h-1zM28,25h1v1h-1zM29,25h1v1h-1zM33,25h1v1h-1zM34,25h1v1h-1zM37,25h1v1h-1zM38,25h1v1h-1zM3,26h1v1h-1zM8,26h1v1h-1zM9,26h1v1h-1zM12,26h1v1h-1zM14,26h1v1h-1zM16,26h1v1h-1zM17,26h1v1h-1zM18,26h1v1h-1zM19,26h1v1h-1zM21,26h1v1h-1zM24,26h1v1h-1zM26,26h1v1h-1zM27,26h1v1h-1zM29,26h1v1h-1zM32,26h1v1h-1zM34,26h1v1h-1zM36,26h1v1h-1zM37,26h1v1h-1zM38,26h1v1h-1zM2,27h1v1h-1zM3,27h1v1h-1zM6,27h1v1h-1zM7,27h1v1h-1zM10,27h1v1h-1zM11,27h1v1h-1zM13,27h1v1h-1zM18,27h1v1h-1zM20,27h1v1h-1zM21,27h1v1h-1zM23,27h1v1h-1zM25,27h1v1h-1zM28,27h1v1h-1zM30,27h1v1h-1zM31,27h1v1h-1zM33,27h1v1h-1zM2,28h1v1h-1zM4,28h1v1h-1zM6,28h1v1h-1zM8,28h1v1h-1zM12,28h1v1h-1zM14,28h1v1h-1zM15,28h1v1h-1zM17,28h1v1h-1zM18,28h1v1h-1zM19,28h1v1h-1zM22,28h1v1h-1zM23,28h1v1h-1zM26,28h1v1h-1zM29,28h1v1h-1zM37,28h1v1h-1zM38,28h1v1h-1zM2,29h1v1h-1zM7,29h1v1h-1zM9,29h1v1h-1zM12,29h1v1h-1zM14,29h1v1h-1zM15,29h1v1h-1zM16,29h1v1h-1zM17,29h1v1h-1zM18,29h1v1h-1zM20,29h1v1h-1zM21,29h1v1h-1zM23,29h1v1h-1zM24,29h1v1h-1zM31,29h1v1h-1zM32,29h1v1h-1zM33,29h1v1h-1zM35,29h1v1h-1zM37,29h1v1h-1zM2,30h1v1h-1zM4,30h1v1h-1zM5,30h1v1h-1zM6,30h1v1h-1zM7,30h1v1h-1zM8,30h1v1h-1zM9,30h1v1h-1zM13,30h1v1h-1zM14,30h1v1h-1zM15,30h1v1h-1zM16,30h1v1h-1zM17,30h1v1h-1zM19,30h1v1h-1zM21,30h1v1h-1zM24,30h1v1h-1zM27,30h1v1h-1zM28,30h1v1h-1zM29,30h1v1h-1zM30,30h1v1h-1zM31,30h1v1h-1zM32,30h1v1h-1zM33,30h1v1h-1zM34,30h1v1h-1zM36,30h1v1h-1zM38,30h1v1h-1zM10,31h1v1h-1zM12,31h1v1h-1zM14,31h1v1h-1zM18,31h1v1h-1zM19,31h1v1h-1zM20,31h1v1h-1zM21,31h1v1h-1zM24,31h1v1h-1zM25,31h1v1h-1zM30,31h1v1h-1zM34,31h1v1h-1zM35,31h1v1h-1zM37,31h1v1h-1zM2,32h1v1h-1zM3,32h1v1h-1zM4,32h1v1h-1zM5,32h1v1h-1zM6,32h1v1h-1zM7,32h1v1h-1zM8,32h1v1h-1zM17,32h1v1h-1zM18,32h1v1h-1zM20,32h1v1h-1zM22,32h1v1h-1zM23,32h1v1h-1zM27,32h1v1h-1zM30,32h1v1h-1zM32,32h1v1h-1zM34,32h1v1h-1zM36,32h1v1h-1zM38,32h1v1h-1zM2,33h1v1h-1zM8,33h1v1h-1zM10,33h1v1h-1zM11,33h1v1h-1zM14,33h1v1h-1zM15,33h1v1h-1zM23,33h1v1h-1zM24,33h1v1h-1zM28,33h1v1h-1zM30,33h1v1h-1zM34,33h1v1h-1zM35,33h1v1h-1zM37,33h1v1h-1zM2,34h1v1h-1zM4,34h1v1h-1zM5,34h1v1h-1zM6,34h1v1h-1zM8,34h1v1h-1zM10,34h1v1h-1zM12,34h1v1h-1zM14,34h1v1h-1zM16,34h1v1h-1zM17,34h1v1h-1zM19,34h1v1h-1zM21,34h1v1h-1zM24,34h1v1h-1zM27,34h1v1h-1zM29,34h1v1h-1zM30,34h1v1h-1zM31,34h1v1h-1zM32,34h1v1h-1zM33,34h1v1h-1zM34,34h1v1h-1zM36,34h1v1h-1zM37,34h1v1h-1zM2,35h1v1h-1zM4,35h1v1h-1zM5,35h1v1h-1zM6,35h1v1h-1zM8,35h1v1h-1zM10,35h1v1h-1zM11,35h1v1h-1zM12,35h1v1h-1zM15,35h1v1h-1zM16,35h1v1h-1zM18,35h1v1h-1zM19,35h1v1h-1zM21,35h1v1h-1zM22,35h1v1h-1zM23,35h1v1h-1zM25,35h1v1h-1zM26,35h1v1h-1zM27,35h1v1h-1zM28,35h1v1h-1zM29,35h1v1h-1zM30,35h1v1h-1zM32,35h1v1h-1zM34,35h1v1h-1zM37,35h1v1h-1zM38,35h1v1h-1zM2,36h1v1h-1zM4,36h1v1h-1zM5,36h1v1h-1zM6,36h1v1h-1zM8,36h1v1h-1zM10,36h1v1h-1zM12,36h1v1h-1zM16,36h1v1h-1zM17,36h1v1h-1zM18,36h1v1h-1zM20,36h1v1h-1zM23,36h1v1h-1zM28,36h1v1h-1zM30,36h1v1h-1zM35,36h1v1h-1zM36,36h1v1h-1zM37,36h1v1h-1zM38,36h1v1h-1zM2,37h1v1h-1zM8,37h1v1h-1zM11,37h1v1h-1zM14,37h1v1h-1zM15,37h1v1h-1zM21,37h1v1h-1zM22,37h1v1h-1zM23,37h1v1h-1zM26,37h1v1h-1zM29,37h1v1h-1zM30,37h1v1h-1zM32,37h1v1h-1zM34,37h1v1h-1zM35,37h1v1h-1zM38,37h1v1h-1zM2,38h1v1h-1zM3,38h1v1h-1zM4,38h1v1h-1zM5,38h1v1h-1zM6,38h1v1h-1zM7,38h1v1h-1zM8,38h1v1h-1zM10,38h1v1h-1zM12,38h1v1h-1zM13,38h1v1h-1zM15,38h1v1h-1zM17,38h1v1h-1zM18,38h1v1h-1zM19,38h1v1h-1zM21,38h1v1h-1zM24,38h1v1h-1zM25,38h1v1h-1zM27,38h1v1h-1zM28,38h1v1h-1zM31,38h1v1h-1zM32,38h1v1h-1zM34,38h1v1h-1zM36,38h1v1h-1zM37,38h1v1h-1zM38,38h1v1h-1z" fill="#000"/></svg></a>
     </div>
     <div><h3>資料來源</h3><ol class="src">${D.sources.map((x) => `<li>${x}</li>`).join("")}</ol></div>
-    <p class="disc">本資料由 MKPA 整理，用作講解理賠數據，唔構成任何產品要約、建議或游說；所有數字只供參考。建議保額參考為簡化估算，實際需要請同顧問詳細分析。最後更新：${D.meta.updated}。</p>`);
+    <p class="disc">本資料由 MKPA 整理，用作講解理賠數據，不構成任何產品要約、建議或游說；所有數字只供參考。建議保額參考為簡化估算，實際需要請與顧問詳細分析。最後更新：${D.meta.updated}。</p>`);
 
   /* ---- render pages ---- */
   const total = pages.length;
